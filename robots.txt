@@ -8,4 +8,4 @@ Disallow: /vendors/
 Disallow: /js/
 Disallow: /css/
 Sitemap: https://no5-aaron-wu.github.io/sitemap.xml
-Sitemap: https://no5-aaron-wu.github.io/baidu_sitemap.xml
+Sitemap: https://no5-aaron-wu.github.io/baidusitemap.xml
