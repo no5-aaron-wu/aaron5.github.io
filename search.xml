@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>AI算法基础 [2]：NC4HW4排布</title>
+      <link href="/2021/11/14/AI-Algorithm-2-NC4HW4/"/>
+      <url>/2021/11/14/AI-Algorithm-2-NC4HW4/</url>
+      
+        <content type="html"><![CDATA[<h1 id="NC4HW4数据排布"><a href="#NC4HW4数据排布" class="headerlink" title="NC4HW4数据排布"></a>NC4HW4数据排布</h1><ul><li>NC4HW4的数据排布其实就是和RGBA这种交织的数据排布类似<h2 id="NCHW-gt-NC4HW4"><a href="#NCHW-gt-NC4HW4" class="headerlink" title="NCHW-&gt;NC4HW4"></a>NCHW-&gt;NC4HW4</h2></li><li>首先batch维度就是N不变</li><li>然后把每个样本所有feature map按每四个通道为一组分成C/4个组，如果通道数不能整除4则补齐到4的倍数，补上的feature map全填0</li><li>然后把每组内的4个feature map按照RGBA交织的形式重新排列一下就得到NC4HW4的数据了。<br><img src="1.png" alt="1.png"><h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2></li><li>以卷积操作举例，此处只讨论暴力方法，不涉及im2col，gemm， winograd等方法。</li><li>对于卷积操作, 根据计算机内存排布特点，按行进行处理，处理完一个通道的数据，转入下一个通道继续按行处理。下图是一个通道内卷积的操作：<br><img src="2.png" alt="2.png"></li><li>对于一个nchw格式的Tensor来说，其在计算机中的内存排布是这样的：<br><img src="3.png" alt="3.png"></li><li>当一条指令处理一个数据时，卷积操作需要做循环乘累加，如下图所示，与kernel对应的featuremap中的数据不是连续分布的。如果feature map空间size很大的话，这样跳通道取数据，就会造成<a href="https://www.cnblogs.com/jokerjason/p/10711022.html">cache miss</a>严重影响运行性能。<br><img src="4.jpg" alt="4.jpeg"></li><li>除此之外，当kernel size 不为4的倍数时，想使用诸如x86结构的sse指令,arm的neon指令.以及GPU的OpenGL和OpenCL等可以单指令处理4组数据的指令集时，使用nchw内存排布同样不方便：<br><img src="5.jpg" alt="5.jpeg"></li><li>而NC/4HW4则可以解决上面的问题，4个通道合并成一个通道，通道数不足4的情况下进行补0：<br><img src="6.png" alt="6.png"><br><img src="7.png" alt="7.png"></li><li>经过NC4HW4重排后在内存中的排布情况如下：<br><img src="8.png" alt="8.png"></li><li>此时进行单指令处理4组数据（SIMD）操作就没有问题了<br><img src="9.jpg" alt="9.jpeg"></li><li>注意此时如果想让输出也为NC/4HW4排布，则需要在以4组kernel为单位循环操作featuremap数据，以实现输出channel的pack。<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h4 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h4></li><li>进行NC4HW4重排后，可以充分利用cpu指令集的特性，实现对卷积等操作进行加速。同时可以较少cache miss.<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4>对于较大的feature，如果其channel不是4的倍数，则会导致补充0过多，导致内存占用过高，同时也相应的增加些许计算量。</li></ul><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol><li><a href="https://www.zhihu.com/question/337513515">https://www.zhihu.com/question/337513515</a></li><li><a href="http://giantpandacv.com/project/Msnhnet/%E5%9B%BE%E8%A7%A3%E7%A5%9E%E7%A7%98%E7%9A%84NC4HW4/">http://giantpandacv.com/project/Msnhnet/%E5%9B%BE%E8%A7%A3%E7%A5%9E%E7%A7%98%E7%9A%84NC4HW4/</a></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 深度学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> MNN </tag>
+            
+            <tag> 数据结构 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>C++之类与对象 [1]: 多态</title>
       <link href="/2021/11/11/cpp-class-1/"/>
       <url>/2021/11/11/cpp-class-1/</url>
