@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>AI数据集 [1]：COCO</title>
+      <link href="/2021/11/16/AI-Dataset-1-coco/"/>
+      <url>/2021/11/16/AI-Dataset-1-coco/</url>
+      
+        <content type="html"><![CDATA[<h1>COCO数据集</h1><h2 id="简介">简介</h2><ul><li>MS COCO的全称是Microsoft Common Objects in Context，起源于微软于2014年出资标注的Microsoft COCO数据集，与ImageNet竞赛一样，被视为是计算机视觉领域最受关注和最权威的比赛之一。</li><li>COCO数据集是一个大型的、丰富的物体检测，分割和字幕数据集。这个数据集以scene understanding为目标，主要从复杂的日常场景中截取，图像中的目标通过精确的segmentation进行位置的标定。图像包括91类目标，328,000影像和2,500,000个label。目前为止有语义分割的最大数据集，提供的类别有80 类，有超过33 万张图片，其中20 万张有标注，整个数据集中个体的数目超过150 万个。</li></ul><h2 id="COCO-API">COCO API</h2><h3 id="install">install</h3><h4 id="clone">clone</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> &lt;workdir&gt;</span><br><span class="line">git <span class="built_in">clone</span> https://hub.fastgit.org/cocodataset/cocoapi.git</span><br></pre></td></tr></table></figure><h4 id="setup">setup</h4><ul><li>编译并安装到本地：</li></ul><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> cocoapi/PythonAPI/</span><br><span class="line">python setup.py build_ext --inplace</span><br></pre></td></tr></table></figure><ul><li>报错如下：</li></ul><blockquote><p>cl: 命令行 error D8021 :无效的数值参数“/Wno-cpp”</p></blockquote><ul><li><a href="http://xn--setup-hr2j95q.py">打开setup.py</a>，将下面一行注释掉：</li></ul><figure class="highlight py"><table><tr><td class="code"><pre><span class="line">extra_compile_args=[<span class="string">&#x27;-Wno-cpp&#x27;</span>, <span class="string">&#x27;-Wno-unused-function&#x27;</span>, <span class="string">&#x27;-std=c99&#x27;</span>],</span><br></pre></td></tr></table></figure><ul><li>再次执行，报错如下：</li></ul><blockquote><p>c1: fatal error C1083: 无法打开源文件: “pycocotools/_mask.c”: No such file or directory</p></blockquote><ul><li>搜索得知编译依赖库：Cython</li></ul><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">pip install Cython</span><br></pre></td></tr></table></figure><ul><li>再次执行，成功，继续执行如下指令，安装库到pyhton site-packages：</li></ul><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">python setup.py build_ext install</span><br></pre></td></tr></table></figure><ul><li>如遇到依赖的某个库没有安装，则会默认从https://pypi.org/下载，会很慢，可以Ctrl+C中止，自己执行pip install（假设自己已经配置过国内源）<br>安装成功后，用jupyter notebook 打开 pycocoDemo.ipynb，执行第一段import库操作，没有报错则说明安装成功。</li></ul><h3 id="COCO-DataSet-Download">COCO DataSet Download</h3><h4 id="官网下载数据集没反应">官网下载数据集没反应</h4><p><img src="1.png" alt="1.png"></p><ul><li>F12打开网页调试，转到Console，可以看到错误信息，意思是原链接地址是个不安全的地址，HTTP要改成HTTPS，复制链接修改后拷贝到浏览器便可成功下载（炒鸡慢）。</li><li>好像直接点击console里面的网址也可以下载？</li><li>网页下载太慢了，试了下面的方法：</li></ul><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">wget -c https://images.cocodataset.org/zips/val2017.zip --no-check-certificate</span><br></pre></td></tr></table></figure><ul><li><code>-c</code> 断点续传；</li><li><code>--no-check-certificate</code> 对非安全网址不检查验证</li><li>0.5-1M/s，也不是很快，但可以接受了（ ：</li></ul><h4 id="解压">解压</h4><ul><li>在cocoapi根目录下新建两个文件夹images和annotations，将图片和标注分别拷贝到这两个目录下，解压，图片保留<code>val2017</code>这一级子目录，注释的json文件则直接放在annotations文件夹下；</li><li>数据准备完毕，pycocoDemo.ipynb可以一路执行下去，观察API的功能。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 深度学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 数据集 </tag>
+            
+            <tag> coco </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>AI算法基础 [3]：mAP</title>
       <link href="/2021/11/15/AI-Algorithm-3-mAP/"/>
       <url>/2021/11/15/AI-Algorithm-3-mAP/</url>
