@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>CUDA基础 [4]：多流测试</title>
+      <link href="/2021/11/28/CUDA-4-MultiStreamTest/"/>
+      <url>/2021/11/28/CUDA-4-MultiStreamTest/</url>
+      
+        <content type="html"><![CDATA[<h1>BackGround</h1><p>测试验证cuda多流的并行调度逻辑<br>测试环境：GTX1650+VS2019+Nsight</p><h1>单流循环</h1><p>按序执行</p><p><img src="1.jpg" alt="1.jpg"></p><h1>双流循环（方式1）</h1><p>目前最优的并行方式</p><p><img src="2.jpg" alt="2.jpg"></p><h1>双流循环（方式2）</h1><p>并行程度不如方式1</p><p><img src="3.jpg" alt="3.jpg"></p><h1>双流循环（方式3）</h1><p><img src="4.jpg" alt="4.jpg"></p><h1>双流循环（方式4）</h1><p><img src="5.jpg" alt="5.jpg"></p><h1>TX2 deviceQuery</h1><p><img src="6.jpg" alt="6.jpg"></p><h1>总结</h1><ul><li><ol><li>Nsight能可视化cuda的时间线，可以在设计初期帮助规避一些不合理的设计逻辑，但PC和TX2上设备支持情况不同，在PC上的表现不完全等同于TX2上表现，TX2上需另做测试，看是否满足预期；</li></ol></li><li><ol start="2"><li>从上述对比结果看，在确保上下文依赖关系正确的情况下，同一流的操作放在一起调用能获得更好的并行效果；</li></ol></li><li><ol start="3"><li>TX2只有一个copy engine， 所以拷贝操作间不能并行。</li></ol></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> CUDA </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> CUDA </tag>
+            
+            <tag> 计算机体系结构 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>CUDA基础 [3]：流和事件</title>
       <link href="/2021/11/28/CUDA-3-StreamAndEvent/"/>
       <url>/2021/11/28/CUDA-3-StreamAndEvent/</url>

@@ -16,27 +16,6 @@
   </url>
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-3-StreamAndEvent/</loc>
-    
-    <lastmod>2021-11-28</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/27/CUDA-2-start/</loc>
-    
-    <lastmod>2021-11-28</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/27/CUDA-1-xPU/</loc>
-    
-    <lastmod>2021-11-28</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/11/cpp-class-1/</loc>
     
     <lastmod>2021-11-28</lastmod>
@@ -52,6 +31,34 @@
   
   <url>
     <loc>https://no5-aaron-wu.github.io/categories/index.html</loc>
+    
+    <lastmod>2021-11-28</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-4-MultiStreamTest/</loc>
+    
+    <lastmod>2021-11-28</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-3-StreamAndEvent/</loc>
+    
+    <lastmod>2021-11-28</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/27/CUDA-2-start/</loc>
+    
+    <lastmod>2021-11-28</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/27/CUDA-1-xPU/</loc>
     
     <lastmod>2021-11-28</lastmod>
     
