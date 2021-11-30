@@ -16,6 +16,13 @@
   </url>
   
   <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/30/Hi3559AV100-1-setup/</loc>
+    
+    <lastmod>2021-11-30</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/30/CUDA-5-mutexLock/</loc>
     
     <lastmod>2021-11-30</lastmod>
@@ -228,6 +235,20 @@
   </url>
   
   <url>
+    <loc>https://no5-aaron-wu.github.io/tags/HISI/</loc>
+    <lastmod>2021-11-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/tags/NNIE/</loc>
+    <lastmod>2021-11-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://no5-aaron-wu.github.io/tags/C/</loc>
     <lastmod>2021-11-30</lastmod>
     <changefreq>daily</changefreq>
@@ -245,6 +266,13 @@
   
   <url>
     <loc>https://no5-aaron-wu.github.io/categories/CUDA/</loc>
+    <lastmod>2021-11-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/categories/HISI/</loc>
     <lastmod>2021-11-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
