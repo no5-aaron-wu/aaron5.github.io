@@ -2,94 +2,98 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/11/cpp-class-1/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/07/Hi3559AV100-5-NormalQA/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/03/Hi3559AV100-4-NNIEMapperQA/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/30/CUDA-5-mutexLock/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/12/09/ComputerArch-1-OPS/</loc>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/30/Hi3559AV100-1-setup/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/01/Hi3559AV100-2-SetEnv/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/01/Hi3559AV100-3-CrossCompileOpenCV/</loc>
-    <lastmod>2021-12-08</lastmod>
-  </url>
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/27/CUDA-2-start/</loc>
-    <lastmod>2021-12-08</lastmod>
-  </url>
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-3-StreamAndEvent/</loc>
-    <lastmod>2021-12-08</lastmod>
-  </url>
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-4-MultiStreamTest/</loc>
-    <lastmod>2021-12-08</lastmod>
-  </url>
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-9-RNN/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/16/AI-Dataset-1-coco/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/27/CUDA-1-xPU/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/27/CUDA-2-start/</loc>
+    <lastmod>2021-12-09</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-3-StreamAndEvent/</loc>
+    <lastmod>2021-12-09</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-4-MultiStreamTest/</loc>
+    <lastmod>2021-12-09</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-9-RNN/</loc>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/22/AI-Algorithm-8-ConvTiledInMnn/</loc>
-    <lastmod>2021-12-08</lastmod>
-  </url>
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/18/AI-Algorithm-7-StrassenInMnn/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/18/AI-Algorithm-6-Strassen/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/18/AI-Algorithm-7-StrassenInMnn/</loc>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/16/AI-Algorithm-4-Winograd/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/16/AI-Algorithm-5-WinogradInMnn/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/15/AI-Algorithm-3-mAP/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-11-GRU/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/14/AI-Algorithm-2-NC4HW4/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/11/AI-Algorithm-1-mIoU/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-10-LSTM/</loc>
-    <lastmod>2021-12-08</lastmod>
+    <lastmod>2021-12-09</lastmod>
   </url>
 </urlset> 

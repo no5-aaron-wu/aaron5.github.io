@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>计算机体系结构 [1]：CPU/GPU/NPU算力</title>
+      <link href="/2021/12/09/ComputerArch-1-OPS/"/>
+      <url>/2021/12/09/ComputerArch-1-OPS/</url>
+      
+        <content type="html"><![CDATA[<h1>基本术语</h1><h2 id="OPS">OPS</h2><p>Operations Per Second的缩写。</p><ul><li><p>1 TOPS代表处理器每秒钟可进行一万亿次（10^12）操作。</p></li><li><p>1 GOPS代表处理器每秒钟可进行十亿次（10^9）操作。</p></li><li><p>1 MOPS代表处理器每秒钟可进行一百万次（10^6）操作。</p></li><li><p>TOPS同GOPS与MOPS可以换算，都代表每秒钟能处理的次数，单位不同而已。</p></li></ul><p>注意这里的<strong>操作</strong>并不特指float32，也可能是float16，int8，int4等。要符合实际计算时采用的数据类型。</p><h2 id="FLOPS">FLOPS</h2><p>Floating-point Operations Per Second的缩写。</p><p>常被用来估算芯片的计算能力，尤其是在使用到大量<strong>浮点运算</strong>的科学计算领域中。</p><blockquote><p>OPS与FLOPS在AI应用中一般指<strong>乘加</strong>操作。</p></blockquote><h2 id="FLOPs">FLOPs</h2><p>Floating-point Operations的缩写，注意s小写，表示复数。</p><p>意指浮点运算数，理解为计算量。在深度学习中，我们用FLOPs，来衡量算法/模型的复杂度。</p><h2 id="MACs">MACs</h2><p>Multiply–Accumulate Operations的缩写。</p><p>意指乘加累积操作数，同样是计算量，常常被人们与FLOPs概念混淆。实际上1MACs包含一个乘法操作与一个加法操作，等于2FLOPs。</p><h2 id="Ghz">Ghz</h2><p>十亿赫兹（10^9 Hz， 10 0000 0000Hz）。</p><p>GHz是CPU的处理频率，1 GHz 表示CPU一秒有10亿次时钟震荡（电路上表现为脉冲信号）。</p><h1>常见芯片算力</h1><h2 id="NPU">NPU</h2><p>各个AI芯片都会宣传自己的峰值AI算力。</p><h3 id="Apple">Apple</h3><ul><li>A11   0.6TOPS</li></ul><p>第一代Neural Engine，当时Neural Engine主要针对的应用是iPhone新推出的人脸识别锁屏FaceID以及人脸关键点追踪Animoji，且Neural Engine的算力并不对第三方应用开放。</p><ul><li>A12   5 TOPS</li><li>A13   6 TOPS</li><li>A14   11 TOPS</li><li>A15   15.8 TOPS</li></ul><p>注意这里用的是TOPS，不是TFLOPS，已知Apple的ANE（Apple Neural Engine）运算是跑的float16，则这里的OPS就是指每秒可以执行N 万亿次fp16的乘加操作。</p><h3 id="爱芯AX630A"><a href="https://axera-tech.com/product/T7297367876758893768?k=AX630A">爱芯AX630A</a></h3><ul><li>8核NPU，算力32TOPS@int4，8TOPS@int8。其中4核用于神经网络计算</li><li>CPU 4核Cortex A53</li></ul><h3 id="海思Hi3559AV100"><a href="https://www.hisilicon.com/cn/products/smart-vision/public-security/AI-IPC/Hi3559AV100">海思Hi3559AV100</a></h3><ul><li>四核DSP+双核NNIE，算力4TOPS@8bit</li><li>CPU 双核A73 + 三核A53</li></ul><h3 id="NVIDIA-TX2"><a href="https://www.nvidia.cn/autonomous-machines/embedded-systems/jetson-tx2/">NVIDIA TX2</a></h3><ul><li>GPU算力1.33 TFLOPS</li><li>CPU 双核丹佛2和四核Cortex-A57</li></ul><h3 id="安霸AMBA-H22"><a href="https://www.ambarella.com/wp-content/uploads/H22-Product-Brief.pdf">安霸AMBA H22</a></h3><ul><li>CPU 4核Cortex-A53</li></ul><h3 id="安霸AMBA-CV22"><a href="https://www.ambarella.com/wp-content/uploads/CV22-product-brief-consumer.pdf">安霸AMBA CV22</a></h3><ul><li>CPU 4核Cortex-A53</li><li>VPU CVFLow算力4TOPS@8bit</li></ul><h3 id="安霸AMBA-CV5"><a href="https://investor.ambarella.com/node/12581/pdf">安霸AMBA CV5</a></h3><ul><li>CPU 双核Cortex-A76</li><li>VPU  CVFLow算力16TOPS@8bit（传言）</li></ul><h2 id="CPU">CPU</h2><p>CPU芯片一般不会宣传浮点峰值算力，但是可以根据主频，核数，指令集支持情况估算出来。</p><p>估算公式为:  <strong>核数 * 主频 * CPU单个指令周期可以处理的浮点数据个数</strong></p><p>以<a href="https://www.intel.cn/content/www/cn/zh/products/sku/191792/intel-core-i79700-processor-12m-cache-up-to-4-70-ghz/specifications.html"><strong>Intel Core i7 9700</strong></a>为例（此估算方法对ARM-CPU同样适用）：</p><ul><li>核数：8；</li><li>主频：3Ghz，最大睿频4.7Ghz，姑且按3GHz算；</li><li>指令集最高支持到AVX2（又叫AVX256），AVX2引入了FMA操作（通过CPU-Z可以查阅到支持FMA3），由于AVX2和FMA都是支持双发射（即<a href="https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#expand=3416&amp;ig_expand=153,153,3171,3171&amp;techs=FMA">吞吐量=2，CPI=0.5</a>），说人话就是一个时钟周期内可以同时开始执行两条指令。所以AVX2一次可以处理2 * 256bit的浮点数据，FMA是浮点相乘和浮点累加两个的融合操作，所以含有FMA的单元处理数据量需要翻倍。即 2(FMA) * 2(双发射) * 256 / 32 = 32个float32数据。</li></ul><p>综上，该CPU的浮点峰值算力为8 * 3G * 32 = 768GFLOPS = 0.768TFLOPS</p><h2 id="GPU">GPU</h2><p>GPU算力计算类似CPU，虽然单核的主频低，但是核数多，以<a href="https://www.nvidia.cn/geforce/graphics-cards/gtx-1660-ti/"><strong>GTX1660Ti</strong></a>为例:</p><ul><li>核数：1536；</li><li>主频：1.5Ghz，加速频率1.77Ghz；</li><li>一个时钟周期可以处理一次浮点运算。即：1次浮点乘或者浮点加运算。</li></ul><p>综上，该GPU的浮点峰值算力为1536 * 1.5G * 1 = 2304GFLOPS = 2.304TFLOPS</p><h1>总结</h1><p>在实际应用中算力只能作为大致参考，代码的运行速度还受I/O，降频等因素影响。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 计算机体系结构 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> OPS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>AI算法基础 [11]：门控递归单元GRU</title>
       <link href="/2021/12/08/AI-Algorithm-11-GRU/"/>
       <url>/2021/12/08/AI-Algorithm-11-GRU/</url>
