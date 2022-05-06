@@ -2,303 +2,324 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/tags/index.html</loc>
+    <loc>https://no5-aaron-wu.github.io/link/index.html</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/link/index.html</loc>
+    <loc>https://no5-aaron-wu.github.io/tags/index.html</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2022/04/25/cpp-class-2/</loc>
+    
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2022/02/18/SNPE-1-GetStart/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/11/cpp-class-1/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/about/index.html</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/categories/index.html</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2022/04/26/PyTorch-1-SourceInstall/</loc>
+    
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/07/Hi3559AV100-5-NormalQA/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/03/Hi3559AV100-4-NNIEMapperQA/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2022/04/25/EffectiveC-1-ReadNote01/</loc>
+    
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/01/Hi3559AV100-3-CrossCompileOpenCV/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/01/Hi3559AV100-2-SetEnv/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/30/Hi3559AV100-1-setup/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2022/02/09/ComputerArch-6-Memory/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2022/01/18/ComputerArch-5-Exception/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2022/01/17/ComputerArch-4-Hazard/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2022/01/10/ComputerArch-3-ELF/</loc>
     
-    <lastmod>2022-04-25</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2022/01/18/ComputerArch-0-Miscellaneous/</loc>
-    
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/22/ComputerArch-2-ILP/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/09/ComputerArch-1-OPS/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2022/01/18/ComputerArch-0-Miscellaneous/</loc>
+    
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/30/CUDA-5-mutexLock/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2022/03/24/AMBA-1-CvflowProgramming/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-4-MultiStreamTest/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-3-StreamAndEvent/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/27/CUDA-2-start/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/27/CUDA-1-xPU/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/16/AI-Dataset-1-coco/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-9-RNN/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/22/AI-Algorithm-8-ConvTiledInMnn/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/18/AI-Algorithm-7-StrassenInMnn/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/18/AI-Algorithm-6-Strassen/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/16/AI-Algorithm-5-WinogradInMnn/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/16/AI-Algorithm-4-Winograd/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/15/AI-Algorithm-3-mAP/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2022/01/29/AI-Algorithm-17-FastExp/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/29/AI-Algorithm-16-GroupConv/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/29/AI-Algorithm-15-DeformConv/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/14/AI-Algorithm-2-NC4HW4/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/23/AI-Algorithm-14-GEMM-V2/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/13/AI-Algorithm-13-Transformer/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/09/AI-Algorithm-12-GEMM/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-11-GRU/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-10-LSTM/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/11/AI-Algorithm-1-mIoU/</loc>
     
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     
   </url>
   
 
   <url>
     <loc>https://no5-aaron-wu.github.io/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -306,315 +327,329 @@
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/AI/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Algorithm/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/LSTM/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/GRU/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/GEMM/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/DeformConv/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/GroupConv/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/data-structure/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/fast-exp/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/MNN/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/mAP/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Winograd/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Strassen/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/convolution/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/RNN/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/coco/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Ambarella/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/CVflow/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/DAG/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/CUDA/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Miscellaneous/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/OPS/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Pileline/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Hazard/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Branch-Prediction/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Exception/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Interrupt/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/HISI/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/NNIE/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/OpenCV/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Qualcomm/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/QCS610/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/SNPE/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/C/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/ILP/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/SIMD/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/pipeline/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Compile/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Assemble/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Link/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Memory/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/tags/PyTorch/</loc>
+    <lastmod>2022-05-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/tags/Install/</loc>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/tags/Transformer/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -623,49 +658,56 @@
   
   <url>
     <loc>https://no5-aaron-wu.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/categories/AMBA/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/categories/CUDA/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/categories/HISI/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/categories/SNPE/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://no5-aaron-wu.github.io/categories/%E8%AF%AD%E8%A8%80/</loc>
-    <lastmod>2022-04-25</lastmod>
+    <lastmod>2022-05-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/categories/PyTorch/</loc>
+    <lastmod>2022-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
