@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://no5-aaron-wu.github.io/2022/05/06/cpp-modern-1-SmartPointers/</loc>
-    <lastmod>2022-06-20</lastmod>
-  </url>
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2022/06/01/cpp-modern-2-templateSpecialization/</loc>
-    <lastmod>2022-06-20</lastmod>
-  </url>
-  <url>
     <loc>https://no5-aaron-wu.github.io/2022/06/13/SIMD-1-NEON/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
@@ -33,6 +25,14 @@
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
+    <loc>https://no5-aaron-wu.github.io/2022/05/06/cpp-modern-1-SmartPointers/</loc>
+    <lastmod>2022-06-20</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2022/06/01/cpp-modern-2-templateSpecialization/</loc>
+    <lastmod>2022-06-20</lastmod>
+  </url>
+  <url>
     <loc>https://no5-aaron-wu.github.io/2022/04/26/PyTorch-1-SourceInstall/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
@@ -45,19 +45,19 @@
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/01/Hi3559AV100-2-SetEnv/</loc>
-    <lastmod>2022-06-20</lastmod>
-  </url>
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/01/Hi3559AV100-3-CrossCompileOpenCV/</loc>
-    <lastmod>2022-06-20</lastmod>
-  </url>
-  <url>
     <loc>https://no5-aaron-wu.github.io/2022/05/06/EffectiveC-2-ReadNote02/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/30/Hi3559AV100-1-setup/</loc>
+    <lastmod>2022-06-20</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/12/01/Hi3559AV100-2-SetEnv/</loc>
+    <lastmod>2022-06-20</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/12/01/Hi3559AV100-3-CrossCompileOpenCV/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
@@ -85,14 +85,6 @@
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/09/ComputerArch-1-OPS/</loc>
-    <lastmod>2022-06-20</lastmod>
-  </url>
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/22/ComputerArch-2-ILP/</loc>
-    <lastmod>2022-06-20</lastmod>
-  </url>
-  <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/30/CUDA-5-mutexLock/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
@@ -101,11 +93,11 @@
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-3-StreamAndEvent/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/12/09/ComputerArch-1-OPS/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-4-MultiStreamTest/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/12/22/ComputerArch-2-ILP/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
@@ -121,6 +113,14 @@
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-3-StreamAndEvent/</loc>
+    <lastmod>2022-06-20</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/28/CUDA-4-MultiStreamTest/</loc>
+    <lastmod>2022-06-20</lastmod>
+  </url>
+  <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-9-RNN/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
@@ -133,11 +133,11 @@
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/18/AI-Algorithm-6-Strassen/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/11/18/AI-Algorithm-7-StrassenInMnn/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/18/AI-Algorithm-7-StrassenInMnn/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/11/18/AI-Algorithm-6-Strassen/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
@@ -153,19 +153,19 @@
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2022/01/29/AI-Algorithm-17-FastExp/</loc>
-    <lastmod>2022-06-20</lastmod>
-  </url>
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/14/AI-Algorithm-2-NC4HW4/</loc>
-    <lastmod>2022-06-20</lastmod>
-  </url>
-  <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/29/AI-Algorithm-15-DeformConv/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/29/AI-Algorithm-16-GroupConv/</loc>
+    <lastmod>2022-06-20</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2022/01/29/AI-Algorithm-17-FastExp/</loc>
+    <lastmod>2022-06-20</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/14/AI-Algorithm-2-NC4HW4/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
@@ -185,11 +185,11 @@
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/11/AI-Algorithm-1-mIoU/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-10-LSTM/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-10-LSTM/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/11/11/AI-Algorithm-1-mIoU/</loc>
     <lastmod>2022-06-20</lastmod>
   </url>
 </urlset> 
