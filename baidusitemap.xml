@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://no5-aaron-wu.github.io/2022/06/14/SIMD-2-NeonIntrinsics/</loc>
-    <lastmod>2022-09-23</lastmod>
-  </url>
-  <url>
     <loc>https://no5-aaron-wu.github.io/2022/06/14/SIMD-3-NeonAssembly/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
@@ -37,11 +33,15 @@
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2022/04/26/PyTorch-1-SourceInstall/</loc>
+    <loc>https://no5-aaron-wu.github.io/2022/06/14/SIMD-2-NeonIntrinsics/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2022/07/13/NLS-1-GetStart/</loc>
+    <lastmod>2022-09-23</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2022/04/26/PyTorch-1-SourceInstall/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
@@ -53,11 +53,11 @@
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/01/Hi3559AV100-3-CrossCompileOpenCV/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/12/01/Hi3559AV100-2-SetEnv/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/01/Hi3559AV100-2-SetEnv/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/12/01/Hi3559AV100-3-CrossCompileOpenCV/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
@@ -101,6 +101,10 @@
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
+    <loc>https://no5-aaron-wu.github.io/2021/12/09/ComputerArch-1-OPS/</loc>
+    <lastmod>2022-09-23</lastmod>
+  </url>
+  <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/22/ComputerArch-2-ILP/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
@@ -110,10 +114,6 @@
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2022/01/18/ComputerArch-0-Miscellaneous/</loc>
-    <lastmod>2022-09-23</lastmod>
-  </url>
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/09/ComputerArch-1-OPS/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
@@ -137,10 +137,6 @@
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-9-RNN/</loc>
-    <lastmod>2022-09-23</lastmod>
-  </url>
-  <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/16/AI-Dataset-1-coco/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
@@ -149,11 +145,15 @@
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/18/AI-Algorithm-6-Strassen/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-9-RNN/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/11/18/AI-Algorithm-7-StrassenInMnn/</loc>
+    <lastmod>2022-09-23</lastmod>
+  </url>
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2021/11/18/AI-Algorithm-6-Strassen/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
@@ -169,6 +169,10 @@
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
+    <loc>https://no5-aaron-wu.github.io/2021/12/29/AI-Algorithm-15-DeformConv/</loc>
+    <lastmod>2022-09-23</lastmod>
+  </url>
+  <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/29/AI-Algorithm-16-GroupConv/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
@@ -181,11 +185,11 @@
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/29/AI-Algorithm-15-DeformConv/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/12/23/AI-Algorithm-14-GEMM-V2/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/23/AI-Algorithm-14-GEMM-V2/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-11-GRU/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>
@@ -194,10 +198,6 @@
   </url>
   <url>
     <loc>https://no5-aaron-wu.github.io/2021/12/13/AI-Algorithm-13-Transformer/</loc>
-    <lastmod>2022-09-23</lastmod>
-  </url>
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-11-GRU/</loc>
     <lastmod>2022-09-23</lastmod>
   </url>
   <url>

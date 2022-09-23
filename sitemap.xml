@@ -30,13 +30,6 @@
   </url>
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/2022/06/14/SIMD-2-NeonIntrinsics/</loc>
-    
-    <lastmod>2022-09-23</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://no5-aaron-wu.github.io/2022/06/01/cpp-modern-2-templateSpecialization/</loc>
     
     <lastmod>2022-09-23</lastmod>
@@ -86,6 +79,13 @@
   </url>
   
   <url>
+    <loc>https://no5-aaron-wu.github.io/2022/06/14/SIMD-2-NeonIntrinsics/</loc>
+    
+    <lastmod>2022-09-23</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://no5-aaron-wu.github.io/2022/06/13/SIMD-1-NEON/</loc>
     
     <lastmod>2022-09-23</lastmod>
@@ -93,14 +93,14 @@
   </url>
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/2022/04/26/PyTorch-1-SourceInstall/</loc>
+    <loc>https://no5-aaron-wu.github.io/2022/07/13/NLS-1-GetStart/</loc>
     
     <lastmod>2022-09-23</lastmod>
     
   </url>
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/2022/07/13/NLS-1-GetStart/</loc>
+    <loc>https://no5-aaron-wu.github.io/2022/04/26/PyTorch-1-SourceInstall/</loc>
     
     <lastmod>2022-09-23</lastmod>
     
@@ -212,14 +212,14 @@
   </url>
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/2022/01/18/ComputerArch-0-Miscellaneous/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/12/09/ComputerArch-1-OPS/</loc>
     
     <lastmod>2022-09-23</lastmod>
     
   </url>
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/09/ComputerArch-1-OPS/</loc>
+    <loc>https://no5-aaron-wu.github.io/2022/01/18/ComputerArch-0-Miscellaneous/</loc>
     
     <lastmod>2022-09-23</lastmod>
     
@@ -268,14 +268,14 @@
   </url>
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-9-RNN/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/11/16/AI-Dataset-1-coco/</loc>
     
     <lastmod>2022-09-23</lastmod>
     
   </url>
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/16/AI-Dataset-1-coco/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/12/08/AI-Algorithm-9-RNN/</loc>
     
     <lastmod>2022-09-23</lastmod>
     
@@ -338,14 +338,14 @@
   </url>
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/11/14/AI-Algorithm-2-NC4HW4/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/12/29/AI-Algorithm-15-DeformConv/</loc>
     
     <lastmod>2022-09-23</lastmod>
     
   </url>
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/2021/12/29/AI-Algorithm-15-DeformConv/</loc>
+    <loc>https://no5-aaron-wu.github.io/2021/11/14/AI-Algorithm-2-NC4HW4/</loc>
     
     <lastmod>2022-09-23</lastmod>
     
