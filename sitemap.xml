@@ -23,6 +23,34 @@
   </url>
   
   <url>
+    <loc>https://no5-aaron-wu.github.io/2022/06/01/cpp-modern-2-templateSpecialization/</loc>
+    
+    <lastmod>2022-09-25</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/2022/05/06/cpp-modern-1-SmartPointers/</loc>
+    
+    <lastmod>2022-09-25</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/about/index.html</loc>
+    
+    <lastmod>2022-09-25</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://no5-aaron-wu.github.io/categories/index.html</loc>
+    
+    <lastmod>2022-09-25</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://no5-aaron-wu.github.io/2022/06/14/SIMD-3-NeonAssembly/</loc>
     
     <lastmod>2022-09-25</lastmod>
@@ -38,20 +66,6 @@
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2022/06/13/SIMD-1-NEON/</loc>
-    
-    <lastmod>2022-09-25</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2022/06/01/cpp-modern-2-templateSpecialization/</loc>
-    
-    <lastmod>2022-09-25</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2022/05/06/cpp-modern-1-SmartPointers/</loc>
     
     <lastmod>2022-09-25</lastmod>
     
@@ -79,14 +93,7 @@
   </url>
   
   <url>
-    <loc>https://no5-aaron-wu.github.io/about/index.html</loc>
-    
-    <lastmod>2022-09-25</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://no5-aaron-wu.github.io/categories/index.html</loc>
+    <loc>https://no5-aaron-wu.github.io/2022/07/13/NLS-1-GetStart/</loc>
     
     <lastmod>2022-09-25</lastmod>
     
@@ -94,13 +101,6 @@
   
   <url>
     <loc>https://no5-aaron-wu.github.io/2022/04/26/PyTorch-1-SourceInstall/</loc>
-    
-    <lastmod>2022-09-25</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://no5-aaron-wu.github.io/2022/07/13/NLS-1-GetStart/</loc>
     
     <lastmod>2022-09-25</lastmod>
     
