@@ -1,0 +1,332 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>旭穹の陋室 | 旭穹の陋室</title><meta name="author" content="旭穹"><meta name="copyright" content="旭穹"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="%TSD-Header-###%�I������Ԑ��� ��������������@���&lt;ϣ����P��N�+�k�&lt;K�E�_�������dؑ���QA��	A�V�%\��HkOT&#x2F;b憁?d��� �+U?l�B�0Ņ%V[�+�k�&lt;K�E�_�š������� ؑK�Qj��	Q�V�%\����kAT&#x2F;�BfĶ+">
+<meta property="og:type" content="article">
+<meta property="og:title" content="旭穹の陋室">
+<meta property="og:url" content="https://no5-aaron-wu.github.io/2023/05/05/cpp-modern-6-MemoryOrder/index.html">
+<meta property="og:site_name" content="旭穹の陋室">
+<meta property="og:description" content="%TSD-Header-###%�I������Ԑ��� ��������������@���&lt;ϣ����P��N�+�k�&lt;K�E�_�������dؑ���QA��	A�V�%\��HkOT&#x2F;b憁?d��� �+U?l�B�0Ņ%V[�+�k�&lt;K�E�_�š������� ؑK�Qj��	Q�V�%\����kAT&#x2F;�BfĶ+">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://no5-aaron-wu.github.io/images/topimg.png">
+<meta property="article:published_time" content="2023-05-05T09:32:04.620Z">
+<meta property="article:modified_time" content="2023-05-05T09:32:04.620Z">
+<meta property="article:author" content="旭穹">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://no5-aaron-wu.github.io/images/topimg.png"><link rel="shortcut icon" href="/images/ania_128x128.ico"><link rel="canonical" href="https://no5-aaron-wu.github.io/2023/05/05/cpp-modern-6-MemoryOrder/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="zlQaq8XLp3Oj3DgDnpkA0mCzGbGvflp_U-vZVql_E-E"/><meta name="msvalidate.01" content="EAE2F4C7507064F526B5924DA5DCD005"/><meta name="baidu-site-verification" content="code-XsSJQ4q5sT"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-6DDC82R7DV"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-6DDC82R7DV');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#009f6a","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '旭穹の陋室',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: false,
+  postUpdate: '2023-05-05 09:32:04'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mouse.css"><style>#article-container.post-content h1:before, h2:before, h3:before, h4:before, h5:before, h6:before { -webkit-animation: avatar_turn_around 1s linear infinite; -moz-animation: avatar_turn_around 1s linear infinite; -o-animation: avatar_turn_around 1s linear infinite; -ms-animation: avatar_turn_around 1s linear infinite; animation: avatar_turn_around 1s linear infinite; }</style><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,300&display=swap" rel="stylesheet"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="wizard-scene"><div class="wizard-objects"><div class="wizard-square"></div><div class="wizard-circle"></div><div class="wizard-triangle"></div></div><div class="wizard"><div class="wizard-body"></div><div class="wizard-right-arm"><div class="wizard-right-hand"></div></div><div class="wizard-left-arm"><div class="wizard-left-hand"></div></div><div class="wizard-head"><div class="wizard-beard"></div><div class="wizard-face"><div class="wizard-adds"></div></div><div class="wizard-hat"><div class="wizard-hat-of-the-hat"></div><div class="wizard-four-point-star --first"></div><div class="wizard-four-point-star --second"></div><div class="wizard-four-point-star --third"></div></div></div></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">65</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">70</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/topimg.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">旭穹の陋室</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">无题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-05T09:32:04.620Z" title="发表于 2023-05-05 09:32:04">2023-05-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-05T09:32:04.620Z" title="更新于 2023-05-05 09:32:04">2023-05-05</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>%TSD-Header-###%�I������Ԑ���<br>
+��������������@���&lt;ϣ����P��N�+�k�&lt;K�E�_�������dؑ���QA��	A�V�%<em>\��</em>HkOT/b憁?d���<br>
+�+U?l�B�0Ņ%V[�+�k�&lt;K�E�_�š�������<br>
+ؑK�Qj��	Q�V�%<em>\����kAT/�BfĶ+�kw�݆E�w�����������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������7��.=�p(�@M�&lt;.X�w���v����7?{��?��<code>Y���C�&quot;Uq�)_;��~�9�	���D��m��Ĵ�e�Dx_*,��$�6]CeI��@��j���K%$L�ڷ�VʴV���)x�[9���h:�~I�2Bl-���i�b0��'����îb���]i0��w�) �j\b	��p�	�:� A��D	�&lt;���J��NRj6�*nCHm�W�$���X��w�I���yZW��m+J�H�*kUBL�׶ �j��?^:��Ԕ_rĶ� ���q���������w��ݍ���#��K/Z�%��#�m	�</code>�GZ<br>
+8���FL15�]��ߊ�b��kM��<br>
+�ϛo�<br>
+�L��<br>
+|,Zo</em>i|n{��&amp;<em>���f�:v��4$X�;�nq=e񼪙TK��OClS?�l�7M�L��ëQ��i[�	����i�F�/�O7_G6B^�(B-ɉ&quot;&gt;�SK�rxA �Qp���},A�~���������j�6���UH.������h�ڪ�ʮ����%v�<br>
+���U��!\��I��qdy�<br>
+� ,��zp�1�wS��D#�&lt;(�ܕ��)�:U?S�#�l9����@�18ǏLd.V���]U������B���F����’jp/CKb���M�U�7���&lt;9:G�mOܣ�­��+[w�m�L�Cs��#� }gm�����)����s�IL��+�҈J@�yQ���3��*�hz��F��)\�_�u=0U��kulsF��X)��ػ�bvl�Սo���ß�=�+k��e=ɻ[��ܚ��|īsXՂj����?q\�ｵ-��,|��Ej&quot;�d����jT-��V�L��0��Ş.��������lh1���D�<br>
+܇�ȏ�zMbn�33Ȼ�+m�:���7P�{ƃ��.��X¦b?m=��<br>
++Ԟ<br>
+�M��^��%Q��rq�ظ�(�&gt;щ����	{����T&quot;���8Tn],\�ep��TQ�T�’b�MJ�<code>6QS�m唠���'��S 4 &#123;�����H�	z*���</code>�l槔л�)�ҢsgK&amp;(c��W���5�㺡9�&lt;�S�����3Do�7�����&gt;v�r}�Z��6���6�p�_)�Y�/j���1Yӕ?9����P'��cgUXs���I��u���/���FS��%ڊ������[�������	"�x͠�KTECrs����]�s�̟S���\<|E!"���E �qo�e���,԰��6�;g���카�x����и�zip�rx�����~���*��lk�0�pcq2���.�����}ή�z���_m�b�q���c��͵��j���~}��w�;���+�w�w����x!�bv�k�mng�j��-��0���q�e[�*�+��ѥ��x�e�3͋:n��al;vfce@�s�;9��b\�ry�n�w9��o�#vh��"�6�� 9ߧz�޴t�c^��gr��<�4��� 3��b�ͪ0��u p&zg�y���ڟ79*o 㹒�� ��rm���g��fg���k�{���xd\�i[ �shq�y��ly�@h�2c9��_���k�<�l~*`�.c߄d���c-��r�&gt;��㦜�t��شj��h���@��jvi�e� �jޡ�[��slr���f�jvi��k&gt;�g��n�f���j�a��j2�b’�!o="�{��lI�" v���&amp;���s�������j~蕿ynzeb������ ����5����~vf��|s��0<��?�з>��*8i�_��?.�nx�c��V���\��%��}�q<br>
+�w��-���OVE���c�n<br>
+D�O�&gt;<br>
+�t]M��=4�ɭ�Z1�’ ꗶ�^�Ʀ=o�-l��{�28������e�</|E!"���E></em>:,iZ&gt;;�7&lt;�MTܮ�&quot;�C.�宗�۫3w��G;��&quot;�5.Zt��^3�K6Zޢw��%h�|�ە]���e�x#��N�fK�I��0���!��ub,��L+����!���[��yR?2�C��	�� �n9��W�	��x�f<code>	-~�uI�Y��qnG��&lt;ÑRz��)0'�߹֭�X��+O�Y�*ў8ӭ2�����|�7�d���H%�����!K%���X��88�S�Ȣ�� </code>]B^�ߛ%O�b��@���I2ڣ�9+{�ø�����eg/:0n��Q.���\�������"���䙪�D�%s�V���
+��ۛR�OX���cs절WkW�����V�%�Z0����1�>���5�V�J0P�sw[�{,\HD%Pp������ܝ=���;���@3�rr���-��8��py)����U�ܰU�~�Ŷd����P���i͇�������l42�&lt;7�G0 ��hk����P�X7^MS��-�C����۵h��o��/�����v�1#�k=������6O�z�Jű t��(�<br>
+�{�0��P/j��#�r;����<code>�N�.�P���v��iY����N�Csr��n�r�*6���7�^J���˳/q����uxv~�t�~Go4���±�&#125;�d���&amp;���7ϙ+�X۹��$�V���&amp;�fA�ۓjh��-�$2��?���?��Q����%+���ۿ</code>�h-��P�����r�i��V���K<em>�u�D^\z��M��I�-��o���Ի�3�����ƞ �VI����D<br>
+�y�,��?�v�	䏦� �ЬV���y��89g\�A��</em>�-�k\��s��蜀dނAq�R����\9.J�����TX i���V;cH�C��va	0Y�<em>s̿�4����Y1/���������Ruy�}�ui���c��X��A<code>P��</code>L�Ec.����4E�\�VtIj��sì�G���-�’��[���ٰ��<br>
+���</em>T@���M��Aag�l����M��+�62�_�w�"�Z��N K\P+�j\W����8����.t�m�j]��A}l�&�W�wb�kҀ}k΃��6�Vޢ'���'�^ٴ\����TE��ca2XS��N��Q�WK��7�
+�^
+�!�^.�K�3]�h��Ç��bK�J���'���� #��f}ُت(����¢>ߌ��.7�
+!�@��XjJ!��䐖}7��2cDF���rܴ�^�Ydh���\c�70c��GC�uڰ��^4���:|+���E���!���n�ް3.U�:��+XR�:���2p�J.]��(\�{ۃ�o����M�%R���I&amp;�Wzq�B�,РeTv�Aܻ+����װ���Dv<em>gt</em>�ޚ���j�?0�ƪ�O��3xz<em>�	j�� �|��x��E�q:����{�d]5��k�U�’ʇ�l���I�<br>
+�-�I�&lt;/<em>�lu�)���Ț��o��~�’m5��� �|��Ho���gs8����($�����ߦ</em>̙%�p��^�P&quot;���a��VK��q�S��t��Eߌ�3d�����:�0�_���b�v�||</em>/t�K[��f~�:�O�(�e���36&gt; ‘����Mdh�Xq|�@@Pn�!~ik���1ٙm�͉ͫ�x�’6&lt;/``2�66N��Q<em>k�<br>
+�_�전�eJZ����ƚe�Y�	vni’���W�-��q�X<code>�&#123;�L1���u�o��F�v�29U�7&quot;�sq����Dq���Y54V� /��&amp;�l�ʪ���B����2��$6Z��.����&gt;�9E��+HE&gt;F�ˠ�ﲞ@��B���p��&#125;Z����1��f��$�����,l�OZ*|�O�o��^&lt;&#123;:�s&amp;�� �(.��</code>�&quot;J2|:����h����jUn�m��e�<br>
+�.�Bq���=�E_���z�g����4���wh�۬��Ƥ��P,��Xd��+��)Xy�v&amp;��<br>
+�G;���t����r��D[����Ԑ;/aì�C���m����3�ǀ])o�;���j|�"c�=��T\ #�����Du�_d�Sǰ���ZH��I����#M���#��x�؂,HX	�o�\n��K�����2�w�AO2K���A<br>
+|�<br>
+��t�|)ճ|.��	�yq,<em>Z�Ox�����y�tJW�s�w��</em>�!��&lt;-z�уFr&gt;��wD��-�Μ�V��iفl�Pm"�rW�W�w��~���u�O4�)��z�!!���<code>��������;O&lt;��!N�Y'�N�xa�����x�*�P�p%�ԩ�����[!,S'aZ��$	��P��+��5�N&quot;�|*c��'���VFb�=� J�ȇ���cF���l�+,�o���Si���-:Q	!~X� �1St �A���ғ������&amp;%n�2�@�+����p,g^z@5f+�C���9�</code>����8��zE׏��<code>ӢIu�J&#123;)rǶӯ����F�X]?��q7q��١���&gt;Ab��&lt;�x��JN� ��m��|��f�������&lt;������w���</code>��婽y&amp;2���<code>��7�)lY|Qj���ܫ��������&amp;^�i�,&lt;g���DxE7�	��L/��b��9��*�D�+V��w&quot;&amp;U&quot;6&amp;���9D��8���$�F5�Ǖ�=��6������@����$���n�r&lt;l	�$�Hh4�laC%����E4���1�K�n]�8H�����J&#125;&gt;��ѷvE��*K�ѬI�,�L�y�rN���hFD7�F�$��&amp;5�F*�</code>���Rv�)�</em>ɤSy��D�=����Z���~��Y��S���,9�q�S�.�n�i0I&quot;�EQ~�����ڎR�����Iy�;���4̧M48#F�AU��<br>
+��<em>I��</em>�{�jF|��o	<br>
+�EK��_��L00<em>�҂W���m&amp;@^�~crWMuQi��0�Ä��2��ڢ�w�L�]=<br>
+��Y��d��m�scu4��Ba��弣����q�X!ll�����n�-�v#�#�q<code>N�͗D��ƴ&lt;�n��u��$���a����&gt;�TF��6��b[�+��t��˥ᐏWB䵒س�dx�����ShE&quot;)u�������&quot;+���G!�lH��оr&#123;���i�t#��t5&amp;ɮ��#��##��&amp;ů-f���V�,:��74�ב�&lt;�]�%��M�K�9</code>Jլhgܦ�r٬��g��/2&gt;蠡W��N�bh��z�b�n��,Z�&amp;�&gt;�qCP栉o�o��[�������-&lt;%�\�%��:��md�KΆ}P�<br>
+V]4,�n�FD��ܳV}�;�t��'�i��G�Z��z7ޠ/�,�r
+��Y\�Q'�,���~\��pʞ��\k'�zD�N���	R�jO7�E�H*1�[�������J�%�����gy���#ZTPgǼa�"��BӗIǢ�_���^��+������a�&gt;�߀58�L=�X��B�?�/���T�������(?u�ޑS��.��kD�0X�o���X]��m��y��b�&quot;��懲�k�ۗ�|l��������<br>
+�<br>
+�X�}��߀��’�Yhؠ%<br>
+�&lt;&lt;�T��ݗ��s������Ȏ&lt;U��Q�[/㗼yl8���D����5�Ƃ�4z��"͔V�#��vu�QʱK� /f�h������Xjpe<code>th%&#125; r+Y�&amp;��&#123;�S��S�&#125;�����������,&lt;Ǿ�������#���$y�+1/��7#(�oW����*�&#125; �O��|&#123;�v��w��?�-MA���I��k�zPB��݉�+:����2��95s��3�C����=:��Л��@w���&gt;qk��QR��x�5���=��sɡ�CA�&gt;r����Y�!�YEez�Ŕ|���x���pO��0[x#���mD t�:�1=��%����8�VC����̡�#�NP�RΰTj���b�n� I�1)����&#123;&amp;�99ƽ��ʞ(Q��.� H�n���ʦ%�G�&amp;��p�����|7:����޻��)e�uł��n��i �:��#Ld/ D�j�_�sS�2t-�o9���skh�8�\�(�]�ڬ��z���Һ��Ʋ�L?Ĥҧ㨫qݡi���g�l��avؓ�����m-@JH�&#125;K6��r�n޿����UxE[�a#%A���rP��� H��ՕaT��a����B�JV����1� &#123;�&quot;C�&gt;��;���3h&amp;B!��)��鎁#��=�~��&lt;��AvKN YGU��J����o�JCd�%��N����AB� ��t1�5V�Z��&amp;F2�5�V��&quot;1���D�Ç���\�_�՘�w�=��b� �B_�E4�߆x�V�U)$uȑ��H�l0ٸ2����	y�WlX*�6</code>�4�%=����I�j:��}.Ri�V<br>
+n���+0J�c�Q؎�>�)/�f�J���鼣I{�x;�A�"3r(�
+�u�h#Pn��4I�;����1 (�-�wJ�H_�;��w�w:p���ZV�@+=	sWo���BF׏|�3�2�J�2~c��’�&gt;6R\��Rn�3a�+�;!�l	�Yl<br>
+�&amp;/���c�c��wS�i.����~Df��_���!����ҋ�b����,^ȭ�L���� 0���9�%��58��-�]~��I�h:J�ft~�GȮ��lNs�J�{5�|b�;Q��l�|y<code>k/u��1�o��Kh�z�L��ql��r�v&#125;���.���t�������@���+���Vs7.��]�8n��O��3�w� ��v;���oa�[����[f3ґ&amp;�f=���3Pv��&gt;�I�&#125;����_�6��&#125;��Gn+��r3u�Y(�p;&#125;�q�y��4�3�jk�1�8b���Y�6yޜ�S�W3�r���$�&quot;W&amp;3�$-�;����ǋq^Rj��=|�/zj�X���jRRh|��T�O������(�1�k^��(?���Jbay�?z��� �ߢw�w�Uu�-�kBӐE���sͯ���V�j�/@@q��D^U��&quot;P�~'6����ݫN���o�CG%�(�K�j#�֒X�S��6��P4�R�P�3���a���:p%���O2�sp�O����:��;C�'�U��'��C%���@ۡ�:n��u��T�w�]킴�W��+��P���F�D�����@����Ĕ�Q���@aF���I:(����T��g�2�������6�v�yw)����&lt;q��\�����&#123;�s����(3�)��^әa�qTj�1����0Ԙ����l�����lD&#125;�A)m��I�QV9�Ж3^W��D�J��Sv��g��#��xB��Sc�/���&quot;�޲�s�n��_͑�(����&lt;��ߨcw��ٵ�-��@�&amp;�n�����Y�c�;Zz�л.-F����0$�:gy�l�h�=��IԱ�����D�_Ű</code>�������;�Q���b</em>�_��f����F3�8�&gt;�,+X���o������&gt;‘Q)e����l"��#Y/˖%YI�3U;�NN��X�RO�{y��4�ϹN�V�;N ��&amp;�s����mN��b��L���Z۴�����l���E����L���^t;H���������+X[~��3�t�aˈ�’<br>
+�ᐖ&quot;D���Z�&quot;��B����AP�ҢrD�����u�r&lt;����[�Njj�s�UP9\���mD���l���&amp;�&quot;��h��5��&lt;��Rۜ������PXD���򊜤����a��H7�Ɗ9Y�3⤨�I��dw�T��k���M�<br>
+C�n�x�Y��z��~+<br>
+�D���ja�?RK�V^���%�mGC�[�CX�&amp;=�~3�����l̅A����̦N�C~Re����l���o&quot;O(<br>
+�=���c�y|jR�W�ަ� }�D pc���R~������G�LX��d%oW�*B��������Meѧ�k��߻���BCH?��?�w��}�IG ��<br>
+<code>�Cc�Is��i#e.�7����Ȃ�j�d(�C#� �1C3�����24 �ʑ�&amp;I��&#125;�|�)PG�u4��@��\�4��=�����B��ǻ�ʎi@H��[�8��������wMl�n��T��&#123;�':9I�ʩk�P֘��R���Uq���X�ֲi�*+��*�&amp;�%����)�u�G��g�@���t,ib����za����K�8�k�y$5%���(Qr�b��.�M� 4��].QŠ9��j�zO��T�E�'�4uެ�0������%����#i�NQ��tv�%�����w���WD$j�W�i4N��qp��&gt;�ÊZΧ�;�U�)��t˿�Vv�ޮu� g��P���m�r53�Kָ�9���F��e&quot;t�,!қ��&#123;��e�\d��2�ž�)W��UV��t�2�&#123;��M^Z��������%-��i�w�]����]O��~OܮT3�J�?uu� t0&quot;��u��@��x�xE��$PB�&#123;&gt;�8&quot;�=����_G�x����f	yS�݀�j��3v���e�O�ܿVcL�����w���&#123;ڞ��ۤ,-�o/&gt;H6��KM߷nQ�;*�އ ���fV�|1�d$�~�@$�tfw���ڣ#�|����hP2�����:���]��T��I�:ڬi s�ǆb�� .��&#123;��V ������p6���M��d��#EC�?]����d���y����G�E�W��@!$�.b�����F�O���q&quot;����$r��3MgT�����b@P~�G�&amp;</code>%�%F1���~nK�Ou�kA�?�Q�J���<code>���K�8cG_ ���'0�빹ka޹��^��ì��*�^9�k8�</code>��xDk��7�Q�	�ȟ��W���؅T�:�&gt;��4�՝�.66�����4l�n�˱2��By����&amp;�nգ&amp;ET�<br>
+&lt;Ab.�C������G�֟�V8�Ň�9��<code>uiIF&amp;S~	�5��]�80�&gt;:����������R��(�c��8��|lo��5f�ʞk&#125;���Q����$r������0Q�l�(3*��r=�s� ��כз��#	���gE/�NQꚊiЃc��F�[j��o &quot;��#��������H%q�� 2��Ƣ��BnyF�&amp;�Rʛ�CNRJ�c���9��a�PO#Э�����/�v��[���_�nM-����� �'�ʴ���_���-ț������AS�Ȅc�Y?,��n�a�8�(L�&#125;����zyC07��E��]�zc���ym�:l�ӕ+�&gt;�͝�H�&#125;�u*L��$������P�#[B�a��(A���;H��޽��5�]��$��c�t�/g�-4E�H�lS��:��B$���[�Z����,I�^@��а�( �m�s��?+k��</code>�%^�����nDۂ����S�T�5_������n���{a���RB�!S��U`M+/�LU�o���O&C@����޳(,vLљ|�Fq������.���d��?�H�K �u7�˽f%xMy���D-��
+b40q
+�	�u|2��]�ϗPڜ˽�xx�i��-�賊�.����#(9�@�T�o�I��+�i�Q�aQ���i�z8�C�k�}�η�����Hƫ��{����AUuxD`J�3��𘷉���@}%BG����u,HV^��R��ݫ`*�֚�)����?���i l��N	�:P^���_
+�a�>�2���j2�m��a�Cx����aC�ׄ�:xG����1(�h�]�'�����E�!�l�!�Ӳ�*2�WB~<R�F��Ѭ^��G-h���UB�f���kJU��@�'�zD7;�!��(B�O��Q�kI��y�#�5����^o�8Q�S��u��"�i3R^O}�M�쬖7f�"�ƒC����4Krr�^�����d?�; ���{�&gt;��q�z�䛥�y4ez��<code>�a�̍.�*UG&#123;�I�Xf��EP,�T�}���|A���RՄ1�d�����̫@g�^����řn��z<br>
+�K�’h�d⚼,/�<br>
+�.:�=�`Y.g�S}o節��b}Y�ॗ�E1�����w2�u��’ ��w��g+</R�F��Ѭ^��G-h���UB�f���kJU��@�'�zD7;�!��(B�O��Q�kI��y�#�5����^o�8Q�S��u��"�i3R^O}�M�쬖7f�"�ƒC����4Krr�^�����d?�;></p>
+<p>|��=ũn���l�ht<br>
+�� �1�3ƋϜ�=&lt;�2o����&quot;I~��i�����£7Nꅌ��v�1{k�	‘�hӔ�#~yVg3�sc&amp;kЇ�G��|�YeH~zՕZ6���IvT��3�:}@����gG�QW�6�@.[��]�:A�7���K���C����bG(�u,^_)^P9(1���i�Ƚ��*��>���u�&�%Vx�aC��Ä��G��-��uՀ�����J(Ј(y��H9�tTc�m�\�q�i
+9�|\�0��C�56��ۄ{����z�A�P+�p̷����_}%���I�!���	VF��=p�O�<code>j��5^􁭗�x��&quot;&#125;��|rLx��4�W���o;</code>�r������ͽ��6�ëQ��=����p��2���(�����aXӏs<code>�g�-�͜uju�&amp;�Ƞ��lu|���J���g&lt;*��j' [��ՃڑG��̊0p��w57� �l���/I།sMS��W�rT3�#��a���&#123;���&amp;����4�9��A��ݾȺ&lt;�O4/��=e���������~n�:f���s&#125;��&amp;x��Ac�&quot;���]�q^h�m�u��VmѾK�U�K���~pW5�Z	��xb-�5Fcv����͟��Y�Y����W���dL�a���&gt;��+���k�Îr��rA2�X�� �%�B�,�̃��/ym�����)�d?�\�Va���g�%�3�$���j@ux���3̄�v=�����O&quot;�.|R&amp;��S#�=@~�῟׳�Qa</code>�����������4^nJ;��-�B�T#���N��a���NiNE�zȴÀF_ʨ����#X"�
+��7��vj��!��㮿�o����aL,@.���pJb��`qM8��St���<br>
+��+꠭�����B��O���]b�S����U��ܰ17��X����L���Ʀ��vW�Q�t"����!h��0�k�T5�����
+��gZN���K{�a����1O�����?d
+GT-�k�����gΖB�g��)���� Q\#��
+��	ע������������a�b���8��)n`���W8���ת9k;xgx�6�;��P�ݓb�7����Y6����*<w���ιu��}�Phr�R����� � ���� �zy��="�fܿ����m��m���lvW�'��R���k-��_;�?2�c��J�T�W����" �������"#�*ظ)�1��n]9ڟ���]������݅m�� ��-���dx���g��s�ޗ�fq�+r��8}���u��c�u���g�`k��h���s��t���]˻q��d79*�?��?w ��{x�d�@��.����� r\�t;���o����f ��健�u�d��y�bv_� p��azkb �qmz�s�~�p�p�؃xy��a`�+��*~��i�����nn�cs��^p��́�z*e��] �m��4~��bz�������w5���b�oy�d��w����xx���m<br>
+�I<em>�9C�{<code>� ����Q�o���J��HVz���������B�XP����E�i&lt;��g80�s&#123;m0�]���l�嘒9�q�����p��H�7�t'3�DJU����&lt;ɽ��v��&lt;����O�$���o�Bֵ?+��g���r&gt;��CP\�uc�����&amp;(2���&quot;���&amp;�w�Ĉ�j�R�Kr�U�.�N�/��ּ�q�v&lt;�w%=�;kQ����sR��)��m���Y忂��6�!GR5ϴ̟U���0d�]usV���G��S��/���b�M�bߣЖ�	���/��W��Yf���ㆼe�eIgw~t u\����6�+�������AӑWd�ҁTY]-�E��&lt;�	���b7j��DLF�c�YM��4�� C/U��z0W��!k@&#123;*�x˚�94^�歠ۢ�������~Tzmg)��3C�^�*^��6+��P�� �����P&#125;.C�i� �K)�W���k�:��wg A\�]w���A���Y�K��$]b�E��_���,3=&#125;2ѻ���YY$��s=��&amp;����4�|� �m$. ��&quot;�;�?*�S�$[.޺r?NIe���-�W�pB���hP&quot;|!�[�����Ʉ�w��K��&amp;YS5��w$1����F�&#123;�u�8��]��6WP�-��s�*�I�����_sKb�&#123;Sb��O�UV�T��7�WkF�&#123;�M�$�5��,%ۑ̼�-�3�����S��1��^���:ҕI�����0��������������D�&#125;��@��&lt;�F�&quot;����b��B���nd�)'�$�g���:J��o��2�7�,�:�2��o�4	��\I�/h�������!�l&#125;�I:w����e�4i�������i8^��J82�P���k�ړ���W6���:�/���WvBs��&gt;k�WZ�pJ�!'�b�n�������;�봗��&#123;�bu��H'3y&quot;�'��Z]y��s�zE3���ݡ^������-F7v&amp;_�σV�����&lt;��F�W�S�e F--�2ǒ���q�p�\,��	�v�p�ѐ�</code>���B�u��k��1%‘�4J��o�qn�~:c,��M�kb�4�Q��͌j�q���a;��i�~&gt;1^�Y���ܢ���(�f��O]3���mb0��镂�<br>
+��0oX�f1�w4lb�W��iW�gX�
+bp�G����x���q�’&quot;͖6a���2��c6)��X �y�o@<br>
+i��AxR	��9��M��?~օ��&gt;=���0K1���CZ������aV�S’�nԲL���b&gt;����P�t+�R�5jKg�8�_Z�<br>
+)�����E=��C:��C�(Bg�R����C�0TU.�dv���’��<br>
+.K�w_�Dg�’'�أ�˶�b�_��-1�t�WM�7<code>t�ӽʟ���آt��nIR�+��&quot;	'�s,�2���Η�����1��?�@��/xFr/�GqE��+-,�)xS��R�ό �1%�79 :2�������!-5� +�X]K�&amp;�@�_�</code>�Υ�ޫ�V�=�m����w����E��p��Q�N�%�g�/늁ZV%p���7@(jg</em>�:/�wq�a,�	�&quot;��-���PL9:_X��Ǩ�<Z����w�M�ps��m���މ ��aԩ���b2���x +;�y;��%.�<br>
+&quot;�&amp;#��’-�\����F�huxIGN���I�Ug1���L�5l��~�٬�@���4��Ŀ��R��%���� ��gj��um�<br>
+�	�E鸥�y�μ ea�t��S�U��_���1�����<ؕT[��qF���o�"��� ��x�zs6�7�����bk�dnz��a�b��ݵ u!9���o��b��+ a����d��u^��\1���n �7fs��m-a���'>p��%�_%-JU�*�7�AN�Pz�+LO��HrYk�K�v��ʁ�x�UR��L6�U
+�W��IN�Q{+<br>
+j1;{��?&amp;��@A�G�Ȇ����ā	&lt;,��TM�%�ٸ�+�d��ы��)H��6˄��-�W��@S<br>
+�f�ş��%���An�&gt;����k;i2Ψ(�<br>
+����u����\�����X��+:HH����6�������Zn����<code>�gm4��X���t���9��G��'��ҿ�X��H�nE��n�L�&amp;N&quot;'p5h��cCk��X��DU�'u�1v� �-CS��</code>�u�/�Я��|��JW+�x��F_�έA�Y��gɖY�h�U�-��bcxs&gt;J�S�����O���C�9(�V��k��X{+2�b�V@��m��R@j�_ �.��o�Iq��7a�����IS8	����������RMW��	u�R�Oc������.v�5�^�ʲ�5�0c�hƳ}E}�&lt;:7��&gt;�q��[�lŊF�E��ن������P��y&gt;�1x^j�c��E<br>
+� �,���&gt;�4:�d�|3�,��Q�������+����o⍭i��fy�Yv�ۍBl�~������Q���h/�R���f<br>
+�o"R��Mx[���PI�͟5T!5M�:�X~��:
+)W�-�>lzp]#_a`��o�C���Ƥ�1�.7�ۜ=�ӘG��k�������7Ls����R������wq�-S=����<code>/�.E�Ha�D��9��@��H��N��q��ѬK?�A�&lt;.�Q��VcʮY_yFTjV�%$Y��&#123;�;w�+�������&gt;���؎Įt4�hF����N+g�b �Rn0��m�&quot;�&#125;�4�bb���b;�H�zÿ*��Bp&quot;�(��#�g7�'n��;�&amp;/X�l�I(&gt;�&#123;�Mm�Y4���- '9p�;�Mo7�����54I���aYr:� ��湈Q?ْ&lt;u�0�bjg��_��v�����-g�Y�� �6�P�Rs��∇�bH���&gt;Uz-%v;���5�򸫳����5�]���k���r�֪z�,�&#123;i8��)w�Y���:��a��0�Y4Z�����wY4\8�=S���u@aԘ��U��</code>Ɂ�d��p7��aryz�;��C�:G�/�mJ��֤���7Ę�D�F�6����*6���;�b��>�>Xb�>�{���p�pE�����W�D���y�w��S�����(<	�_?�-�EH�8�����ye��`-(`+��88�F��H�?�lC�<�� k�����͝�^2="t��L<code">P-�_[�OUYO�sH^,s��af�3�ٍ�1ꖿI��b�ĺ�_�M���oe��WC)��Ş�0��Ծ�@�O�/H���żeΆSN��+���cp’|���ҡ6<em>��i�ϸ\����1�T��Æ:���&quot;�e{9b�����O;�V&gt;�aD�s���1���a�t;{(�±-Qȡfg��ą&amp;m�7m��G%�������xmVV�8�u&amp;vӲ�mB~<em>8O�&lt;�{T�yg�t���{	�Ĵ@��c-wv&lt;K	��::�����Z�=��4e=N@���2��L�&quot;��N��j�Sm��’����M����o�ҹ��W:�B7����m�#2�۪��ay&gt;�=�k�ES��r�I�&gt;������[s���Z��ϡ�&quot;����8|=�	t+Zg����E�O���T�:�,ӫ�n���n�ZǷte��./�<code>��)��b�^��q��q%�7�F*e�����ug&lt;�T�����</code>�#6p�πXeoV4��K�&gt;� �$�F�rǖ����^}Q��zw������I;��\�O�����/�w&quot;&gt;��D�H�zQ�z�</em>%�M�i&amp;�����m�E�~O&lt;��Y�5��<br>
+V�#g�YdM�L�QJ�z{袊���V^O����X?B�	��u�jRO=�5t2�����<code>������O'��R�4��q6L�4������%H�.�P�k�&gt;�D�I�ˉ�f��&amp;�__Γ��y@���\��d�,��L���? �&amp;����0���_d�.&#125;�CILsH��r�s�x^D&#123;שtQ|���%���w��x��#���.���z���t�?�Ě�8��7	n����I�E��:�w6�&gt;l���I���oV�&lt;u�y��N�I��؉�o�;�?=�2�.o�B�F��s�H�N|�_�TB 	�oX�XQW#�k����?pr\�ߊ[bZ\D�̵Vŭ�r�R֦&quot;.i��^�~�շ���D�َ���e���Uk���g��+�Vxu ��J[���9��0���i&gt;'��Q��mK�'c�L��&amp;�y�%��%[�]e���cQ?��f\�</code>�mɂ�Y��@EÜR�V�&quot;�~=��+��E3�p������+Δl%���j2qqf�H|!A�k!��-R�VW���Ib���ؐ02���O��o�(sH8�<code>/y���A�E��Da�&quot;s���J����R1&lt;9k����B'��13A</code>&lt;ڵ7&gt;aZ�,E�����’5Q᥸Ju��3[&|�����8�#��w&�U�����ޤ}�#���ڈȻPu�<1-� +r.�d"��z���&gt;�� }�׮�z����'~�sh%��+mɉ���n��x�n�w�8!�b�m(�+�vi�����b�#3���v%�t���٪g#���\�����ek�|�fȣ�jo�s&�ـ�>���~���[6��4%�h�,y��r�'9��%Zg�5W���ú�u�q^�씹��<`7I�e������rN&D\S{M���#��賚�h?�\��i 99,�r�y:["v��!����="�o��+" ��p���r����2hf,pmd�_�sv-�;�q#�v�qis܎® ���!w�k����9ѽ�q<��p�%�z�l<�s<�w��qq� q�����:)t��k�mҿei��g���0�0��-�<������8w%r����g="�X�K" �"rc�zp�qan a獁)`v�c\뤈ǃ 6�qba(��iqnkj��r"�<��u.xг�pi^�="f۞�,śv��-����A8���-" 9���ym�o��*�d4���l-�5�����u[�8h�yov�a�ef�υ����:���z�yݣ]�fk s>]"f��衺�O���«b��a�_O��XZ��z��Vb�_\��c�</`7I�e������rN&D\S{M���#��賚�h?�\��i></1-�></em>��J�^m[�+f����+�iRp��] @4��gC�8&lt;y�C�ǧ{����T����Ł��,����V���!�<br>
+p֕m���<code>�4�9����~�r�i.&quot;��24�xÜ:j����!�zF�*�����Q�U×�g�,���:T������&lt;^���m�F �����Xӝ�4�(�\���ڸ��\NeO�*~��0�BBQ-7�!^����6o�EO��t���4o���|��:y_j�����ߠ΅�L�fxI���Z�MⳲ�eG�U �]+���w&lt;y�����%��s�(xW@�	\�j8�G���&amp;��Bu�F��In?��?P�&amp;&#123;����q k�G����o���6�y$�,</code>��I�5wC�6�T.����Ȣ<br>
+��<br>
+M��_s@q��ȹ�=JF�S�Q��7H�����’����e��&gt;�c1b����sJHz�&gt;<code>��rCc~��uu�L��&quot;������.Mb3���m�� ��21���X���e�c徸Օs���mMF�a�/���yQ��kJ��%䳆�����3�</code>��d��c{y�.9��I��B4hA�[oM��ܛۡ�-�({��� N��{DZ�F%u���)���_�D2Ȧ�I��g����lR�cN����R��l�Iؘh�j�c�Jh�W&amp;	K��t�IL��&quot;�f1�6&lt;�|<em>a7D�&amp;��ԍ��k��_�;��������+hn/kx�JC(<code>�ɇV���_.B ��A3&gt;O%�/O���d	P�&gt;|��2��T%v�u&#123;&amp;�&lt;�&quot;����RdT��%?5M��owZBe重�.������و����q�����GBmLM��2|����5���6ES�IS�=Ԉ+�g�� �h��S�­��8��7Cs#�����k����m�y5k'[��:e�_&quot;&gt;,zoc6�@�lo�aB�߸����7�0%3[��C�82��dAzG��=Ѻ7��3�8�dh�13$J��G��m��#������1+���&gt;3��R�M�,��N�|;�'Z��_��%	</code>6���Df3�;p�k�[�r�&amp;59#{J2��,J�y�����n4������� S����=���<br>
+�&lt;7��d�n����ƫ�	�ޛ�4j�HM<br>
+�|�c_!M���HF�&lt;�0�h���}B���Q77��8A�=�^�X�9�&gt;�H0˞����4���~���I�D�o��Št�s����&quot;��+,b&gt;����C�Y׍��E�s�iY!��C)�ݷ��<br>
+��:M�(���m�m���-�\�E�7#�w��fц�2���׽��|J����[�G�e����ŵz!V�͔&amp;n�A��ܰ.yr�&amp;޽Q���<br>
+�I����{�3�&quot;�¹���,H<code>u2�6����D�֜�y�,�����	w���f!?�G���zTY�Y��e��x���A��rU,͑��� ��x��&#125;�LC&quot;����p ��	�������p5�B�5��n:�	���B�� �X����6��&amp;����Ј+�k �TO�n'竁��1��΁a��&#123;�o�����L&quot;�� � ���$�&lt;���L��=���&gt;�) W2�!�v�6�r� $�����S݇��:jz&#123;p4;-AN:Y��T.,@�y�=ʲ�ٱ�ۧfm-��T����hASH�</code>|���Ef8�T>�N�����XԷ~���n"E��^c��f�_N��=�a�\��F����t@6_|W~��&���\��"�₀?�;�E� j*���d#ȤEm.�G����@��J�N���#7���Av�)����H��RlJ\����_މ��γZL^�1[��
+�fO�(��熧g�m���8w?(@޼�#�����L=�G��*��}�r��+�J�o��������-��mÐU)��J^�V�G��ۿ2�b�������}FyL��>1���ٓ�;	E�"�A�����7R��=S�#k�o�	�@���6`)&�OKV�+�WFc�;�_���#���C������
+[<-��Y���͋!5�֣u�{��F�Ui�*�Yr� �pթ6g� �k�+�|j�1���gƭ 0��j48�j����c8 �u�%�t�fzr_m�������k�����!�^�4�����%9�"�w� ����b�l�a.<��y�[]ա)"��g�ݖ>��ʂ������h17D�L]�;G~�
+�Ҝ�C�����(vp�5L1;lF�I��׋`&��1ز!�G�ܣq�_��ƿ����Zs9M=q`vvZ	8_�_c4��f:]�9gq�#+r����pn#C/;�p)Y���Vq��A�3説~������E�
+�;�!pO<�fɋ��d,�D!�Y������:�L� g�n��-�k��n9�]�5✦u2� �\��f��c��c)p�גo(�5�ѿ_��+i�\g|�)b!��k;�ʺ��񒩆�.ɗ׋�nhv�a<br>
+�	)&amp;	����@<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>��</mtext></mrow><annotation encoding="application/x-tex">��</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0em;"></span><span class="mord">��</span></span></span></span>��GI˼� %��D����q[���z�݆Q�=�<code>�)���q�-�xE���,��j_�.&gt;���,+�U4tѨ��/m%&lt;1w� 9m��P�ƒ�3?60O�Pמ�z����n���f��֋$Q���6�Hڏ�'*�ʪ�@�Ю2NHGq������ГZ�&#123;i��)��~��)Mn�V�&gt;��qf9m9Jj�A�+%��3�6&lt;�o�\dT�L�+O3[���YT3�5�F���&#125;e��Ū-�ƍ�#�n:�(�'�� ��(ؕ��e�~�ASҳ�R5W����&#123;::Tw�D��I�Uy��Rh����N����I�v��K &gt;�j��ޙ�׏���5�&#125;���MƄ��&#125;Gom��˟�]aF�1&#123;-L;�N�ҾR�	(���P��Ϻ|����q�HĹΙ](:&amp;z��t����/Z���l�w�\F���J&amp;�=f	렝� �q</code>���n�z�<code>��b��ш��M���%�)�p�Њ����p2��nʄ]#גOK�髨��n��</code>^�bX�IE���sKw;3�?�;��.M����U��y������=^�Ќò3Xb����rBLF��(�2�2��&lt;a��z�u�����l��z�Wgϐ�����1���{u&amp;M�X��o9�ʛ�DG4� I��M���8�W��Ѽ�{PJ<br>
+�#�{��}�&gt;��&amp;�,{��y�t�%LO<code>�d��O��hu�X�p�m^��0ŭ$X�Î �B����O�D���B�@�</code>���&gt;�#YH&lt;�/	�����{@'Llh<br>
+�ջ���4��s�����)s�j��?�PF�uN��_������K�m�b�Ճ�|Kƭ-;W�}��I>Y+ӯ0A�
+�/^s#um�6�̿��2����]�%��ƨ:���2��q�T/���9l�,{p�q������e�-qh�>b��z�5����e����1q0�3d�����̛r��&lt;�G��D(�8qg��q�W�mD�đ�M�:�C��]</�fɋ��d,�D!�Y������:�L�></-��Y���͋!5�֣u�{��F�Ui�*�Yr�></em>�{����Xd6�V�o&amp;HD�&quot;<code>���b���28ێ ��w&quot;���T�S-�O���0��E�[]v&lt;�f��H�ZS딷Q�I�J#��wK&amp;�s�I����F^�+�����Y���y1�3��n:�&lt;��S�1� 8�J$�,�b1 c�J7��1��N�P�Dm�Z��i����P����(��ɹ���ڧY�W�Uo9i�e�^W�	x:�8� �X4FB@2h�?�#F��؛&#123;����P��:Ck�oǧ���CC$f��,�_wQ,�ݦ����</code>��/8R�T{�	�����&amp;����,:�rI�UN#�ķ�ڿ!�����L�n����H���9���4�U�q!��UX9�y��^�!���S+JA�_O>�)d�*�G]�7k����l|��d	��q+Z�a<br>
+Ӏh�Q=+�G�9S�����q�E�&lt;n-�gպG��&lt;9�����+k�ޅ�2&gt;�NFs[ңF�C��3�2’@!�<br>
+t�͸�!��|)�%�W(6�@����ِ<em>��+���+�19T�p�’k�BE4����V���&quot;��q�&amp;�����ޖ���<br>
+���#<br>
+no)g�b�ߕ����D�7^紡�I�&amp;���Җ�B�w�c����&lt;&lt;�����xA��Ӻ�&amp;����v��Pޡ��/�J��o1Y�g��]DqO��’�������7W��}#�8��I�j���LaI�6�c&amp;��%�;Y�RM��дc������8<br>
+o+Խ@��ُO��4&quot;��&lt;q����v��b�H�ݘ�� v���9�-)X|�&gt;�y������J���/��r=9����D��4�Z��c#�E]�k�m}���}��<br>
+��hr���f�g5@&lt;��+������7g&lt;@&quot;<br>
+�C�y’�(6���1��<br>
+�h�|Pf�R��;%��q�&amp;����ts� H��&gt;�	׎����黐RH�#�GI�l�M�E�}f���A����zJ�Bc�t�c8��#Ňy�C��z��z�}A;��S��e^�a��Pzl��6��E_x�#I�m�,�!�́qR<code>�=��G3�_n�8����6���� �z��a2��=&#123;M��V6����Ax�����kԿ��B���Ʒ����/��Y,��^)�|JKBt����Ǒ�?� N&gt;�t����鋆y�S*wـ�k��)�56�����&lt; ���q�u3I�d��|��:\��ׁ$��5*W+jQ���;5kO�R�E�Ā(�t����E�|.�yzg&#125;͎1��2�wZކ�:�APc��fm���DMGr]���u��T1��\�|M�l�)��J4Y��3�S*�k�c����m�R��c� �r��TF\ƶ(�d����l|�yE��@���.��rzK�\��_ �^��RݣSbg�m�A!�ȿ</code>�o�CJ)&quot;4</em>f7�Uѣ�U]���:��m�MD{���}����H�!�R�K��f���)&gt;���t.�&amp;C:8�&quot;��m&quot;{�P��7r����L��Xn��%�g���s3�����k��@&quot;K7�@�C� �o,�dB<br>
+Ƥ��lj������\Y��?�7�gzZ��k:�s[F�v�
+'�g8W��{WV�p�^{ָH{p���c]E��M����ǔ���}Yo��j��;.?U�+U|�!���6��>���A�����n΁�@�)��/L����>��q�I�p�-g�[UV�ۨHf
+lc@|y��X��0t���^��Hћ���1Og"�&a�:T��~p����r�����
+4	�Zȯ�g��`��qc�z���xt�f��X�m=5��7��(
+��9b��
+dC��)!��}:���䝼�7|Ôfq��J�����e�����)�ʿ!��T��
+���2&�B:l���1��Ήb�L"^|�N�c���*A����4&�a�ؚ��R�A]''��=�֞��K��G��\����f����j�r
+1 �IL��T�1�qv�P��u�ѣ�}�����;�'x�E�y=�QȖ1ŌƔ�]9/aa��Z��J�%��r�E�R,\�f��]����Z42���b��?Vw��6�������qd�s2o�7�H���/P�p�2�.�A�r��K��j����
+����G�8n�"Ӭ�SV;
+b4̨q�1��Q_�!� /@�ןlmR+��<�����NZJlW)�:5�b'#�Vm ����+���m��{֑l�����է�p:��3�xbm��x j �;�du3��sbf���żৼa\���qh4�5="jzYf�=`i�" ���x�?�o�(p����ҡ���nvj{ak�v{���71������p�.�h�2s�o�d��b�&i�1�`q�����o��9e�,�n�?z��~�ȑ�>�|��b�(�%y[Q��*����O�";�H�1:��l�u�E�P�Z�������~H�:�?}�>.YބV{A����h�bO%���'�P���aD�FP��� Z������	��u�搜ه�A���(<9��aO�Vf�tyc�`Ѹ��jI) "�u��� ��eg� �����7?��^�z�s���#u��j`렙�w� b�im��@��+rn��>���#���� �������wGD�#'�������Ј�η��xJ�)����P̊30�U��SH=֮N%(�2^ڹP�z�kL�Y IF�F�3�>Ak3I�5n6N(Z퉅�Wo7lnIE�_:s�����L���<�ȖBQ��7fs�q��0� m����#a�ē��q��@.ce�us�{�h�]� ��t��?� �j�u�f���c�>���N�;6�z�c,K�L�]�z�ʗ��A�jj7�&}BCNA�����a��)��
+�g
+i)�
+��t�.1r쐍Į���"���ѿ�\�5�(_���U:-u���B*�"���!)_�o�� �?LCg��t�����K>�3�*-k�^Ŵ`���f�_�g���_#c7w�?#8lW���!X?�Hڇ}\]+J��U�j����7��ԛ�N��c*�b~us�8I�HUd�d��Y
+Xd�����U:>��s�D���	��>d&�Sl�˸��o�(f�>�2���}d����
+"��?��y��i��SaƬk5�
+��jkT;8-�.:�2��N����k�#�`K���aŜ����`��tj��+���6�!y?>����.��<yq�Fޭ�0(q��^rj��=p�B �o�(��(�dq,{f?��%ŕ^p)� ��}o7��'���ӂ�>��B��=Մ�tktxRq��܎@s��r�� �݁[���k	��xϭ	���Ҟ����d%;m*���4����fxM�J��u���mQ����Q�#�2a���+'^!z��2�È�?vT�H����Y:0�;=����R��ɳ��M&lt;���Ǿ�0�t~��o ��d}h������Y���J��(&quot;�V��<br>
+[�i����y@���������&lt;%&quot;��TΙ�jx��ö��<code>&lt;�q���O�o=i��9q�V�a&amp;�i�\���a!X.U�\���6�i!%DcЛT9*f��q@��@ҡ�M�aϱ1��:�l�R7P��$�&lt;p�Z[Y�1%t�_Es�*��s����N��$��ŏ�N�8� �6</code>:��+ۇ��L4;�#\6�P��-��b�^!��EQ�TTVk�q�%��&lt;�R�2���?�9�����m���g�M*�!�B>�E
+G��I�➤V�G=QB�4E���D�[1.���:��n�r�6�A�o>ڰAv���8�#2j�Fnk��)�K]�a�/�i�W��]i�KX}�2گǯ<code>���2?���X��Yt;z��W	��� ]V��t���A�r�Li��M�!�b�aٺ�ك��SĪ���^���5 S��� wͲ��F�C��ԣk����v�l��:��</code>�)��P=�8K2G�Ơ��e�m�{'<code>���	M�ۛ.s Z2a&gt;�����W#ɂ�j]-�P�����/i��NFGG#&amp;Wv�&#123;�@�&#125;�&#125;g���AU�[�9~��@�ܖZ;��g��Aq�	B�?iCkf|*�&gt;ϥu ��h4�R�;q=���2Lw��B3?�نJ~��NB�e)a��_&#125;h��n�B�z�e�V�'�!Ļ-I�8��Wa�i�S</code>O���v�O�F{��{�����<em>�Dg�,u��&amp;�,�Y�5�ҵ��yh.�@І]��;w��’m-Ja�/Y��H�sX���W.���j�A	��e�U�.�.,�R��u�v’q&amp;�&lt;p�d+�Uj�6YxH)��TiQߎ��Q��?w�TB�dE���0��3s��tK��’e<code>��&#125;!m�0˹U��i�iw(�S�i�����א]���?�P���g�d����e�ZS���]��Un�?���Y8~�z�e�p�_G&#125;vq֓d�:4j���B�/��%����3�v����v(�P������逾_��&quot;�	,rs&#123;I���3R�I&quot;��JT�QD�KZ�C��Ê&gt;ܧV�Rz���.ѾT�ho4i���HZ.+�=E�d�9˰�#�rp�$��Y2#�����(��������M�,�Z���=(6 ����ǅ���%�eς���՜$|.� ��஺_&amp;�a�1�z])�6&amp;	N���?�8���F��&lt;&gt;^�0�[[�QB��Aͩs�k��'0j ���:B�av��2�� �ٖ��0���p4\�ˆh���� ˲� �/�	A;A�F��h��_΂K&gt;Z�Z,�ǄD-(a��ja������N�Eݍ_�������8�Q�X��M�oN2���))O���d�XK���-� ������j�Q����j��Z0S�!�I��fSrG�*�Ʊ-���7~��]���&lt;������b� E��w�&gt;�˒��t[��&#123;�tl%[�̋	����u (�Z�%&amp;&#123;A ��[��ܧ��ƅ�a����Zo�6U���Q1�8��� ������E &amp;�������</code>��.W���I&quot;ܳ�8X��+��J�����’�Иу�^C��g#3.�����’1:'Hoz�귛K������T<code>?�6F�,;��!��e��o�����-D!�&#123;&gt;P�z�39�o�@��g��/G��7#e�VhK���2#+���eݒ�И&#123;Ӆ��ܹ~���7��&gt;��  �	&#123;�A,�ݪ+���juۧ����$f���ڪ �BW�.Q�&lt;�M����ͬ�#*�ƺ�J���s��&quot;s�H��y�է����&gt;�V�ӌ� �s�O�������a:�w#�:��Xe���e�ǆ� �˚��ҭ�]i�z���] �:�&gt;�1Q��G��</code>{�vw��{�x�I���|��~�����J</em>Ov�[8��Y���g&amp;a���m/�eS:�����I�&quot;��Z�:�u�� (<br>
+;ԍ=ڿ��1Vy5޴/�4����Q�~1��	A�q�����4���^�@�ۥMi��i��U�2ڻy����!�<em>u�N3:܂3n� ݾ���f����[e��~b�7�,�RBLxo�#[��c�s�@������%�y��g��!~�G</em>}W���@�3O��u����A�fp�[���=���L�gA�BW�-���t�c�����(m�4=8�r�B��9�[��_�3�u��Y��������M�y�l�?�2UR��<br>
+�(��mE���j’�J{�&gt;�J6�h|%ù��T�R�,�<code>��4&#123;�/E�l2&amp;'�N(I��#�����J��|&gt;�G�g���S�޾6�BB��0���Ë�Z��%QQ��o���e�Oj�ϻ���,�=��a�w�/N�Mޯ�z�|�]j(:c��.V���V�I�	q&#125;'Z�o�Lt&amp;���ݜ�IjЧ&amp;�B�n%��h/%H?@fW-2q����M��4f��&amp;���8U��-$��#z&amp;�p�5�6�$&lt;u������p�X�ІQ#�x�8H��-��3dq��s�$Ç�t��W�=��&gt;Z=&#125;�i.�@i���L��P��VQ�.JWԄ�o�|r�&gt;��=�1%����%z,�m׹LIg��Ƿ��$x�Q2z���45���z�cۏ^&quot;���7V���[�x(�7J��/m��U�ӣWh*�ȯ�iǷ�H��:X!�6Lw�r�p��ѹ4^\f�,�qȡǺP������*�����־�H�E�Mv4��#&quot;�o���8�&quot;_v��zh)T�z�9h���mO��H,kα�����O� ��&quot;;�:1&#125;�8��xg䤎�t��+j��7���c��&gt;�'��C&quot;b��y���+ߝ�D�%ٛ��	@=l��i&amp;q�t�U��a�2�O�HU�M�Zʃ��/�������M�oQ %����y�&#123;�	p�]@f7�|�#�5��!ΏRIչ�ԑM�Xm�^�&amp;J��˨��P�J�xlu�cY��3�E��b˹�T�:\/N�TrI#��ζc��.�C&quot;!䦐��#/(&gt;Uk�xƅ8L�VTQ�����w�s6&quot;�Y����/� ��&gt;eR�~�C��BA�&gt;�e����1S�nQ@~��c��Ю�㚙�G�?W��&amp;���x��q�����#�</code>�w��z����T:<br>
+��G!ԁ��rħ�h���|r�&lt;g<code>_�ƪ�r���=�������pz����=^1�bf��7)$7ݤQ�1��m��V�#6�FE�P&gt;�5��Bv�f#�����!</code>�hn:S�7��牨�’�w/���&lt;492,RF�h�����’���o-3���Tg/��q�����
+��u݃�6h\��e�Ҭ?�wGa��G��Z�U����d5���a��	��%^͒#u�L���%�12���A��ob�Np�5��9Vߓ�����j�L>Ƕٌh�q2���Hڴe�\�C��ĩ#�+����KU_Е�?���)Y�>C�rxv�+�2�99��K)un��q�.�Y)��A¦���e�ݸ�3]v?�B�M?���mPbq�����q�]��C��H�Ec�O[r����}����FRZ,6ٰh��6~��^����GG���Bqm�p�*/d��YRN���k�x����� G:��:[��v����6<_ح{�^�G =���r�0�:����xy����s0{�q19.յ#ea �7���gt�d~�i���}v����m�+c�����i,�? ��!&"p瑭�tx��e�������d�i���w���h�sͭܡb���͸�նlĕ��s�m���cc�qр;<��@㚜cϫw�i�f@���7sh�.d3� \��\$�u<�x5-�2s��t���t`�f a�����1.%���q�k]��\m�#�,��!)�!�+b�ί�"΍m�#?���ױ�t��hx�*1����zp��hc>+�]?�mb&�<�'G�Ӓ>Y����<��gu g�m3�`px%�¬#3s�ǧ����k�|a�q�bчyah>����`�o
+y1��~�c1J�fF�X:��꾅����)H�A�W���}�9mu��G&�T�_�X���f��x�����~�����)��7�o+|��a��������2O���V�VH=�Y�;�Ƌн�-({����=�ѥ�@[�\�_U�|�Ljqu��v�)h�J>u�����bbǮ(�����f�[�ｄg6��ojP�m�;�-50���X������)2x�y��`5Vj8�����:_�:��З�o��TI�mi�~����҃wA��),9��tS�g>��/��ځ!K���ʤz��Ay%�fp��_]����P�{HͿ�sG�����B�qV&quot;������#59�gfq�l�e.&gt;/��6���er��H���πb�Uu~���<br>
+<em>h��_m0����<code>��&#125;�j#\ЏIdq-�E��� vKwpS��2�P)C*</code>�G������=���+tt#�I�D��Y�W�\�~/9�</em>���,���L�^����]��%�9!�/��!����v���|��C���o<br>
+�%-��� �n����x�@��0d�����Pl6&gt;A�i;����b��ơlu��̕�Ͱ��k��Xb�Z��<br>
+G �	O�&gt;�P��˘D#�O9L#<code>��qo��b҄����S�5���$�v���1KL������k˥� b�7�[V�ǭ�0&#123;9A���]E%	�O/��:�E�h2m�[Ľ�%hs�d)+v���N��������!����&#125;�z-��ɷL���_#� �����!Mz�����j�vlyyWW�|�ȣ�����/�</code>�Z%wv��MgF���&lt;&lt;�hs�B|p��ȩ�&quot;H�JB:����t���fDYYkN�9��b�6�n��o�G�sU2`%�:r8!�s�[Rɔ9p��|V��}���N	s�I�*x�M��f�W1��<br>
+���1�����j�$GB�F���2^f7�yw�w�ߐ</��gu></�'G�Ӓ></_ح{�^�G></yq�Fޭ�0(q��^rj��=p�B></�ȖBQ��7fs�q��0�></9��aO�Vf�tyc�`Ѹ��jI)></�����NZJlW)�:5�b'#�Vm></��></ؕT[��qF���o�"���></Z����w�M�ps��m���މ></w���ιu��}�Phr�R�����></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">旭穹</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://no5-aaron-wu.github.io/2023/05/05/cpp-modern-6-MemoryOrder/">https://no5-aaron-wu.github.io/2023/05/05/cpp-modern-6-MemoryOrder/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://no5-aaron-wu.github.io" target="_blank">旭穹の陋室</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/images/topimg.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/images/wechatpay.png" target="_blank"><img class="post-qr-code-img" src="/images/wechatpay.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/images/alipay.png" target="_blank"><img class="post-qr-code-img" src="/images/alipay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/05/05/cpp-modern-7-CustomAllocator/"><img class="prev-cover" src="/images/topimg.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info"></div></div></a></div><div class="next-post pull-right"><a href="/2023/02/16/cpp-modern-5-Atomic/"><img class="next-cover" src="/images/mh_02.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">现代C++ [5]: 原子操作</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">旭穹</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">65</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">70</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/no5-aaron-wu"><i class="fab fa-github"></i><span>我的github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:no5aaron@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/05/05/cpp-modern-7-CustomAllocator/" title="无题"><img src="/images/topimg.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2023/05/05/cpp-modern-7-CustomAllocator/" title="无题">无题</a><time datetime="2023-05-05T09:32:04.620Z" title="发表于 2023-05-05 09:32:04">2023-05-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/05/cpp-modern-6-MemoryOrder/" title="无题"><img src="/images/topimg.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2023/05/05/cpp-modern-6-MemoryOrder/" title="无题">无题</a><time datetime="2023-05-05T09:32:04.620Z" title="发表于 2023-05-05 09:32:04">2023-05-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/16/cpp-modern-5-Atomic/" title="现代C++ [5]: 原子操作"><img src="/images/mh_02.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代C++ [5]: 原子操作"/></a><div class="content"><a class="title" href="/2023/02/16/cpp-modern-5-Atomic/" title="现代C++ [5]: 原子操作">现代C++ [5]: 原子操作</a><time datetime="2023-02-16T15:29:23.000Z" title="发表于 2023-02-16 15:29:23">2023-02-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/16/cpp-modern-4-LockGuard/" title="现代C++ [4]: std::lock_guard"><img src="/images/wl_01.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代C++ [4]: std::lock_guard"/></a><div class="content"><a class="title" href="/2023/02/16/cpp-modern-4-LockGuard/" title="现代C++ [4]: std::lock_guard">现代C++ [4]: std::lock_guard</a><time datetime="2023-02-16T14:18:35.000Z" title="发表于 2023-02-16 14:18:35">2023-02-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/07/HPC-1-2-AMH-ProgrammingLanguages/" title="现代硬件算法[1.2]: 编程语言"><img src="/images/mh_03.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[1.2]: 编程语言"/></a><div class="content"><a class="title" href="/2023/02/07/HPC-1-2-AMH-ProgrammingLanguages/" title="现代硬件算法[1.2]: 编程语言">现代硬件算法[1.2]: 编程语言</a><time datetime="2023-02-07T09:40:10.000Z" title="发表于 2023-02-07 09:40:10">2023-02-07</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/images/topimg.png')"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2023 By 旭穹</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">谢临<a href="https://no5-aaron-wu.github.io/">陋室</a>, 欢迎留言！</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})
+setTimeout(function(){preloader.endLoading();}, 3000);</script></div><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '8238e4a92ed02fb5dcb8',
+      clientSecret: '9c0dfb8fd7077aa7549fbda345a3b0c2cb781947',
+      repo: 'no5-aaron-wu.github.io',
+      owner: 'no5-aaron-wu',
+      admin: ['no5-aaron-wu'],
+      id: '2ce2c2fa33722c9c1e7ee6eea7157e1b',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script><script src="/js/footer.js"></script><script src="/js/fishes.js"></script><script src="/live2d-widget/autoload.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>现代硬件算法[1.2]: 编程语言 | 旭穹の陋室</title><meta name="keywords" content="HPC,AMH"><meta name="author" content="旭穹"><meta name="copyright" content="旭穹"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="编程语言 如果你正在读这本书，那么在你的CS旅程中的某个地方，你会有那么一刻，第一次开始关心代码的效率。 我在高中的时候，我意识到制作网站和做实用编程并不能让你获得大学的入场券，于是我进入了算法编程奥林匹克竞赛的世界。我是一个合格的程序员，尤其是对于一个高中生来说，但我之前从来没有想过我的代码需要多长时间才能执行完。但突然之间，问题开始变得重要了：现在竞赛中的每个问题都有严格的时间限制。我开始思考">
+<meta property="og:type" content="article">
+<meta property="og:title" content="现代硬件算法[1.2]: 编程语言">
+<meta property="og:url" content="https://no5-aaron-wu.github.io/2023/02/07/HPC-1-2-AMH-ProgrammingLanguages/index.html">
+<meta property="og:site_name" content="旭穹の陋室">
+<meta property="og:description" content="编程语言 如果你正在读这本书，那么在你的CS旅程中的某个地方，你会有那么一刻，第一次开始关心代码的效率。 我在高中的时候，我意识到制作网站和做实用编程并不能让你获得大学的入场券，于是我进入了算法编程奥林匹克竞赛的世界。我是一个合格的程序员，尤其是对于一个高中生来说，但我之前从来没有想过我的代码需要多长时间才能执行完。但突然之间，问题开始变得重要了：现在竞赛中的每个问题都有严格的时间限制。我开始思考">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://no5-aaron-wu.github.io/images/mh_03.webp">
+<meta property="article:published_time" content="2023-02-07T09:40:10.000Z">
+<meta property="article:modified_time" content="2023-05-05T09:32:04.584Z">
+<meta property="article:author" content="旭穹">
+<meta property="article:tag" content="HPC">
+<meta property="article:tag" content="AMH">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://no5-aaron-wu.github.io/images/mh_03.webp"><link rel="shortcut icon" href="/images/ania_128x128.ico"><link rel="canonical" href="https://no5-aaron-wu.github.io/2023/02/07/HPC-1-2-AMH-ProgrammingLanguages/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="zlQaq8XLp3Oj3DgDnpkA0mCzGbGvflp_U-vZVql_E-E"/><meta name="msvalidate.01" content="EAE2F4C7507064F526B5924DA5DCD005"/><meta name="baidu-site-verification" content="code-XsSJQ4q5sT"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-6DDC82R7DV"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-6DDC82R7DV');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#009f6a","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '现代硬件算法[1.2]: 编程语言',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2023-05-05 09:32:04'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mouse.css"><style>#article-container.post-content h1:before, h2:before, h3:before, h4:before, h5:before, h6:before { -webkit-animation: avatar_turn_around 1s linear infinite; -moz-animation: avatar_turn_around 1s linear infinite; -o-animation: avatar_turn_around 1s linear infinite; -ms-animation: avatar_turn_around 1s linear infinite; animation: avatar_turn_around 1s linear infinite; }</style><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,300&display=swap" rel="stylesheet"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="wizard-scene"><div class="wizard-objects"><div class="wizard-square"></div><div class="wizard-circle"></div><div class="wizard-triangle"></div></div><div class="wizard"><div class="wizard-body"></div><div class="wizard-right-arm"><div class="wizard-right-hand"></div></div><div class="wizard-left-arm"><div class="wizard-left-hand"></div></div><div class="wizard-head"><div class="wizard-beard"></div><div class="wizard-face"><div class="wizard-adds"></div></div><div class="wizard-hat"><div class="wizard-hat-of-the-hat"></div><div class="wizard-four-point-star --first"></div><div class="wizard-four-point-star --second"></div><div class="wizard-four-point-star --third"></div></div></div></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">65</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">70</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/mh_03.webp')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">旭穹の陋室</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">现代硬件算法[1.2]: 编程语言</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-02-07T09:40:10.000Z" title="发表于 2023-02-07 09:40:10">2023-02-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-05T09:32:04.584Z" title="更新于 2023-05-05 09:32:04">2023-05-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97/">高性能计算</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="现代硬件算法[1.2]: 编程语言"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>编程语言</h1>
+<p>如果你正在读这本书，那么在你的CS旅程中的某个地方，你会有那么一刻，第一次开始关心代码的效率。</p>
+<p>我在高中的时候，我意识到制作网站和做实用编程并不能让你获得大学的入场券，于是我进入了算法编程奥林匹克竞赛的世界。我是一个合格的程序员，尤其是对于一个高中生来说，但我之前从来没有想过我的代码需要多长时间才能执行完。但突然之间，问题开始变得重要了：现在竞赛中的每个问题都有严格的时间限制。我开始思考一秒钟能做多少操作。</p>
+<p>在思考这个问题时，我还不太了解计算机架构。但我也不需要精确答案——我可以使用经验法则。我的想法是：“2-3GHz主频意味着每秒执行20到30亿条指令，在一个简单的循环中，对数组元素执行一些操作，我还需要增加循环计数器，检查循环结束条件，进行数组索引等这些辅助操作，因此，让我们为每一个有效指令增加3-5个指令的余量，最终我使用每秒<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>⋅</mo><mn>1</mn><msup><mn>0</mn><mn>8</mn></msup></mrow><annotation encoding="application/x-tex">5\cdot10^8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">8</span></span></span></span></span></span></span></span></span></span></span>个操作作为估计值。上面这些陈述并不精确，但计算一下我的算法需要多少操作，并将其除以上面这个数字，对于我来说也是一个很好的经验法则。</p>
+<p>当然，真正的答案要复杂得多，而且与<strong>操作</strong>类型本身强相关。对于<strong>指针追逐</strong>（<a target="_blank" rel="noopener" href="https://en.algorithmica.org/hpc/cpu-cache/latency">pointer chasing</a>，由指针链在一起的数据结构，如链表）这个估计值可以低到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><msup><mn>0</mn><mn>7</mn></msup></mrow><annotation encoding="application/x-tex">10^7</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">7</span></span></span></span></span></span></span></span></span></span></span>，而对于<a target="_blank" rel="noopener" href="https://en.algorithmica.org/hpc/simd/">SIMD加速</a>后的线性代数运算，又可以高达<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><msup><mn>0</mn><mn>11</mn></msup></mrow><annotation encoding="application/x-tex">10^{11}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">11</span></span></span></span></span></span></span></span></span></span></span></span>。为了证明这些显著的差异，我们将使用不同的语言实现矩阵乘法，并深入研究计算机如何执行它们。</p>
+<h2 id="语言类型">语言类型</h2>
+<p>在最底层，计算机执行由二进制编码的<strong>指令</strong>（instructions）组成的<strong>机器码</strong>（machine code），这些指令用于控制CPU。它们是特定的、古怪的，需要付出大量的脑力才能使用好它，所以人们在发明计算机后首先做的事情之一就是发明<strong>编程语言</strong>（programming languages），它抽象了计算机操作的一些细节，从而简化了编程过程。</p>
+<p>编程语言基本上只是一个接口。用它编写的任何程序都只是一个更好的更高级的表示，在某些时点仍然需要转换成在CPU上执行的机器码，下面有几种不同的方法来做这件事：</p>
+<ul>
+<li>从程序员的角度来看，有两种类型的语言：在执行之前会进行预处理（编译）的<strong>编译语言</strong>（compiled language），和在运行时使用被称为<strong>解释器</strong>（interpreter）的单独程序进行执行的<strong>解释语言</strong>（interpreted language）。</li>
+<li>从计算机的角度来看，也可分为两种类型：直接执行机器代码的<strong>原生语言</strong>（native language）和依赖某种<strong>运行时</strong>（runtime）执行的<strong>托管语言</strong>（managed language）。</li>
+</ul>
+<p>由于在解释器中运行机器代码没有意义，因此总共有三种语言：</p>
+<ul>
+<li>解释语言，如Python、JavaScript或Ruby。</li>
+<li>带运行时的编译语言，如Java、C#或Erlang（以及在其VM上运行的语言，例如Scala、F#或Elixir）。</li>
+<li>编译的本地语言，如C、Go或Rust。</li>
+</ul>
+<p>执行计算机程序没有所谓“正确”的方法：每种方法都有其优点和缺点。解释器和虚拟机提供了灵活性，并实现了一些不错的高级编程功能，如动态类型、运行时代码更改和自动内存管理，但这些都会带来一些不可避免的性能问题，我们马上将讨论这些问题。</p>
+<h2 id="解释语言">解释语言</h2>
+<p>下面是一个纯Python实现的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 × 1024</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1024</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1024</span></span></span></span>的矩阵乘法的示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line">n = <span class="number">1024</span></span><br><span class="line"></span><br><span class="line">a = [[random.random()</span><br><span class="line">      <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(n)]</span><br><span class="line">      <span class="keyword">for</span> col <span class="keyword">in</span> <span class="built_in">range</span>(n)]</span><br><span class="line"></span><br><span class="line">b = [[random.random()</span><br><span class="line">      <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(n)]</span><br><span class="line">      <span class="keyword">for</span> col <span class="keyword">in</span> <span class="built_in">range</span>(n)]</span><br><span class="line"></span><br><span class="line">c = [[<span class="number">0</span></span><br><span class="line">      <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(n)]</span><br><span class="line">      <span class="keyword">for</span> col <span class="keyword">in</span> <span class="built_in">range</span>(n)]</span><br><span class="line"></span><br><span class="line">start = time.time()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">            c[i][j] += a[i][k] * b[k][j]</span><br><span class="line"></span><br><span class="line">duration = time.time() - start</span><br><span class="line"><span class="built_in">print</span>(duration)</span><br></pre></td></tr></table></figure>
+<p>此代码运行耗时630秒。超过10分钟！</p>
+<p>让我们试着正确看待这个数字。运行这段代码的CPU的时钟频率是1.4GHz，这意味着它可以每秒执行<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.4</mn><mo>⋅</mo><mn>1</mn><msup><mn>0</mn><mn>9</mn></msup></mrow><annotation encoding="application/x-tex">1.4\cdot10^9</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.4</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">9</span></span></span></span></span></span></span></span></span></span></span>个时钟周期，整个计算总计<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><msup><mn>0</mn><mn>15</mn></msup></mrow><annotation encoding="application/x-tex">10^{15}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">15</span></span></span></span></span></span></span></span></span></span></span></span>个时钟周期，最内层循环中的每个乘法操作大约消耗880个时钟周期。（<em>译者：这里的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><msup><mn>0</mn><mn>15</mn></msup></mrow><annotation encoding="application/x-tex">10^{15}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">15</span></span></span></span></span></span></span></span></span></span></span></span>不知如何得到的</em>）。</p>
+<p>当我们试着分析Python解释器需要做哪些事情来理解上面这段代码的意思时，你便不会再感到奇怪了：</p>
+<ul>
+<li>
+<p>它解析表达式<code>c[i][j] += a[i][k] * b[k][j]</code>；</p>
+</li>
+<li>
+<p>尝试找出<code>a</code>、<code>b</code>和<code>c</code>是什么，并在带有类型信息的特殊哈希表中查找它们的名称；</p>
+</li>
+<li>
+<p>知道<code>a</code>是一个列表，获取其<code>[]</code>运算符，检索<code>a[i]</code>的指针，知道它也是一个列表。再次获取其<code>[]</code>操作符，获取<code>a[i][k]</code>的指针，然后获取元素本身；</p>
+</li>
+<li>
+<p>查找元素的类型，确定是<code>float</code>类型，并获取<code>*</code>运算符的实现方法；</p>
+</li>
+<li>
+<p>对<code>b</code>和<code>c</code>执行相同的操作，最后将结果<code>+=</code>给<code>c[i][j]</code>。</p>
+</li>
+</ul>
+<p>当然，Python等这些被广泛使用的语言的解释器已经做了很好的优化，在重复执行相同代码时，它们可以跳过其中的一些步骤。但是，由于语言设计本身的问题，一些相当重要的开销是不可避免的。如果我们摆脱了所有这些类型检查和指针追逐，在暂时不考虑乘法本身的“成本”是多少的前提下，也许我们可以使每个乘法所需的时钟周期数无限接近1。</p>
+<h2 id="托管语言">托管语言</h2>
+<p>相同的矩阵乘法运算，但在Java中实现：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Matmul</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> n = <span class="number">1024</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">double</span>[][] a = <span class="keyword">new</span> <span class="keyword">double</span>[n][n];</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">double</span>[][] b = <span class="keyword">new</span> <span class="keyword">double</span>[n][n];</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">double</span>[][] c = <span class="keyword">new</span> <span class="keyword">double</span>[n][n];</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Random rand = <span class="keyword">new</span> Random();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++) &#123;</span><br><span class="line">                a[i][j] = rand.nextDouble();</span><br><span class="line">                b[i][j] = rand.nextDouble();</span><br><span class="line">                c[i][j] = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">long</span> start = System.nanoTime();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++)</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; n; k++)</span><br><span class="line">                    c[i][j] += a[i][k] * b[k][j];</span><br><span class="line">                </span><br><span class="line">        <span class="keyword">double</span> diff = (System.nanoTime() - start) * <span class="number">1e-9</span>;</span><br><span class="line">        System.out.println(diff);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码需要10秒执行完，相当于每次乘法大约消耗13个CPU周期，比Python快63倍。考虑到我们需要从内存中非顺序地读取<code>b</code>的元素（<em>译者：会有Cache Miss</em>），运行时间大致与预期的一样。</p>
+<p>Java是一种编译语言，但不是原生语言。程序首先编译成<strong>字节码</strong>（bytecode），然后由虚拟机（JVM）解释。为了实现更高的性能，代码中经常执行的部分，例如最内部的for循环，在运行时被编译成机器码，然后在几乎没有额外开销的情况下执行。这种技术称为<strong>实时编译</strong>（just-in-time compilation）。</p>
+<p>JIT编译不是Java语言本身的一个特性，而是它的一种实现。还有一个名为<a target="_blank" rel="noopener" href="https://www.pypy.org/">PyPy</a>的JIT编译的Python版本，它在不做任何更改的前提下，需要大约12秒的时间来执行上面的代码。</p>
+<h2 id="编译语言">编译语言</h2>
+<p>现在轮到C语言了：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> n 1024</span></span><br><span class="line"><span class="keyword">double</span> a[n][n], b[n][n], c[n][n];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++) &#123;</span><br><span class="line">            a[i][j] = (<span class="keyword">double</span>) rand() / RAND_MAX;</span><br><span class="line">            b[i][j] = (<span class="keyword">double</span>) rand() / RAND_MAX;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">clock_t</span> start = clock();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; n; k++)</span><br><span class="line">                c[i][j] += a[i][k] * b[k][j];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">float</span> seconds = (<span class="keyword">float</span>) (clock() - start) / CLOCKS_PER_SEC;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%.4f\n&quot;</span>, seconds);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当你用<code>gcc -O3</code>编译它时，需要9秒。</p>
+<p>这看起来并不是一个很大的提升——相比Java和PyPy，1-3秒的优势可以归因于JIT编译带来的额外时间——但我们还没有充分利用更好的C编译器环境。如果我们加上<code>-march=native</code>和<code>-ffast-math</code>编译选项时，时间会骤降到0.6秒！</p>
+<p>这里发生的是，我们<a target="_blank" rel="noopener" href="https://en.algorithmica.org/hpc/compilation/flags/">向编译器传达</a>了我们正在运行的CPU的准确型号（<code>-march=native</code>），并赋予它重新排列<a target="_blank" rel="noopener" href="https://en.algorithmica.org/hpc/arithmetic/float/">浮点计算</a>的自由（<code>-ffast-math</code>），因此编译器可以使用<a target="_blank" rel="noopener" href="https://en.algorithmica.org/hpc/simd/">向量化</a>实现加速。</p>
+<p>如果不对源代码进行大的改动，仅通过调整PyPy和Java的JIT编译器以实现相同的性能并不是不可能，但对于直接编译为原生代码的语言来说，这当然更容易实现。</p>
+<h2 id="BLAS（Basic-Linear-Algebra-Subprograms，基础线性代数程序集）">BLAS（Basic Linear Algebra Subprograms，基础线性代数程序集）</h2>
+<p>最后，让我们看一看经过专门优化后的实现的水平。我们将测试一个广泛使用的优化线性代数库<a target="_blank" rel="noopener" href="https://www.openblas.net/">OpenBLAS</a>。使用它的最简单方法是回到Python，从<code>numpy</code>中调用它：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">n = <span class="number">1024</span></span><br><span class="line"></span><br><span class="line">a = np.random.rand(n, n)</span><br><span class="line">b = np.random.rand(n, n)</span><br><span class="line"></span><br><span class="line">start = time.time()</span><br><span class="line"></span><br><span class="line">c = np.dot(a, b)</span><br><span class="line"></span><br><span class="line">duration = time.time() - start</span><br><span class="line"><span class="built_in">print</span>(duration)</span><br></pre></td></tr></table></figure>
+<p>现在它只需要约0.12秒：比自动向量化的C语言版本快约5倍，比我们最初的Python实现快约5250倍！</p>
+<p>你通常不会看到如此显著的改善。现在，我们不准备告诉你这是如何实现的。OpenBLAS中稠密矩阵乘法的实现通常是为每个架构单独定制的<a target="_blank" rel="noopener" href="https://github.com/xianyi/OpenBLAS/blob/develop/kernel/x86_64/dgemm_kernel_16x2_haswell.S">5000行手写汇编</a>。在后面的章节中，我们将逐一解释所有相关的技术，然后<a target="_blank" rel="noopener" href="https://en.algorithmica.org/hpc/algorithms/matmul/">回到</a>这个例子，使用不到40行的C语言代码来开发我们自己的BLAS级实现。</p>
+<h2 id="总结">总结</h2>
+<p>这里的关键点是，使用原生、低级语言并不一定能给你带来性能；但它确实能让你控制性能。</p>
+<p>对“每秒N次操作”，再简单补充一点，许多程序员有一个误解，使用不同的编程语言会对这个N乘上某个系数。以这种方式思考并比较语言的性能并没有多大意义：编程语言从根本上来说只是一种工具，它通过方便的抽象来获取对性能的一些控制。不管运行环境如何，尽可能利用硬件提供的机会来优化性能表现，在很大程度上仍然是程序员的本职工作。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">旭穹</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://no5-aaron-wu.github.io/2023/02/07/HPC-1-2-AMH-ProgrammingLanguages/">https://no5-aaron-wu.github.io/2023/02/07/HPC-1-2-AMH-ProgrammingLanguages/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://no5-aaron-wu.github.io" target="_blank">旭穹の陋室</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/HPC/">HPC</a><a class="post-meta__tags" href="/tags/AMH/">AMH</a></div><div class="post_share"><div class="social-share" data-image="/images/mh_03.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/images/wechatpay.png" target="_blank"><img class="post-qr-code-img" src="/images/wechatpay.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/images/alipay.png" target="_blank"><img class="post-qr-code-img" src="/images/alipay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/02/16/cpp-modern-4-LockGuard/"><img class="prev-cover" src="/images/wl_01.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">现代C++ [4]: std::lock_guard</div></div></a></div><div class="next-post pull-right"><a href="/2023/01/17/HPC-1-1-AMH-ModernHardware/"><img class="next-cover" src="/images/ds3_03.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">现代硬件算法[1.1]: 现代硬件</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/01/17/HPC-1-1-AMH-ModernHardware/" title="现代硬件算法[1.1]: 现代硬件"><img class="cover" src="/images/ds3_03.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-17</div><div class="title">现代硬件算法[1.1]: 现代硬件</div></div></a></div><div><a href="/2023/01/17/HPC-1-AMH-ComplexityModels/" title="现代硬件算法[1]: 渐进复杂度"><img class="cover" src="/images/ds3_02.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-17</div><div class="title">现代硬件算法[1]: 渐进复杂度</div></div></a></div><div><a href="/2023/01/17/HPC-0-AMH-Start/" title="现代硬件算法[0]: 前言及目录"><img class="cover" src="/images/ds3_01.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-17</div><div class="title">现代硬件算法[0]: 前言及目录</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">旭穹</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">65</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">70</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/no5-aaron-wu"><i class="fab fa-github"></i><span>我的github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:no5aaron@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">编程语言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.1.</span> <span class="toc-text">语言类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A%E8%AF%AD%E8%A8%80"><span class="toc-number">1.2.</span> <span class="toc-text">解释语言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%98%E7%AE%A1%E8%AF%AD%E8%A8%80"><span class="toc-number">1.3.</span> <span class="toc-text">托管语言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E8%AF%AD%E8%A8%80"><span class="toc-number">1.4.</span> <span class="toc-text">编译语言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BLAS%EF%BC%88Basic-Linear-Algebra-Subprograms%EF%BC%8C%E5%9F%BA%E7%A1%80%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0%E7%A8%8B%E5%BA%8F%E9%9B%86%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">BLAS（Basic Linear Algebra Subprograms，基础线性代数程序集）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.6.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/05/05/cpp-modern-7-CustomAllocator/" title="无题"><img src="/images/topimg.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2023/05/05/cpp-modern-7-CustomAllocator/" title="无题">无题</a><time datetime="2023-05-05T09:32:04.620Z" title="发表于 2023-05-05 09:32:04">2023-05-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/05/cpp-modern-6-MemoryOrder/" title="无题"><img src="/images/topimg.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2023/05/05/cpp-modern-6-MemoryOrder/" title="无题">无题</a><time datetime="2023-05-05T09:32:04.620Z" title="发表于 2023-05-05 09:32:04">2023-05-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/16/cpp-modern-5-Atomic/" title="现代C++ [5]: 原子操作"><img src="/images/mh_02.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代C++ [5]: 原子操作"/></a><div class="content"><a class="title" href="/2023/02/16/cpp-modern-5-Atomic/" title="现代C++ [5]: 原子操作">现代C++ [5]: 原子操作</a><time datetime="2023-02-16T15:29:23.000Z" title="发表于 2023-02-16 15:29:23">2023-02-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/16/cpp-modern-4-LockGuard/" title="现代C++ [4]: std::lock_guard"><img src="/images/wl_01.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代C++ [4]: std::lock_guard"/></a><div class="content"><a class="title" href="/2023/02/16/cpp-modern-4-LockGuard/" title="现代C++ [4]: std::lock_guard">现代C++ [4]: std::lock_guard</a><time datetime="2023-02-16T14:18:35.000Z" title="发表于 2023-02-16 14:18:35">2023-02-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/07/HPC-1-2-AMH-ProgrammingLanguages/" title="现代硬件算法[1.2]: 编程语言"><img src="/images/mh_03.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[1.2]: 编程语言"/></a><div class="content"><a class="title" href="/2023/02/07/HPC-1-2-AMH-ProgrammingLanguages/" title="现代硬件算法[1.2]: 编程语言">现代硬件算法[1.2]: 编程语言</a><time datetime="2023-02-07T09:40:10.000Z" title="发表于 2023-02-07 09:40:10">2023-02-07</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/images/mh_03.webp')"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2023 By 旭穹</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">谢临<a href="https://no5-aaron-wu.github.io/">陋室</a>, 欢迎留言！</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})
+setTimeout(function(){preloader.endLoading();}, 3000);</script></div><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '8238e4a92ed02fb5dcb8',
+      clientSecret: '9c0dfb8fd7077aa7549fbda345a3b0c2cb781947',
+      repo: 'no5-aaron-wu.github.io',
+      owner: 'no5-aaron-wu',
+      admin: ['no5-aaron-wu'],
+      id: '531a6684c4e5d594d8f00164b7f82d68',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script><script src="/js/footer.js"></script><script src="/js/fishes.js"></script><script src="/live2d-widget/autoload.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
