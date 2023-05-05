@@ -1,0 +1,407 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>现代C++ [6]: 内存顺序 | 旭穹の陋室</title><meta name="keywords" content="计算机体系结构,C++,内存顺序"><meta name="author" content="旭穹"><meta name="copyright" content="旭穹"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="线程和数据竞争 当一个表达式（expression）的求值（evaluation）写入一个内存地址，而另一个求值读取或修改同一内存地址时，这些表达式被称为冲突（conflict）。具有两个冲突求值的程序具有数据竞争（data race），除非：  两个求值操作都在同一线程或同一信号处理程序（signal handler）中执行； 两个冲突的求值操作都是原子操作； 其中一个冲突的求值操作发生在另一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="现代C++ [6]: 内存顺序">
+<meta property="og:url" content="https://no5-aaron-wu.github.io/2023/03/08/cpp-modern-6-MemoryOrder/index.html">
+<meta property="og:site_name" content="旭穹の陋室">
+<meta property="og:description" content="线程和数据竞争 当一个表达式（expression）的求值（evaluation）写入一个内存地址，而另一个求值读取或修改同一内存地址时，这些表达式被称为冲突（conflict）。具有两个冲突求值的程序具有数据竞争（data race），除非：  两个求值操作都在同一线程或同一信号处理程序（signal handler）中执行； 两个冲突的求值操作都是原子操作； 其中一个冲突的求值操作发生在另一个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://no5-aaron-wu.github.io/images/wl_02.jpg">
+<meta property="article:published_time" content="2023-03-08T16:11:07.000Z">
+<meta property="article:modified_time" content="2023-05-05T09:40:11.808Z">
+<meta property="article:author" content="旭穹">
+<meta property="article:tag" content="计算机体系结构">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="内存顺序">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://no5-aaron-wu.github.io/images/wl_02.jpg"><link rel="shortcut icon" href="/images/ania_128x128.ico"><link rel="canonical" href="https://no5-aaron-wu.github.io/2023/03/08/cpp-modern-6-MemoryOrder/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="zlQaq8XLp3Oj3DgDnpkA0mCzGbGvflp_U-vZVql_E-E"/><meta name="msvalidate.01" content="EAE2F4C7507064F526B5924DA5DCD005"/><meta name="baidu-site-verification" content="code-XsSJQ4q5sT"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-6DDC82R7DV"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-6DDC82R7DV');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#009f6a","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '现代C++ [6]: 内存顺序',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2023-05-05 09:40:11'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mouse.css"><style>#article-container.post-content h1:before, h2:before, h3:before, h4:before, h5:before, h6:before { -webkit-animation: avatar_turn_around 1s linear infinite; -moz-animation: avatar_turn_around 1s linear infinite; -o-animation: avatar_turn_around 1s linear infinite; -ms-animation: avatar_turn_around 1s linear infinite; animation: avatar_turn_around 1s linear infinite; }</style><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,300&display=swap" rel="stylesheet"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="wizard-scene"><div class="wizard-objects"><div class="wizard-square"></div><div class="wizard-circle"></div><div class="wizard-triangle"></div></div><div class="wizard"><div class="wizard-body"></div><div class="wizard-right-arm"><div class="wizard-right-hand"></div></div><div class="wizard-left-arm"><div class="wizard-left-hand"></div></div><div class="wizard-head"><div class="wizard-beard"></div><div class="wizard-face"><div class="wizard-adds"></div></div><div class="wizard-hat"><div class="wizard-hat-of-the-hat"></div><div class="wizard-four-point-star --first"></div><div class="wizard-four-point-star --second"></div><div class="wizard-four-point-star --third"></div></div></div></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">65</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">72</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/wl_02.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">旭穹の陋室</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">现代C++ [6]: 内存顺序</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-08T16:11:07.000Z" title="发表于 2023-03-08 16:11:07">2023-03-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-05T09:40:11.808Z" title="更新于 2023-05-05 09:40:11">2023-05-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AF%AD%E8%A8%80/">语言</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="现代C++ [6]: 内存顺序"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>线程和数据竞争</h1>
+<p>当一个表达式（expression）的求值（<a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/language/eval_order">evaluation</a>）写入一个内存地址，而另一个求值读取或修改同一内存地址时，这些表达式被称为<strong>冲突</strong>（conflict）。具有两个冲突求值的程序具有<strong>数据竞争</strong>（data race），除非：</p>
+<ul>
+<li>两个求值操作都在同一线程或同一信号处理程序（<a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/utility/program/signal#Signal_handler">signal handler</a>）中执行；</li>
+<li>两个冲突的求值操作都是原子操作；</li>
+<li>其中一个冲突的求值操作发生在另一个之前（引入内存顺序（<a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/atomic/memory_order"><code>std::memory_order</code></a>）概念，另外也可通过加锁解决）；</li>
+</ul>
+<p>当出现数据竞争时，程序的表现是未定义的。</p>
+<h1>概述</h1>
+<p>内存顺序究竟解决了什么问题？</p>
+<p>首先上个暴论：<strong>即便目前大多数资料（包括官方文档）中给出的示例都是关于多线程的，但是内存顺序其实不是限制多线程之间的指令的执行顺序。而是规定单个线程内的指令如何排序的。</strong></p>
+<p>是的，内存排序模型本身与多线程无关，而是限制单一线程中的指令执行顺序。但是指令执行顺序的（合理地）重排在单线程环境下不会造成逻辑错误，而在多线程环境下（可能）会，所以需要对重排进行限制。</p>
+<p>让我从一个实际的例子逐步展开：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> x = <span class="number">0</span>;</span><br><span class="line"><span class="comment">// thread 1:</span></span><br><span class="line">x++;</span><br><span class="line"><span class="comment">// thread 2:</span></span><br><span class="line">x++;</span><br></pre></td></tr></table></figure>
+<p>对于非原子操作<code>x++</code>，编译之后对应3条汇编指令：</p>
+<ul>
+<li><code>mov</code>（从内存到寄存器）</li>
+<li><code>add</code>（加法）</li>
+<li><code>mov</code>（从寄存器到内存）</li>
+</ul>
+<p>由于操作本身不是原子的，在多线程环境下，就可能出现：线程1刚执行完<code>add</code>，还未将值写回内存时，线程2开始执行从内存到寄存器的<code>mov</code>操作，这样线程2就看不到线程1的执行结果。从而使得最终<code>x</code>的结果为1。</p>
+<p>如果我们想要避免这种情况，就需要用到上面提到的原子操作。这样整个<code>x++</code>操作为一个整体，逻辑上不可分割，从而解决了线程间同步的问题。但到这里其实还没内存顺序什么事。</p>
+<p>在进一步展开之前，我们要先明确代码执行过程发生的两次重排：</p>
+<ul>
+<li><strong>编译器指令重排</strong>：编译器编译（特别是开了优化之后），汇编指令的执行顺序并不一定严格按照高级语言代码中的顺序，而是以编译器的优化规则而基准，在不破坏代码逻辑的情况下，进行了一定程度的重排。</li>
+<li><strong>CPU指令重排</strong>（乱序发射）：如果仅仅只有编译器指令重排，两个线程（相同的回调函数）的指令执行顺序虽然可能跟源代码不同，但两个线程之间应该是相同的（因为执行相同的机器码）。但实际上，在CPU层面看，两个线程的指令执行顺序是不一定一致的，甚至，同一线程的不同次执行之间的执行顺序也可能不一致。这都<strong>归功</strong>于现代CPU的<a href="https://no5-aaron-wu.github.io/2021/12/22/ComputerArch-2-ILP/#%E8%B6%85%E6%A0%87%E9%87%8F%EF%BC%88%E6%8C%87%E4%BB%A4%E5%A4%9A%E5%8F%91%E5%B0%84%EF%BC%89">多发射</a>和<a href="https://no5-aaron-wu.github.io/2022/01/17/ComputerArch-4-Hazard/#%E4%B9%B1%E5%BA%8F%E6%89%A7%E8%A1%8C-%E5%8F%91%E5%B0%84">乱序执行</a>。</li>
+</ul>
+<p>现在知道了重排的存在，我们考虑如下这种情况：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;atomic&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cassert&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line">std::atomic&lt;<span class="keyword">bool</span>&gt; f = <span class="literal">false</span>;</span><br><span class="line">std::atomic&lt;<span class="keyword">bool</span>&gt; g = <span class="literal">false</span>;</span><br><span class="line"><span class="comment">// thread 1:</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">th1_func</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    f.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_relaxed);		<span class="comment">// [1]</span></span><br><span class="line">    g.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_relaxed);		<span class="comment">// [2] </span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// thread 2:</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">th2_func</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!g.<span class="built_in">load</span>(std::memory_order_relaxed))		<span class="comment">// [3]</span></span><br><span class="line">        ;</span><br><span class="line">    <span class="built_in">assert</span>(f.<span class="built_in">load</span>(std::memory_order_relaxed));		<span class="comment">// [4]</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1e6</span>; ++i) &#123;</span><br><span class="line">        f = <span class="literal">false</span>;</span><br><span class="line">        g = <span class="literal">false</span>;</span><br><span class="line">        <span class="function">std::thread <span class="title">th1</span><span class="params">(th1_func)</span></span>;</span><br><span class="line">        <span class="function">std::thread <span class="title">th2</span><span class="params">(th2_func)</span></span>;</span><br><span class="line">        th1.<span class="built_in">join</span>();</span><br><span class="line">        th2.<span class="built_in">join</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先不考虑<code>std::memory_order_relaxed</code>究竟是什么，可以简单的认为对内存访问指令的排序施加最小程度的限制。那么。你是否会觉得<code>assert</code>永远都不会触发，即<code>f</code>一定为<code>true</code>？</p>
+<p>如果你的答案为是，那么你一定深信操作 [1] 一定先于操作 [2] 完成，所以当能够执行操作 [4] 时，<code>f</code>一定为<code>true</code>。然而，操作 [1] 和操作 [2] 的执行顺序是可能发生重排的。显然，这种重排虽然是发生在单个线程之中，但其确实会影响到多线程下程序的逻辑。</p>
+<p>是的，我成功触发了断言，在M1的Mac上（x86是强内存模型，目前未触发过），使用如下的<code>CMakeLists.txt</code>：</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.10</span>)</span><br><span class="line"><span class="keyword">project</span>(MemoryOrder)</span><br><span class="line"><span class="keyword">SET</span>(CMAKE_BUILD_TYPE Debug)</span><br><span class="line"><span class="keyword">SET</span>(CMAKE_CXX_FLAGS <span class="string">&quot;$&#123;CMAKE_CXX_FLAGS&#125; -std=c++20 -O3&quot;</span>)</span><br><span class="line"><span class="keyword">add_executable</span>(MemoryOrder main.cpp)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Assertion failed: (f.load(std::memory_order_relaxed)), function th2_func, file main.cpp, line 16.<br>
+[1]    14901 abort      ./MemoryOrder</p>
+</blockquote>
+<p>如果看到这里，你还能保持清醒，那么你应该对内存顺序有了一个基本的理解了。概括的讲，<strong>内存顺序的几种模型就是对内存访问指令的执行顺序施加一定的限制，这种限制，决定了以atomic操作为基准点，其前后的内存访问指令能够以多大的自由度进行重排，从而不会导致多线程环境下的程序逻辑错误。</strong></p>
+<h1>概念</h1>
+<h2 id="内存的Consistency和Coherence">内存的Consistency和Coherence</h2>
+<p>在描述内存体系结构的概念术语中，有两个常见的概念：Consistency和Coherence，它们都可以被翻译成一致性、连续性。但是，这两个概念想表达的问题是不同的，经常容易混淆。</p>
+<h3 id="Consistency">Consistency</h3>
+<p><strong>Consistency</strong>描述的一致性是指多个Master设备读写同一块内存区域时的<strong>顺序一致性</strong>。即约定了读写操作的将以何种<strong>执行顺序</strong>被所有的Master观察到。</p>
+<ul>
+<li>这里的多个Master设备可以是共享内存的CPU和GPU，也可以是CPU中的不同核心；</li>
+<li>对于Consistency问题，硬件只提供解决机制，需要由软件自行选择使用何种机制来保证Consistent；</li>
+<li>我们软件编程中关心的内存顺序问题其实多说都是Consistency问题；</li>
+</ul>
+<h3 id="Coherence">Coherence</h3>
+<p><strong>Coherence</strong>描述的一致性是指当一个内存区域有<strong>多份拷贝</strong>时的<strong>数据一致性</strong>。即约定了读操作<strong>最终</strong>会读到什么数据。</p>
+<ul>
+<li>这里的<strong>多份拷贝</strong>可能有几种情况：
+<ul>
+<li>最常见的情况就是每个CPU核心有自己的Cache，Master A准备写入主内存M中位于地址P的数据D可能被先缓存到A的Cache中，这时Master B如果直接从主内存中读取数据D，就可能拿到旧值；</li>
+<li>另外就是不同线程都对同一内存数据D做写操作，数据D在不同的寄存器中也会有多份拷贝，且值不尽相同，在它们被写回主存前，读取数据D也会存在数据一致性问题。</li>
+</ul>
+</li>
+<li>这里<strong>最终</strong>的含义是指对某内存数据D的修改，迟早都会对所有的Master可见，但具体是什么时候什么条件下，你能确定读到修改的结果，Coherence未做约束。</li>
+<li>满足以下三个条件的内存系统是coherent的：
+<ul>
+<li>单Master中的<strong>程序次序</strong>（program order）：对同一地址P的内存数据D，若Master A写操作之后没有其他Master再执行写操作，那么A的读操作总能返回A之前写入的值；</li>
+<li><strong>最终可见</strong>：对同一地址P的内存数据D，Master A完成写操作之后，Master B执行读操作。若两者相隔时间<strong>足够长</strong>，且没有其他Master再执行写操作，那么B的读操作可以获得A写入的值；</li>
+<li><strong>写串行化</strong>（write serialization）：即不同Master对同一地址P的内存数据D的写操作，在所有master看来，都是以相同的次序进行的。比如Master A先写入值1，Master B后写入值2，则对所有Master，不能先读到值2，再读到值1。</li>
+</ul>
+</li>
+<li>一般Coherence问题，由硬件保证正确性，不需要软件控制；</li>
+</ul>
+<h2 id="内存关系">内存关系</h2>
+<h3 id="Sequenced-before">Sequenced-before</h3>
+<p><strong>同一线程</strong>之内，操作A的执行顺序在操作B前面，那么就称为A sequenced-before B。它不仅仅表示两个操作之间的先后顺序，还表示了操作结果之间的<strong>可见性</strong>关系。两个操作A和操作B，如果有A sequenced-before B，除了表示操作A的顺序在B之前，还表示了操作A的结果操作B可见。</p>
+<h3 id="Carries-dependency">Carries dependency</h3>
+<p>同一线程之内，操作A  sequenced-before B，且操作B的计算依赖于A的结果，则称A carries dependency into B。所谓依赖的方式有以下三种：</p>
+<ul>
+<li>A的值是B表达式的一部分，除了：
+<ul>
+<li>B是对<code>std::kill_dependency</code>的调用；</li>
+<li>A是内置操作符<code>&amp;&amp;</code>、<code>||</code>、<code>?:</code>、<code>,</code>的左操作数；</li>
+</ul>
+</li>
+<li>A写入标量对象M，B从M读取；</li>
+<li><strong>传递性</strong>：A carries dependency into 另一个操作X，X carries dependency into B；</li>
+</ul>
+<h3 id="Modification-order">Modification order</h3>
+<p>对于所有原子操作，保证满足以下四项要求：</p>
+<ul>
+<li>写-写一致性（Write-write coherence）：如果一个修改某个原子M的表达式 A <strong>happens-before</strong> 另一个修改M的表达式B，则对于M的<strong>Modification order</strong>而言，A早于B；</li>
+<li>读-读一致性（Read-read coherence）：如果一个读取原子M用于计算的表达式A <strong>happens-before</strong> 另一个读取原子M用于计算的表示式B，假设A的值依赖于对M的写操作X，则B的值要么同样依赖于写操作X，要么依赖于对M的副作用（<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/9563600/what-exactly-is-a-side-effect-in-c">side effect</a>）Y（写），对于M的<strong>Modification order</strong>而言，Y晚于X；</li>
+<li>读-写一致性（Read-write coherence）：如果一个读取原子M用于计算的表达式A <strong>happens-before</strong> 另一个修改M的表达式B，则A的值依赖于一个副作用X（写），对于M的<strong>Modification order</strong>而言，X早于B；</li>
+<li>写-读一致性（Write-read coherence）：如果一个修改某个原子M的副作用 X（写）<strong>happens-before</strong> 另一个读取原子M用于计算的表示式B，则B值的计算要么从X处取值，要么从就<strong>Modification order</strong>而言晚于X的副作用Y处取值；</li>
+</ul>
+<h3 id="三种操作">三种操作</h3>
+<ul>
+<li><strong>Release Operation</strong></li>
+</ul>
+<p>原子变量的<code>store</code>操作被指定为<code>memory_order_release</code>内存顺序或者更强要求的内存顺序时，被称为<strong>release operation</strong>。在本线程内，release operation之<strong>前</strong>的任何内存访问操作（包括非原子操作和relaxed的原子操作）都不会被重排到release operation之<strong>后</strong>。通常用于在该操作前准备某些资源，准备完毕后*“release”*给别的线程。</p>
+<ul>
+<li><strong>Acquire Operation</strong></li>
+</ul>
+<p>原子变量的<code>load</code>操作被指定为<code>memory_order_acquire</code>内存顺序或者更强要求的内存顺序时，被称为<strong>acquire operation</strong>。在本线程内，acquire operation之<strong>后</strong>的任何内存访问操作（包括非原子操作和relaxed的原子操作）都不会被重排到acquire operation之<strong>前</strong>。通常用于等待某些资源，一旦满足条件就可以安全的*“acquire”*并消费这些资源。</p>
+<ul>
+<li><strong>Consume Operation</strong></li>
+</ul>
+<p>原子变量的<code>load</code>操作被指定为<code>memory_order_consume</code>内存顺序或者更强要求的内存顺序时，（至少）被称为<strong>consume operation</strong>。在本线程中，consume operation之<strong>后</strong>任何<strong>依赖于所load的值</strong>的内存访问操作都不会被重排到consume operation之<strong>前</strong>。相比于acquire操作，consume操作更为宽松，去除了对无依赖关系的操作的重排限制，减少了所需同步的数据量。</p>
+<h3 id="Synchronizes-with">Synchronizes with</h3>
+<p>如果A线程中的原子<code>store</code>操作是release操作，B线程中对同一原子变量的<code>load</code>操作是acquire操作，则可以称A线程中<code>store</code>操作<strong>synchronizes-with</strong>（同步） B线程中的<code>load</code>操作。</p>
+<h3 id="Release-Sequence">Release Sequence</h3>
+<p>对于原子变量M，在release操作A之后，以下对原子变量M的操作构成构成一条同步关系的<strong>传递</strong>链，称为<strong>Release Sequence</strong>：</p>
+<ul>
+<li>同一线程内的<code>store</code>操作（可以是relaxed内存顺序）；</li>
+<li>任意线程中的<code>read-modify-write</code>操作（可以是relaxed内存顺序）；</li>
+</ul>
+<p>这个理解起来有点绕，举个例子：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 线程 1：</span></span><br><span class="line">A; <span class="comment">// 表示一系列内存访问操作</span></span><br><span class="line">x.<span class="built_in">store</span>(<span class="number">2</span>, memory_order_release);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程 2：</span></span><br><span class="line">B; <span class="comment">// 与A类似</span></span><br><span class="line"><span class="keyword">int</span> n = x.<span class="built_in">fetch_add</span>(<span class="number">1</span>, memory_order_relaxed);</span><br><span class="line">C; <span class="comment">// 与A类似</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程 3：</span></span><br><span class="line"><span class="keyword">int</span> m = x.<span class="built_in">load</span>(memory_order_acquire);</span><br><span class="line">D; <span class="comment">// 与A类似</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>假设x的初始值为0，则n可能的值为0或2，m可能的值为0、1、2和3。</p>
+<p>若结果是<code>n=2</code>且<code>m=3</code>，则此时构成了Release Sequence，线程2读取的值是线程1写入的，而线程3读取的值是线程2写入的，通过Release Sequece的传递，线程1中的<code>store</code>操作 synchronizes-with 线程3中的<code>load</code>操作，A happens-before D；此外，若<code>m=2</code>，线程2还未执行，线程3直接读取线程1写入的值，线程1中的<code>store</code>操作同样 synchronizes-with 线程3中的<code>load</code>操作，A happens-before D；</p>
+<p>需要注意的是，线程2中的<code>fetch_add</code>操作是Relaxed的，所以其不会对B和C的重排做任何约束，且其跟线程1中的<code>store</code>操作和线程3中的<code>load</code>操作均不构成同步关系，即便在Release Sequence中，也<strong>无法保证</strong>A happens-before C 或 B happens-before D。即Release Sequence 强调的是一个<strong>传递</strong>。</p>
+<p>当然，若线程2中的<code>fetch_add</code>改成<code>memory_order_acquire</code>内存序，则A happens-before C；改成<code>memory_order_release</code>，则 B happens-before D；改成<code>memory_order_acq_rel</code>或<code>memory_order_seq_cst</code>，则A happens-before C 且 B happens-before D。</p>
+<h3 id="Dependency-ordered-before">Dependency-ordered before</h3>
+<p>在不同线程间，如果满足以下任一条件，则操作A <strong>dependency-ordered before</strong> 操作B：</p>
+<ul>
+<li>A对原子变量M执行release操作，B对同一原子变量M执行consume操作，读取A操作或其Release Sequence中任何一个操作所写入的值；</li>
+<li>操作A dependency-ordered before 操作X，且X carries dependency into B；</li>
+</ul>
+<h3 id="Inter-thread-happens-before">Inter-thread happens-before</h3>
+<p>在不同线程间，如果满足以下任一条件，则操作A <strong>inter-thread happens-before</strong> 操作B：</p>
+<ul>
+<li>操作A synchronizes-with 操作B；</li>
+<li>操作A dependency-ordered before 操作B；</li>
+<li>操作A synchronizes-with 操作X，且X sequenced-before 操作B；</li>
+<li>操作A sequenced-before 操作X, 且X inter-thread happens-before 操作B；</li>
+<li>操作A inter-thread happens-before 操作X, 且X inter-thread happens-before 操作B；</li>
+</ul>
+<h3 id="happens-before">happens-before</h3>
+<p>不管是否在同一线程，如果满足以下任一条件，则操作A <strong>happens-before</strong> 操作B：</p>
+<ul>
+<li>操作A sequenced-before 操作B；</li>
+<li>操作A inter-thread happens-before 操作B；</li>
+</ul>
+<p>对于 happens-before，更为严格的要求称为 <strong>strongly happens-before</strong>，需满足如下任一条件（until C++20）：</p>
+<ul>
+<li>操作A sequenced-before 操作B；</li>
+<li>操作A synchronizes-with 操作B（更严格的要求，排除了consume）；</li>
+<li>操作A strongly happens-before 操作X，且X strongly happens-before 操作B；</li>
+</ul>
+<p>而到了C++20， <strong>strongly happens-before</strong>被更名为<strong>simply happens-before</strong>，而<strong>strongly happens-before</strong>则指代一种更强的要求，需满足如下任一条件：</p>
+<ul>
+<li>操作A sequenced-before 操作B；</li>
+<li>操作A synchronizes-with 操作B，<strong>且A和B均为 sequentially consistent 内存序</strong>；</li>
+<li>操作A sequenced-before 操作X，操作X simply happens-before 操作Y，Y sequenced-before 操作B；</li>
+<li>操作A strongly happens-before 操作X，且X strongly happens-before 操作B；</li>
+</ul>
+<h2 id="原子操作的内存顺序标签">原子操作的内存顺序标签</h2>
+<ul>
+<li><code>memory_order_relaxed</code>：被打上该标签的原子操作不是同步操作，不参与synchronized-with 关系。它只保证原子性本身，以及在同一线程内对同一原子变量的操作不被重排。</li>
+<li><code>memory_order_release</code>：被打上该标签的<code>store</code>原子操作被称为release operation。在本线程内，release operation之<strong>前</strong>的任何内存访问操作（包括非原子操作和relaxed的原子操作）都不会被重排到release operation之<strong>后</strong>。</li>
+<li><code>memory_order_acquire</code>：被打上该标签的<code>load</code>原子操作被称为acquire operation。在本线程内，acquire operation之<strong>后</strong>的任何内存访问操作（包括非原子操作和relaxed的原子操作）都不会被重排到acquire operation之<strong>前</strong>。</li>
+<li><code>memory_order_consume</code>：被打上该标签的<code>load</code>原子操作被称为consume operation。在本线程中，consume operation之<strong>后</strong>任何<strong>依赖于所load的值</strong>的内存访问操作都不会被重排到consume operation之<strong>前</strong>。在大多数平台上，该标签只影响编译器优化。</li>
+<li><code>memory_order_acq_rel</code>：被打上该标签的 read-modify-write 原子操作（如<code>fetch_add</code>），既是acquire operation，又是release operation。</li>
+<li><code>memory_order_seq_cst</code>：被打上该标签的<code>load</code>操作是acquire operation，<code>store</code>操作是release operation， read-modify-write操作既是acquire operation又是release operation。同时，存在一条单一的总序，使得所有线程看到的相同的内存操作顺序。</li>
+</ul>
+<h2 id="内存顺序">内存顺序</h2>
+<h3 id="Relaxed-ordering">Relaxed ordering</h3>
+<p>被打上<code>memory_order_relaxed</code>标签的原子操作为<strong>Relaxed内存序</strong>，不是同步操作，不参与synchronized-with 关系。它只保证原子性本身，以及在同一线程内对同一原子变量的操作不被重排。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Thread 1:</span></span><br><span class="line">r1 = y.<span class="built_in">load</span>(std::memory_order_relaxed); <span class="comment">// A</span></span><br><span class="line">x.<span class="built_in">store</span>(r1, std::memory_order_relaxed); <span class="comment">// B</span></span><br><span class="line"><span class="comment">// Thread 2:</span></span><br><span class="line">r2 = x.<span class="built_in">load</span>(std::memory_order_relaxed); <span class="comment">// C </span></span><br><span class="line">y.<span class="built_in">store</span>(<span class="number">42</span>, std::memory_order_relaxed); <span class="comment">// D</span></span><br></pre></td></tr></table></figure>
+<p>这里允许出现 <code>r1 == r2 == 42</code>，即出现<code>D-&gt;A-&gt;B-&gt;C</code>的执行顺序，这可能是编译重排导致的，也可能是CPU运行时乱序发射导致的。</p>
+<p>Relaxed内存序的典型应用是递增计数器，例如<code>std::shared_ptr</code>中的引用计数器的递增，因为这时只需要保证原子性，而不需要考虑同步和内存排序。但是有点需要注意，<code>std::shared_ptr</code>引用计数器的递减，需要跟析构函数进行acquire-release同步。</p>
+<h3 id="Release-Acquire-ordering">Release-Acquire ordering</h3>
+<p>线程A中的原子<code>store</code>操作被打上<code>memory_order_release</code>，线程B中的对同一原子变量的<code>load</code>操作被打上<code>memory_order_acquire</code>，则它们构成<strong>Release-Acquire内存序</strong>。两者之间为同步关系，即线程A中所有的happen-before 原子<code>store</code>操作的内存写操作，对线程B中的原子<code>load</code>操作之后的操作而言，都是已经发生且可见的。这种同步关系仅在线程A和B之间成立，其他线程可能看到不同的访存顺序。</p>
+<p>在强内存序系统（strong-ordered systems）上，如X86系统，大多数指令操作的默认排序都是Release-Acquire内存序，并不会提供额外的指令，只会影响编译器优化层面；而在弱内存序系统（weakly-ordered systems）上，如ARM系统，会使用一些特定的CPU load 指令和内存栅栏（memory fench）指令。</p>
+<p>Release-Acquire内存序的典型示例是互斥锁（mutual exclusion locks），如<a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/thread/mutex"><code>std::mutex</code></a>和 <a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/atomic/atomic_flag">atomic spinlock</a>，线程A释放（release）锁，线程B获取（acquire）锁，则线程A中发生在release操作之前的操作，对线程B acquire操作之后都是可见的。</p>
+<h3 id="Release-Consume-ordering">Release-Consume ordering</h3>
+<p>线程A中的原子<code>store</code>操作被打上<code>memory_order_release</code>，线程B中的对同一原子变量的<code>load</code>操作被打上<code>memory_order_consume</code>，则它们构成<strong>Release-Consume内存序</strong>。两者之间为 Dependency-ordered before 关系，即线程A中所有的happen-before 原子<code>store</code>操作的内存写操作，对线程B中的原子<code>load</code>操作之后并依赖于所load的值的操作而言，都是已经发生且可见的。这种关系可以认为是一种相对宽松的同步关系，仅在线程A和B之间成立，其他线程可能看到不同的访存顺序。</p>
+<p>对于所有的主流CPU而言，这种dependency ordering内存序都是自动且默认的，不需要为此提供额外的指令，只会影响编译器层面的优化。并且，到2015年2月为止，所有已知的生产编译器都不会跟踪依赖链，consume操作会被提升为acquire操作。</p>
+<p>这种内存序的典型应用是涉及 <strong>对写入操作较少的并发数据结构的读取访问</strong>（如路由表，配置，安全策略和防火墙规则等）和 <strong>以指针作为传递媒介的发布者-订阅者（publisher-subscriber）模式</strong>，在这种模式下，生产者发布一个指针，消费者可以通过该指针访问信息：这时不需要使生产者写入内存的所有其他内容对该消费者可见（订阅内容外的内容可以不同步）。典型的示例比如 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Read-copy-update">RCU 机制</a>（read-copy-update），一个简单的示例参见<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/89439043">这里</a>。</p>
+<p>自C++17开始，<strong>Release-Consume ordering</strong> 正在修订中，暂时不鼓励使用memory_order_consume标签。</p>
+<h3 id="Sequentially-consistent-ordering">Sequentially-consistent ordering</h3>
+<p>被打上<code>memory_order_seq_cst</code>标签的原子操作们构成<strong>顺序一致（Sequentially-consistent）内存序</strong>。SC内存序除了会跟Release-Acquire ordering一样的方式进行内存排序外，还会为被标记的原子操作建立一条单一的总序。</p>
+<p>需要注意的是：</p>
+<ul>
+<li>被打上<code>memory_order_seq_cst</code>的<code>load</code>操作所得到的值，要么来自之前<code>memory_order_seq_cst</code>标签的修改操作，要么来自非<code>memory_order_seq_cst</code>标签的修改操作，这些非顺序一致修改操作发生在顺序一致修改操作之后；</li>
+<li>只要有非<code>memory_order_seq_cst</code>标签的原子操作被加入程序，则该段程序就会丢失顺序一致性保证；</li>
+<li>顺序一致的内存栅栏（memory fences）操作，如<a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/atomic/atomic_thread_fence">std::atomic_thread_fence</a>，只是为栅栏本身建立总序，而不是为一般情况下的原子操作建立总序；</li>
+<li>单一总序并不等同于happen-before。当顺序一致内存序于其他内存序混用时，可能会出现不符合预期的情况。如下面这个例子，<code>x</code>和<code>y</code>被初始化为0：</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Thread 1:</span></span><br><span class="line">x.<span class="built_in">store</span>(<span class="number">1</span>, std::memory_order_seq_cst); <span class="comment">// A</span></span><br><span class="line">y.<span class="built_in">store</span>(<span class="number">1</span>, std::memory_order_release); <span class="comment">// B</span></span><br><span class="line"><span class="comment">// Thread 2:</span></span><br><span class="line">r1 = y.<span class="built_in">fetch_add</span>(<span class="number">1</span>, std::memory_order_seq_cst); <span class="comment">// C</span></span><br><span class="line">r2 = y.<span class="built_in">load</span>(std::memory_order_relaxed); <span class="comment">// D</span></span><br><span class="line"><span class="comment">// Thread 3:</span></span><br><span class="line">y.<span class="built_in">store</span>(<span class="number">3</span>, std::memory_order_seq_cst); <span class="comment">// E</span></span><br><span class="line">r3 = x.<span class="built_in">load</span>(std::memory_order_seq_cst); <span class="comment">// F</span></span><br></pre></td></tr></table></figure>
+<p>​	可能会出现<code>r1 == 1 &amp;&amp; r2 == 3 &amp;&amp; r3 == 0</code>的情况，虽然B和C是同步关系，A 必然 happen-before C，但对于<code>memory_order_seq_cst</code>的单一总序而言，可能会出现B-&gt;C-&gt;E-&gt;F-&gt;A-&gt;D的总序（这里搞不太懂，如果出现这样的情况，则A就被重排到B之后，这与release操作限制重排的描述自相矛盾了。具体可以研究一下<a target="_blank" rel="noopener" href="https://plv.mpi-sws.org/scfix/paper.pdf">Lahav et al</a>）。</p>
+<p>对于多个生产者-多个消费者的场景，顺序一致内存序可能是必要的。在这种情况下，不同消费者观察到的所有生产者的行为必须以相同的顺序执行。</p>
+<p>实现 sequencial consistent 模型是有一定的开销的。现代 CPU 通常有多核, 每个核心还有自己的缓存，为了做到全局顺序一致，每次写入操作都必须同步给其他核心。</p>
+<p>下面这个示例展示了一种必须使用SC内存序的场景，其他任何内存序都有可能导致断言触发：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;atomic&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cassert&gt;</span></span></span><br><span class="line"> </span><br><span class="line">std::atomic&lt;<span class="keyword">bool</span>&gt; x = &#123;<span class="literal">false</span>&#125;;</span><br><span class="line">std::atomic&lt;<span class="keyword">bool</span>&gt; y = &#123;<span class="literal">false</span>&#125;;</span><br><span class="line">std::atomic&lt;<span class="keyword">int</span>&gt; z = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">write_x</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    x.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_seq_cst);	<span class="comment">// [1]</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">write_y</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    y.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_seq_cst);	<span class="comment">// [2]</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">read_x_then_y</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!x.<span class="built_in">load</span>(std::memory_order_seq_cst));	<span class="comment">// [3]</span></span><br><span class="line">    <span class="keyword">if</span> (y.<span class="built_in">load</span>(std::memory_order_seq_cst)) ++z;	<span class="comment">// [4]</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">read_y_then_x</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!y.<span class="built_in">load</span>(std::memory_order_seq_cst));	<span class="comment">// [5]</span></span><br><span class="line">    <span class="keyword">if</span> (x.<span class="built_in">load</span>(std::memory_order_seq_cst)) ++z; <span class="comment">// [6]</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">std::thread <span class="title">a</span><span class="params">(write_x)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">b</span><span class="params">(write_y)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">c</span><span class="params">(read_x_then_y)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">d</span><span class="params">(read_y_then_x)</span></span>;</span><br><span class="line">    a.<span class="built_in">join</span>(); b.<span class="built_in">join</span>(); c.<span class="built_in">join</span>(); d.<span class="built_in">join</span>();</span><br><span class="line">    <span class="built_in">assert</span>(z.<span class="built_in">load</span>() != <span class="number">0</span>);  <span class="comment">// will never happen</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>断言永远不会触发。因为 <code>x</code> 和 <code>y</code> 的修改顺序是全局一致的，如果先执行 [1] 后执行 [2], 则 <code>read_y_then_x</code> 中循环 [5] 退出时, 能保证 <code>y</code> 为 <code>true</code>, 此时 <code>x</code> 也必然为 <code>true</code>, 因此 [6] 会被执行; 同理, 如果先执行 [2] 后执行 [1], 则循环 [3] 退出时 <code>y</code> 也必然为 <code>true</code>, 因此 [4] 会被执行。 无论如何, <code>z</code> 最终都不会等于 0。</p>
+<h1>参考文献</h1>
+<p>[1] <a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/language/memory_model">https://en.cppreference.com/w/cpp/language/memory_model</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/atomic/memory_order">https://en.cppreference.com/w/cpp/atomic/memory_order</a></p>
+<p>[3] <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/24301047">如何理解 C++11 的六种 memory order？</a></p>
+<p>[4] <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/21387258">内存体系中的Consistent和Coherent</a></p>
+<p>[5]* <a target="_blank" rel="noopener" href="https://luyuhuang.tech/2022/06/25/cpp-memory-order.html">谈谈 C++ 中的内存顺序 (Memory Order)</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">旭穹</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://no5-aaron-wu.github.io/2023/03/08/cpp-modern-6-MemoryOrder/">https://no5-aaron-wu.github.io/2023/03/08/cpp-modern-6-MemoryOrder/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://no5-aaron-wu.github.io" target="_blank">旭穹の陋室</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">计算机体系结构</a><a class="post-meta__tags" href="/tags/C/">C++</a><a class="post-meta__tags" href="/tags/%E5%86%85%E5%AD%98%E9%A1%BA%E5%BA%8F/">内存顺序</a></div><div class="post_share"><div class="social-share" data-image="/images/wl_02.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/images/wechatpay.png" target="_blank"><img class="post-qr-code-img" src="/images/wechatpay.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/images/alipay.png" target="_blank"><img class="post-qr-code-img" src="/images/alipay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/03/17/cpp-modern-7-CustomAllocator/"><img class="prev-cover" src="/images/xt_01.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">现代C++ [7]: 自定义分配器</div></div></a></div><div class="next-post pull-right"><a href="/2023/02/16/cpp-modern-5-Atomic/"><img class="next-cover" src="/images/mh_02.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">现代C++ [5]: 原子操作</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/11/30/CUDA-5-mutexLock/" title="CUDA基础 [5]：互斥锁设计"><img class="cover" src="/images/%E6%88%98%E5%8F%8CCG_%E6%9C%8B%E5%8F%8B%E4%B9%8B%E9%97%B4.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-30</div><div class="title">CUDA基础 [5]：互斥锁设计</div></div></a></div><div><a href="/2021/11/28/CUDA-4-MultiStreamTest/" title="CUDA基础 [4]：多流测试"><img class="cover" src="/images/%E6%88%98%E5%8F%8CCG_%E6%9F%90%E6%97%A5%E7%9A%84%E5%90%AF%E7%A8%8B.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-28</div><div class="title">CUDA基础 [4]：多流测试</div></div></a></div><div><a href="/2021/11/28/CUDA-3-StreamAndEvent/" title="CUDA基础 [3]：流和事件"><img class="cover" src="/images/%E6%88%98%E5%8F%8CCG_%E6%9F%90%E6%97%A5%E7%9A%84%E7%9C%9F%E7%9B%B8.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-28</div><div class="title">CUDA基础 [3]：流和事件</div></div></a></div><div><a href="/2021/11/27/CUDA-2-start/" title="CUDA基础 [2]：Get Started"><img class="cover" src="/images/%E6%88%98%E5%8F%8CCG_%E6%9F%90%E6%9C%88%E6%9F%90%E6%97%A5%E6%99%B4.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-27</div><div class="title">CUDA基础 [2]：Get Started</div></div></a></div><div><a href="/2021/11/27/CUDA-1-xPU/" title="CUDA基础 [1]：CPU GPU TPU NPU"><img class="cover" src="/images/%E6%88%98%E5%8F%8CCG_%E7%BA%AF%E7%99%BD%E7%9A%84%E7%A4%BC%E6%9C%8D.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-27</div><div class="title">CUDA基础 [1]：CPU GPU TPU NPU</div></div></a></div><div><a href="/2023/03/17/cpp-modern-7-CustomAllocator/" title="现代C++ [7]: 自定义分配器"><img class="cover" src="/images/xt_01.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-17</div><div class="title">现代C++ [7]: 自定义分配器</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">旭穹</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">65</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">72</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/no5-aaron-wu"><i class="fab fa-github"></i><span>我的github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:no5aaron@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">线程和数据竞争</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%9A%84Consistency%E5%92%8CCoherence"><span class="toc-number">3.1.</span> <span class="toc-text">内存的Consistency和Coherence</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Consistency"><span class="toc-number">3.1.1.</span> <span class="toc-text">Consistency</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Coherence"><span class="toc-number">3.1.2.</span> <span class="toc-text">Coherence</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%85%B3%E7%B3%BB"><span class="toc-number">3.2.</span> <span class="toc-text">内存关系</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Sequenced-before"><span class="toc-number">3.2.1.</span> <span class="toc-text">Sequenced-before</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Carries-dependency"><span class="toc-number">3.2.2.</span> <span class="toc-text">Carries dependency</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Modification-order"><span class="toc-number">3.2.3.</span> <span class="toc-text">Modification order</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E6%93%8D%E4%BD%9C"><span class="toc-number">3.2.4.</span> <span class="toc-text">三种操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Synchronizes-with"><span class="toc-number">3.2.5.</span> <span class="toc-text">Synchronizes with</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Release-Sequence"><span class="toc-number">3.2.6.</span> <span class="toc-text">Release Sequence</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dependency-ordered-before"><span class="toc-number">3.2.7.</span> <span class="toc-text">Dependency-ordered before</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Inter-thread-happens-before"><span class="toc-number">3.2.8.</span> <span class="toc-text">Inter-thread happens-before</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#happens-before"><span class="toc-number">3.2.9.</span> <span class="toc-text">happens-before</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C%E7%9A%84%E5%86%85%E5%AD%98%E9%A1%BA%E5%BA%8F%E6%A0%87%E7%AD%BE"><span class="toc-number">3.3.</span> <span class="toc-text">原子操作的内存顺序标签</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E9%A1%BA%E5%BA%8F"><span class="toc-number">3.4.</span> <span class="toc-text">内存顺序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Relaxed-ordering"><span class="toc-number">3.4.1.</span> <span class="toc-text">Relaxed ordering</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Release-Acquire-ordering"><span class="toc-number">3.4.2.</span> <span class="toc-text">Release-Acquire ordering</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Release-Consume-ordering"><span class="toc-number">3.4.3.</span> <span class="toc-text">Release-Consume ordering</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sequentially-consistent-ordering"><span class="toc-number">3.4.4.</span> <span class="toc-text">Sequentially-consistent ordering</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">参考文献</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/03/17/cpp-modern-7-CustomAllocator/" title="现代C++ [7]: 自定义分配器"><img src="/images/xt_01.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代C++ [7]: 自定义分配器"/></a><div class="content"><a class="title" href="/2023/03/17/cpp-modern-7-CustomAllocator/" title="现代C++ [7]: 自定义分配器">现代C++ [7]: 自定义分配器</a><time datetime="2023-03-17T17:58:10.000Z" title="发表于 2023-03-17 17:58:10">2023-03-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/08/cpp-modern-6-MemoryOrder/" title="现代C++ [6]: 内存顺序"><img src="/images/wl_02.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代C++ [6]: 内存顺序"/></a><div class="content"><a class="title" href="/2023/03/08/cpp-modern-6-MemoryOrder/" title="现代C++ [6]: 内存顺序">现代C++ [6]: 内存顺序</a><time datetime="2023-03-08T16:11:07.000Z" title="发表于 2023-03-08 16:11:07">2023-03-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/16/cpp-modern-5-Atomic/" title="现代C++ [5]: 原子操作"><img src="/images/mh_02.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代C++ [5]: 原子操作"/></a><div class="content"><a class="title" href="/2023/02/16/cpp-modern-5-Atomic/" title="现代C++ [5]: 原子操作">现代C++ [5]: 原子操作</a><time datetime="2023-02-16T15:29:23.000Z" title="发表于 2023-02-16 15:29:23">2023-02-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/16/cpp-modern-4-LockGuard/" title="现代C++ [4]: std::lock_guard"><img src="/images/wl_01.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代C++ [4]: std::lock_guard"/></a><div class="content"><a class="title" href="/2023/02/16/cpp-modern-4-LockGuard/" title="现代C++ [4]: std::lock_guard">现代C++ [4]: std::lock_guard</a><time datetime="2023-02-16T14:18:35.000Z" title="发表于 2023-02-16 14:18:35">2023-02-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/07/HPC-1-2-AMH-ProgrammingLanguages/" title="现代硬件算法[1.2]: 编程语言"><img src="/images/mh_03.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[1.2]: 编程语言"/></a><div class="content"><a class="title" href="/2023/02/07/HPC-1-2-AMH-ProgrammingLanguages/" title="现代硬件算法[1.2]: 编程语言">现代硬件算法[1.2]: 编程语言</a><time datetime="2023-02-07T09:40:10.000Z" title="发表于 2023-02-07 09:40:10">2023-02-07</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/images/wl_02.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2023 By 旭穹</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">谢临<a href="https://no5-aaron-wu.github.io/">陋室</a>, 欢迎留言！</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})
+setTimeout(function(){preloader.endLoading();}, 3000);</script></div><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '8238e4a92ed02fb5dcb8',
+      clientSecret: '9c0dfb8fd7077aa7549fbda345a3b0c2cb781947',
+      repo: 'no5-aaron-wu.github.io',
+      owner: 'no5-aaron-wu',
+      admin: ['no5-aaron-wu'],
+      id: 'a83d098eb062173d820b473ed1e0697c',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script><script src="/js/footer.js"></script><script src="/js/fishes.js"></script><script src="/live2d-widget/autoload.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
