@@ -1,0 +1,312 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>现代硬件算法[2.2]: 汇编语言 | 旭穹の陋室</title><meta name="keywords" content="HPC,AMH,汇编"><meta name="author" content="旭穹"><meta name="copyright" content="旭穹"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="汇编语言 CPUs由机器语言（machine language）控制，机器语言只是一个二进制编码指令流，用于指定   指令号（称为操作码（opcode））   它的操作数（operands）是什么（如果有的话）   以及将结果存储在哪里（如果产生了结果）   一种更人性化的机器语言，称为汇编语言（assembly language），使用助记码来指代机器码指令，使用符号名来指代寄存器和其他存储位置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="现代硬件算法[2.2]: 汇编语言">
+<meta property="og:url" content="https://no5-aaron-wu.github.io/2023/05/16/HPC-2-2-AMH-AssemblyLanguage/index.html">
+<meta property="og:site_name" content="旭穹の陋室">
+<meta property="og:description" content="汇编语言 CPUs由机器语言（machine language）控制，机器语言只是一个二进制编码指令流，用于指定   指令号（称为操作码（opcode））   它的操作数（operands）是什么（如果有的话）   以及将结果存储在哪里（如果产生了结果）   一种更人性化的机器语言，称为汇编语言（assembly language），使用助记码来指代机器码指令，使用符号名来指代寄存器和其他存储位置">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://no5-aaron-wu.github.io/images/xt_04.webp">
+<meta property="article:published_time" content="2023-05-16T10:44:18.000Z">
+<meta property="article:modified_time" content="2023-05-24T07:37:59.938Z">
+<meta property="article:author" content="旭穹">
+<meta property="article:tag" content="HPC">
+<meta property="article:tag" content="AMH">
+<meta property="article:tag" content="汇编">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://no5-aaron-wu.github.io/images/xt_04.webp"><link rel="shortcut icon" href="/images/ania_128x128.ico"><link rel="canonical" href="https://no5-aaron-wu.github.io/2023/05/16/HPC-2-2-AMH-AssemblyLanguage/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="zlQaq8XLp3Oj3DgDnpkA0mCzGbGvflp_U-vZVql_E-E"/><meta name="msvalidate.01" content="EAE2F4C7507064F526B5924DA5DCD005"/><meta name="baidu-site-verification" content="code-XsSJQ4q5sT"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-6DDC82R7DV"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-6DDC82R7DV');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#009f6a","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '现代硬件算法[2.2]: 汇编语言',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2023-05-24 07:37:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mouse.css"><style>#article-container.post-content h1:before, h2:before, h3:before, h4:before, h5:before, h6:before { -webkit-animation: avatar_turn_around 1s linear infinite; -moz-animation: avatar_turn_around 1s linear infinite; -o-animation: avatar_turn_around 1s linear infinite; -ms-animation: avatar_turn_around 1s linear infinite; animation: avatar_turn_around 1s linear infinite; }</style><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,300&display=swap" rel="stylesheet"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="wizard-scene"><div class="wizard-objects"><div class="wizard-square"></div><div class="wizard-circle"></div><div class="wizard-triangle"></div></div><div class="wizard"><div class="wizard-body"></div><div class="wizard-right-arm"><div class="wizard-right-hand"></div></div><div class="wizard-left-arm"><div class="wizard-left-hand"></div></div><div class="wizard-head"><div class="wizard-beard"></div><div class="wizard-face"><div class="wizard-adds"></div></div><div class="wizard-hat"><div class="wizard-hat-of-the-hat"></div><div class="wizard-four-point-star --first"></div><div class="wizard-four-point-star --second"></div><div class="wizard-four-point-star --third"></div></div></div></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">73</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/xt_04.webp')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">旭穹の陋室</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">现代硬件算法[2.2]: 汇编语言</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-16T10:44:18.000Z" title="发表于 2023-05-16 10:44:18">2023-05-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-24T07:37:59.938Z" title="更新于 2023-05-24 07:37:59">2023-05-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97/">高性能计算</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="现代硬件算法[2.2]: 汇编语言"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>汇编语言</h1>
+<p>CPUs由<strong>机器语言</strong>（machine language）控制，机器语言只是一个二进制编码指令流，用于指定</p>
+<ul>
+<li>
+<p>指令号（称为<strong>操作码</strong>（opcode））</p>
+</li>
+<li>
+<p>它的<strong>操作数</strong>（operands）是什么（如果有的话）</p>
+</li>
+<li>
+<p>以及将结果存储在哪里（如果产生了结果）</p>
+</li>
+</ul>
+<p>一种更人性化的机器语言，称为<strong>汇编语言</strong>（assembly language），使用助记码来指代机器码指令，使用符号名来指代寄存器和其他存储位置。</p>
+<p>让我们直接开始，下面是使用Arm汇编进行两数相加<code>*c = *a + *b</code>的操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">; *a = x0, *b = x1, *c = x2</span><br><span class="line">ldr w0, [x0]    ; load 4 bytes from wherever x0 points into w0</span><br><span class="line">ldr w1, [x1]    ; load 4 bytes from wherever x1 points into w1</span><br><span class="line">add w0, w0, w1  ; add w0 with w1 and save the result to w0</span><br><span class="line">str w0, [x2]    ; write contents of w0 to wherever x2 points</span><br></pre></td></tr></table></figure>
+<p>下面是x86汇编执行相同的加法操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">; *a = rsi, *b = rdi, *c = rdx </span><br><span class="line">mov eax, DWORD PTR [rsi]  ; load 4 bytes from wherever rsi points into eax</span><br><span class="line">add eax, DWORD PTR [rdi]  ; add whatever is stored at rdi to eax</span><br><span class="line">mov DWORD PTR [rdx], eax  ; write contents of eax to wherever rdx points</span><br></pre></td></tr></table></figure>
+<p>汇编非常简单，因为与高级编程语言相比，它没有太多语法结构。从上面的例子中可以观察到：</p>
+<ul>
+<li>
+<p>程序是一系列指令，每一个指令都写成指令名+可变数量的操作数的形式；</p>
+</li>
+<li>
+<p><code>[reg]</code>语法用于“解引用”存储在寄存器中的指针，在x86上，你需要在其前面加上大小信息（这里的<code>DWORD</code>表示32 bit）；</p>
+</li>
+<li>
+<p><code>;</code>符号用于行注释，类似于其他语言中的<code>#</code>和<code>//</code>；</p>
+</li>
+</ul>
+<p>汇编是一种非常简单的语言，因为它需要这样。它尽可能地反映机器语言，机器代码和汇编之间几乎有1:1的对应关系。事实上，你可以使用一个名为<strong>反汇编</strong>[1]（disassembly）的过程将任何编译后的程序转换回其汇编形式，但是所有非必要的东西（如注释）都不会被保留。</p>
+<p>请注意，上面的两个代码片段的差异不仅在于不同的语法。两者都是由编译器生成的优化代码，但Arm版本使用了4条指令，而x86版本使用了3条。<code>add eax, [rdi]</code>指令就是所谓的<strong>融合指令</strong>（fused instruction），它一次完成加载和相加操作，这是CISC可以提供的好处之一。</p>
+<p>由于指令集架构之间的差异远不止这一个，因此从现在开始，在本书的剩余部分，我们将只提供x86的示例，这可能是我们大多数读者都会优化的，尽管许多引入的概念都与架构无关。</p>
+<h2 id="指令与寄存器">指令与寄存器</h2>
+<p>由于历史原因，大多数汇编语言中的指令助记符都非常简洁。当人们习惯于手工编写汇编并重复编写同一组通用指令时，少输入一个字符就离发疯更远一步。</p>
+<p>例如，<code>mov</code>表示“存储/加载一个字”，<code>inc</code>表示“递增1”，<code>mul</code>表示“乘法”，<code>idiv</code>表示“整数除法”。您可以在这个<a target="_blank" rel="noopener" href="https://www.felixcloutier.com/x86/">指令参考</a>中按名称查找指令的描述，但大多数指令都会执行你认为的字面意义上的操作。</p>
+<p>大多数指令将结果写入第一个操作数，该操作数也可以参与计算，就像我们之前看到的<code>add eax, [rdi]</code>示例一样。操作数可以是寄存器、常数值或内存地址。</p>
+<p>寄存器（registers）被命名为<code>rax</code>、<code>rbx</code>、<code>rcx</code>、<code>rdx</code>、<code>rdi</code>、<code>rsi</code>、<code>rbp</code>、<code>rsp</code>和<code>r8</code>-<code>r15</code>，总共16个寄存器。由于历史原因，“字母”寄存器的命令是这样来的：<code>rax</code>是累加器（accumulator），<code>rcx</code>是计数器（counter），<code>rdx</code>是数据（data）等等——当然，它们不必仅用于这些功能。</p>
+<p>还有32位、16位和8位寄存器具有类似的名称（<code>rax</code>→ <code>eax</code>→ <code>ax</code>→ <code>al</code>）。它们不是完全分离的，而是复用的：<code>rax</code>的最低32位是<code>eax</code>，<code>eax</code>的最低16位是<code>ax</code>，依此类推。这样做是为了在保持兼容性的同时节省芯片空间，这也是编译型编程语言中基本类型的类型转换通常是零成本的原因。</p>
+<p>这些只是通用（general-purpose）寄存器，除了<a target="_blank" rel="noopener" href="https://en.algorithmica.org/hpc/architecture/functions/">一些特殊情况</a>，你可以在大多数情况下随意使用。除此之外，还有一组单独的寄存器用于浮点运算，一组非常宽的寄存器用于矢量扩展，以及一些特殊寄存器用于流控制，后面我们会讲到这些内容。</p>
+<p>常量就是整数值或浮点值：<code>42</code>、<code>0x2a</code>、<code>3.14</code>、<code>6.02e23</code>。它们通常被称为立即值（immediate value），因为它们可以直接嵌入到机器代码中。因为它可能会大大增加指令编码的复杂性，所以有些指令不支持立即值，或者只允许使用它们的固定子集。在某些情况下，您必须将常数值加载到寄存器中，然后使用寄存器而不是立即数。</p>
+<p>除了数值，还有一些字符串常量，如<code>hello</code>或<code>world\n</code>，它们有自己的一小部分操作，但这是汇编语言中一个有点偏僻的角落，我们不打算在这里探讨。</p>
+<h2 id="移动数据">移动数据</h2>
+<p>一些指令可能具有相同的助记符，但具有不同的操作数类型，在这种情况下，它们被视为不同的指令，因为它们可能执行不太相同的操作，执行时间也不同。<code>mov</code>指令就是一个生动的例子，它有大约20种不同的形式，都与移动数据有关：要么在内存和寄存器之间，要么只在两个寄存器之间。尽管名字是“移动”，但它不会将值<strong>移动</strong>到寄存器中，而是<strong>复制</strong>它，保留原始值。</p>
+<p>当用于在两个寄存器之间复制数据时，<code>mov</code>指令会在内部执行寄存器重命名（register renaming），通知CPU寄存器X引用的值实际上存储在寄存器Y中，而不会造成任何额外的延迟，除了指令读取和指令译码本身。出于同样的原因，交换两个寄存器的<code>xchg</code>指令也不需要任何代价。</p>
+<p>正如我们在上面使用融合<code>add</code>指令所看到的那样，不必对每个内存操作都使用mov：一些算术指令方便地支持将内存地址作为操作数。</p>
+<h2 id="寻址方式">寻址方式</h2>
+<p>内存寻址是通过<code>[]</code>运算符完成的，但它可以做的不仅仅是将存储在寄存器中的值重新解释为内存地址。地址操作数在语法上最多可以用4个显式参数来表示：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SIZE PTR [base + index * scale + displacement]</span><br></pre></td></tr></table></figure>
+<p>其中<code>displacement</code>是一个整数常数，<code>scale</code>可以是2、4或8。它所做的是计算指针<code>base + index * scale + displacement</code>，并对它解引用。</p>
+<p>使用复杂寻址最多比直接解引用指针<a target="_blank" rel="noopener" href="https://en.algorithmica.org/hpc/cpu-cache/pointers/">慢一个周期</a>，并且当您有一个结构体数组并希望加载其第i个元素的特定字段时，复杂寻址可能会很有用。</p>
+<p>寻址运算符需要以大小说明符为前缀，以表示需要多少数据位：</p>
+<ul>
+<li><code>BYTE</code>表示8位</li>
+<li><code>WORD</code>表示16位</li>
+<li><code>DWORD</code>表示32位</li>
+<li><code>QWORD</code>表示64位</li>
+</ul>
+<p>还有一种更罕见的<code>TBYTE</code>用于80位，<code>XMMWORD</code>、<code>YMMWORD</code>和<code>ZMMORD</code>分别用于<a target="_blank" rel="noopener" href="https://en.algorithmica.org/hpc/simd/">128、256和512位</a>。所有这些类型都不必一定用大写字母书写，但这是大多数编译器的默认形式。</p>
+<p>地址计算本身通常很有用：<code>lea</code>（load effective address）指令在一个时钟周期内计算操作数的内存地址并将其存储在寄存器中，而无需进行任何实际的内存操作。虽然它的预期用途是实际内存地址的计算，但它也经常被用作算术技巧，否则相同的算数运算会涉及到1次乘法运算，2次加法运算——例如，你可以用它乘以3、5和9。</p>
+<p>它也经常作为<code>add</code>的替代，它可以将结果移动到其他地方而不需要单独的mov指令：<code>add</code>只在两个寄存器<code>a+=b</code>模式下工作，而<code>lea</code>允许你执行<code>a=b+c</code>（如果其中一个是常数，甚至可以执行<code>a=b+c+d</code>）。</p>
+<h2 id="替代语法">替代语法</h2>
+<p>实际上，有多个汇编器（assemblers，将汇编代码转换为机器代码的程序）使用不同的汇编语言，但现在只有两种x86语法被广泛使用。它们以使用它们并在那个时代对编程产生主导影响的两家公司的名字命名：</p>
+<ul>
+<li>AT&amp;T语法，默认情况下被所有Linux工具使用。</li>
+<li>Intel语法，默认情况下，当然，被英特尔使用。</li>
+</ul>
+<p>这些语法有时也被分别称为<strong>GAS</strong>和<strong>NASM</strong>，由使用它们的两个主要汇编器（<em>GNU Assembler</em> 和 <em>Netwide Assembler</em>）的名称命名。</p>
+<p>我们在本章中使用了Intel语法，并将在本书的其余部分继续使用它。为了进行比较，以下是AT&amp;T语法中相同的<code>*c=*a+*b</code>示例的样子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">movl (%rsi), %eax</span><br><span class="line">addl (%rdi), %eax</span><br><span class="line">movl %eax, (%rdx)</span><br></pre></td></tr></table></figure>
+<p>主要差异可总结如下：</p>
+<ul>
+<li>
+<p>最后一个操作数时目标操作数；</p>
+</li>
+<li>
+<p>寄存器和常量需要分别以<code>%</code>和<code>$</code>作为前缀（例如，<code>addl $1, %rdx</code>递增<code>rdx</code>）；</p>
+</li>
+<li>
+<p>内存寻址看起来是这样的：<code>displacement(%base, %index, scale)</code>；</p>
+</li>
+<li>
+<p><code>;</code>和<code>#</code>都可以用于行注释，<code>/* */</code>也可以用于块注释。</p>
+</li>
+</ul>
+<p>而且，最重要的是，在AT&amp;T语法中，指令名称需要<strong>加后缀</strong>（<code>addq</code>、<code>movl</code>、<code>cmpq</code>等），以指定要操作的操作数尺寸：</p>
+<ul>
+<li><code>b</code> = byte (8 bit)</li>
+<li><code>w</code> = word (16 bit)</li>
+<li><code>l</code> = long (32 bit 整数 或 64-bit 浮点数)</li>
+<li><code>q</code> = quad (64 bit)</li>
+<li><code>s</code> = single (32-bit 浮点数)</li>
+<li><code>t</code> = ten bytes (80-bit 浮点数)</li>
+</ul>
+<p>在Intel语法中，此信息是从操作数推断出来的（这就是为什么你还是要指定指针的大小）。</p>
+<p>大多数生成或使用x86汇编的工具都可以同时使用这两种语法，所以您可以选择更喜欢的一种，不必过于担心。</p>
+<h2 id="注释">注释</h2>
+<p>[1] 在Linux上，要反汇编已编译的程序，可以调用<code>objdump -d &#123;path to binary&#125;</code>。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">旭穹</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://no5-aaron-wu.github.io/2023/05/16/HPC-2-2-AMH-AssemblyLanguage/">https://no5-aaron-wu.github.io/2023/05/16/HPC-2-2-AMH-AssemblyLanguage/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://no5-aaron-wu.github.io" target="_blank">旭穹の陋室</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/HPC/">HPC</a><a class="post-meta__tags" href="/tags/AMH/">AMH</a><a class="post-meta__tags" href="/tags/%E6%B1%87%E7%BC%96/">汇编</a></div><div class="post_share"><div class="social-share" data-image="/images/xt_04.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/images/wechatpay.png" target="_blank"><img class="post-qr-code-img" src="/images/wechatpay.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/images/alipay.png" target="_blank"><img class="post-qr-code-img" src="/images/alipay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/05/16/HPC-2-3-AMH-LoopsAndConditionals/"><img class="prev-cover" src="/images/xt_05.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">现代硬件算法[2.3]: 循环与条件</div></div></a></div><div class="next-post pull-right"><a href="/2023/05/12/HPC-2-1-AMH-InstructionSetArch/"><img class="next-cover" src="/images/xt_03.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">现代硬件算法[2.1]: 指令集体系结构</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/05/16/HPC-2-3-AMH-LoopsAndConditionals/" title="现代硬件算法[2.3]: 循环与条件"><img class="cover" src="/images/xt_05.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-16</div><div class="title">现代硬件算法[2.3]: 循环与条件</div></div></a></div><div><a href="/2023/05/12/HPC-2-1-AMH-InstructionSetArch/" title="现代硬件算法[2.1]: 指令集体系结构"><img class="cover" src="/images/xt_03.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-12</div><div class="title">现代硬件算法[2.1]: 指令集体系结构</div></div></a></div><div><a href="/2023/03/03/HPC-2-AMH-ComputerArchitecture/" title="现代硬件算法[2]: 计算机体系结构"><img class="cover" src="/images/xt_02.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-03</div><div class="title">现代硬件算法[2]: 计算机体系结构</div></div></a></div><div><a href="/2023/02/07/HPC-1-2-AMH-ProgrammingLanguages/" title="现代硬件算法[1.2]: 编程语言"><img class="cover" src="/images/mh_03.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-07</div><div class="title">现代硬件算法[1.2]: 编程语言</div></div></a></div><div><a href="/2023/01/17/HPC-1-1-AMH-ModernHardware/" title="现代硬件算法[1.1]: 现代硬件"><img class="cover" src="/images/ds3_03.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-17</div><div class="title">现代硬件算法[1.1]: 现代硬件</div></div></a></div><div><a href="/2023/01/17/HPC-1-AMH-ComplexityModels/" title="现代硬件算法[1]: 渐进复杂度"><img class="cover" src="/images/ds3_02.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-17</div><div class="title">现代硬件算法[1]: 渐进复杂度</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">旭穹</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">73</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/no5-aaron-wu"><i class="fab fa-github"></i><span>我的github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:no5aaron@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">汇编语言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E4%BB%A4%E4%B8%8E%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-number">1.1.</span> <span class="toc-text">指令与寄存器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A7%BB%E5%8A%A8%E6%95%B0%E6%8D%AE"><span class="toc-number">1.2.</span> <span class="toc-text">移动数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%BB%E5%9D%80%E6%96%B9%E5%BC%8F"><span class="toc-number">1.3.</span> <span class="toc-text">寻址方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%BF%E4%BB%A3%E8%AF%AD%E6%B3%95"><span class="toc-number">1.4.</span> <span class="toc-text">替代语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E9%87%8A"><span class="toc-number">1.5.</span> <span class="toc-text">注释</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/05/16/HPC-2-3-AMH-LoopsAndConditionals/" title="现代硬件算法[2.3]: 循环与条件"><img src="/images/xt_05.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[2.3]: 循环与条件"/></a><div class="content"><a class="title" href="/2023/05/16/HPC-2-3-AMH-LoopsAndConditionals/" title="现代硬件算法[2.3]: 循环与条件">现代硬件算法[2.3]: 循环与条件</a><time datetime="2023-05-16T17:01:27.000Z" title="发表于 2023-05-16 17:01:27">2023-05-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/16/HPC-2-2-AMH-AssemblyLanguage/" title="现代硬件算法[2.2]: 汇编语言"><img src="/images/xt_04.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[2.2]: 汇编语言"/></a><div class="content"><a class="title" href="/2023/05/16/HPC-2-2-AMH-AssemblyLanguage/" title="现代硬件算法[2.2]: 汇编语言">现代硬件算法[2.2]: 汇编语言</a><time datetime="2023-05-16T10:44:18.000Z" title="发表于 2023-05-16 10:44:18">2023-05-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/12/HPC-2-1-AMH-InstructionSetArch/" title="现代硬件算法[2.1]: 指令集体系结构"><img src="/images/xt_03.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[2.1]: 指令集体系结构"/></a><div class="content"><a class="title" href="/2023/05/12/HPC-2-1-AMH-InstructionSetArch/" title="现代硬件算法[2.1]: 指令集体系结构">现代硬件算法[2.1]: 指令集体系结构</a><time datetime="2023-05-12T15:31:10.000Z" title="发表于 2023-05-12 15:31:10">2023-05-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/17/cpp-modern-7-CustomAllocator/" title="现代C++ [7]: 自定义分配器"><img src="/images/xt_01.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代C++ [7]: 自定义分配器"/></a><div class="content"><a class="title" href="/2023/03/17/cpp-modern-7-CustomAllocator/" title="现代C++ [7]: 自定义分配器">现代C++ [7]: 自定义分配器</a><time datetime="2023-03-17T17:58:10.000Z" title="发表于 2023-03-17 17:58:10">2023-03-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/08/cpp-modern-6-MemoryOrder/" title="现代C++ [6]: 内存顺序"><img src="/images/wl_02.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代C++ [6]: 内存顺序"/></a><div class="content"><a class="title" href="/2023/03/08/cpp-modern-6-MemoryOrder/" title="现代C++ [6]: 内存顺序">现代C++ [6]: 内存顺序</a><time datetime="2023-03-08T16:11:07.000Z" title="发表于 2023-03-08 16:11:07">2023-03-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/images/xt_04.webp')"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2023 By 旭穹</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">谢临<a href="https://no5-aaron-wu.github.io/">陋室</a>, 欢迎留言！</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})
+setTimeout(function(){preloader.endLoading();}, 3000);</script></div><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '8238e4a92ed02fb5dcb8',
+      clientSecret: '9c0dfb8fd7077aa7549fbda345a3b0c2cb781947',
+      repo: 'no5-aaron-wu.github.io',
+      owner: 'no5-aaron-wu',
+      admin: ['no5-aaron-wu'],
+      id: '644f2db4fef42c64a6afab043ffc5204',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script><script src="/js/footer.js"></script><script src="/js/fishes.js"></script><script src="/live2d-widget/autoload.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

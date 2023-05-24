@@ -4,6 +4,93 @@
   
     
     <entry>
+      <title>现代硬件算法[2.3]: 循环与条件</title>
+      <link href="/2023/05/16/HPC-2-3-AMH-LoopsAndConditionals/"/>
+      <url>/2023/05/16/HPC-2-3-AMH-LoopsAndConditionals/</url>
+      
+        <content type="html"><![CDATA[<h1>循环与条件</h1><p>让我们考虑一个稍微复杂一点的例子：</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">loop:</span><br><span class="line">    add  edx, DWORD PTR [rax]</span><br><span class="line">    add  rax, 4</span><br><span class="line">    cmp  rax, rcx</span><br><span class="line">    jne  loop</span><br></pre></td></tr></table></figure><p>它会对32位整数数组进行求和，就像简单的for循环一样。</p><p>循环体是<code>add edx, DWORD PTR [rax]</code>：该指令根据迭代器<code>rax</code>加载数据，并将其累加到累加器<code>edx</code>。接下来，我们通过<code>add  rax, 4</code>将迭代器向前移动4个字节。然后，一件稍微复杂一些的事情发生了。</p><h2 id="跳转">跳转</h2><p>汇编语言没有高级语言所具有的if-s、for-s、函数或其他流控制结构。它所拥有的是<code>goto</code>，在低级编程世界中，它的另一个名字<strong>跳转</strong>（Jump）更为出名。</p><p>跳转将指令指针移动到由其操作数指定的位置。这个位置可以是内存中的绝对地址，相对于当前地址的相对地址，甚至可以是在运行时计算的地址。为了避免直接管理这些地址的麻烦，你可以用后面跟着<code>:</code>的字符串来标记任何指令，然后将此字符串用作标签，当转换为机器代码时，该标签将被该指令的相对地址所取代。</p><p>标签可以是任何字符串，但编译器没有创造性，在为标签选择名称时，通常只使用源代码中的行号和函数名。</p><p><strong>无条件跳转</strong><code>jmp</code>只能用于实现<code>while(true)</code>类型的循环或将程序的几个部分拼在一起。使用一系列<strong>条件跳转</strong>来实现实际的流控制。</p><p>在软件角度看，条件跳转的工作方式是：条件比较在某个地方被计算为bool值，并作为操作数传递给条件跳转。但在硬件中并不是这样实现的，条件运算会使用一个特殊的<code>FLAGS</code>寄存器，该寄存器首先需要通过执行某种检查的指令来填充。</p><p>在我们的示例中，<code>cmp  rax, rcx</code>将迭代器<code>rax</code>与数组结束指针<code>rcx</code>进行比较。这会更新<code>FLAGS</code>寄存器，然后该寄存器可以被用于<code>jne loop</code>，<code>jne</code>指令在该寄存器查找一个特定的位，该位表示这两个值是否相等，基于此位，决定是跳回到开始，还是继续到下一条指令，从而跳出循环。</p><h2 id="循环展开">循环展开</h2><p>你可能已经注意到了，上面循环的例子中，处理单个元素会有很多额外开销。在每个周期中，只执行了一条有用的指令，其他3条指令都在递增迭代器，并判断循环终止条件。</p><p>我们可以做的是通过将迭代操作分组来展开循环——相当于用C语言写这样的东西：</p><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i += <span class="number">4</span>) &#123;</span><br><span class="line">    s += a[i];</span><br><span class="line">    s += a[i + <span class="number">1</span>];</span><br><span class="line">    s += a[i + <span class="number">2</span>];</span><br><span class="line">    s += a[i + <span class="number">3</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>在汇编中，它看起来是这样的：</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">loop:</span><br><span class="line">    add  edx, [rax]</span><br><span class="line">    add  edx, [rax+4]</span><br><span class="line">    add  edx, [rax+8]</span><br><span class="line">    add  edx, [rax+12]</span><br><span class="line">    add  rax, 16</span><br><span class="line">    cmp  rax, rsi</span><br><span class="line">    jne  loop</span><br></pre></td></tr></table></figure><p>现在我们只需要为每4条有效指令提供3条循环控制指令（从1/4到4/7的效率提升），并且循环展开可以一直做，直到额外开销几乎减少为零。</p><p>在实践中，展开循环并不总是能提高效率，因为现代处理器实际上并不是一个接一个地执行指令，而是维护一个<a href="https://en.algorithmica.org/hpc/pipelining/">挂起指令的队列</a>，这样两个独立的操作就可以同时执行，而无需等待彼此完成。</p><p>我们的例子也是如此：展开后的真正加速不会是四倍，因为递增计数器和循环结束检查的操作独立于循环体，可以调度成与循环体并行运行。但在某些情况下，要求编译器做循环展开可能仍然是有益的。</p><h2 id="另一种方法">另一种方法</h2><p>不必显式地使用<code>cmp</code>或类似的指令来进行条件跳转。许多其他指令也会读取或修改<code>FLAGS</code>寄存器，有时使能可选的异常检查也会修改<code>FLAGS</code>寄存器。</p><p>例如，<code>add</code>会设置多个标志，表示结果是否为零、是否为负、是否发生上溢或下溢等。利用这种机制，编译器通常会生成这样的循环汇编代码：</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    mov  rax, -100  ; replace 100 with the array size</span><br><span class="line">loop:</span><br><span class="line">    add  edx, DWORD PTR [rax + 100 + rcx]</span><br><span class="line">    add  rax, 4</span><br><span class="line">    jnz  loop       ; checks if the result is zero</span><br></pre></td></tr></table></figure><p>这段代码对一般人来说可读性稍差，但它在循环部分减少了一条指令，这可能有助于提升性能。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 高性能计算 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> HPC </tag>
+            
+            <tag> AMH </tag>
+            
+            <tag> 汇编 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>现代硬件算法[2.2]: 汇编语言</title>
+      <link href="/2023/05/16/HPC-2-2-AMH-AssemblyLanguage/"/>
+      <url>/2023/05/16/HPC-2-2-AMH-AssemblyLanguage/</url>
+      
+        <content type="html"><![CDATA[<h1>汇编语言</h1><p>CPUs由<strong>机器语言</strong>（machine language）控制，机器语言只是一个二进制编码指令流，用于指定</p><ul><li><p>指令号（称为<strong>操作码</strong>（opcode））</p></li><li><p>它的<strong>操作数</strong>（operands）是什么（如果有的话）</p></li><li><p>以及将结果存储在哪里（如果产生了结果）</p></li></ul><p>一种更人性化的机器语言，称为<strong>汇编语言</strong>（assembly language），使用助记码来指代机器码指令，使用符号名来指代寄存器和其他存储位置。</p><p>让我们直接开始，下面是使用Arm汇编进行两数相加<code>*c = *a + *b</code>的操作：</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">; *a = x0, *b = x1, *c = x2</span><br><span class="line">ldr w0, [x0]    ; load 4 bytes from wherever x0 points into w0</span><br><span class="line">ldr w1, [x1]    ; load 4 bytes from wherever x1 points into w1</span><br><span class="line">add w0, w0, w1  ; add w0 with w1 and save the result to w0</span><br><span class="line">str w0, [x2]    ; write contents of w0 to wherever x2 points</span><br></pre></td></tr></table></figure><p>下面是x86汇编执行相同的加法操作：</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">; *a = rsi, *b = rdi, *c = rdx </span><br><span class="line">mov eax, DWORD PTR [rsi]  ; load 4 bytes from wherever rsi points into eax</span><br><span class="line">add eax, DWORD PTR [rdi]  ; add whatever is stored at rdi to eax</span><br><span class="line">mov DWORD PTR [rdx], eax  ; write contents of eax to wherever rdx points</span><br></pre></td></tr></table></figure><p>汇编非常简单，因为与高级编程语言相比，它没有太多语法结构。从上面的例子中可以观察到：</p><ul><li><p>程序是一系列指令，每一个指令都写成指令名+可变数量的操作数的形式；</p></li><li><p><code>[reg]</code>语法用于“解引用”存储在寄存器中的指针，在x86上，你需要在其前面加上大小信息（这里的<code>DWORD</code>表示32 bit）；</p></li><li><p><code>;</code>符号用于行注释，类似于其他语言中的<code>#</code>和<code>//</code>；</p></li></ul><p>汇编是一种非常简单的语言，因为它需要这样。它尽可能地反映机器语言，机器代码和汇编之间几乎有1:1的对应关系。事实上，你可以使用一个名为<strong>反汇编</strong>[1]（disassembly）的过程将任何编译后的程序转换回其汇编形式，但是所有非必要的东西（如注释）都不会被保留。</p><p>请注意，上面的两个代码片段的差异不仅在于不同的语法。两者都是由编译器生成的优化代码，但Arm版本使用了4条指令，而x86版本使用了3条。<code>add eax, [rdi]</code>指令就是所谓的<strong>融合指令</strong>（fused instruction），它一次完成加载和相加操作，这是CISC可以提供的好处之一。</p><p>由于指令集架构之间的差异远不止这一个，因此从现在开始，在本书的剩余部分，我们将只提供x86的示例，这可能是我们大多数读者都会优化的，尽管许多引入的概念都与架构无关。</p><h2 id="指令与寄存器">指令与寄存器</h2><p>由于历史原因，大多数汇编语言中的指令助记符都非常简洁。当人们习惯于手工编写汇编并重复编写同一组通用指令时，少输入一个字符就离发疯更远一步。</p><p>例如，<code>mov</code>表示“存储/加载一个字”，<code>inc</code>表示“递增1”，<code>mul</code>表示“乘法”，<code>idiv</code>表示“整数除法”。您可以在这个<a href="https://www.felixcloutier.com/x86/">指令参考</a>中按名称查找指令的描述，但大多数指令都会执行你认为的字面意义上的操作。</p><p>大多数指令将结果写入第一个操作数，该操作数也可以参与计算，就像我们之前看到的<code>add eax, [rdi]</code>示例一样。操作数可以是寄存器、常数值或内存地址。</p><p>寄存器（registers）被命名为<code>rax</code>、<code>rbx</code>、<code>rcx</code>、<code>rdx</code>、<code>rdi</code>、<code>rsi</code>、<code>rbp</code>、<code>rsp</code>和<code>r8</code>-<code>r15</code>，总共16个寄存器。由于历史原因，“字母”寄存器的命令是这样来的：<code>rax</code>是累加器（accumulator），<code>rcx</code>是计数器（counter），<code>rdx</code>是数据（data）等等——当然，它们不必仅用于这些功能。</p><p>还有32位、16位和8位寄存器具有类似的名称（<code>rax</code>→ <code>eax</code>→ <code>ax</code>→ <code>al</code>）。它们不是完全分离的，而是复用的：<code>rax</code>的最低32位是<code>eax</code>，<code>eax</code>的最低16位是<code>ax</code>，依此类推。这样做是为了在保持兼容性的同时节省芯片空间，这也是编译型编程语言中基本类型的类型转换通常是零成本的原因。</p><p>这些只是通用（general-purpose）寄存器，除了<a href="https://en.algorithmica.org/hpc/architecture/functions/">一些特殊情况</a>，你可以在大多数情况下随意使用。除此之外，还有一组单独的寄存器用于浮点运算，一组非常宽的寄存器用于矢量扩展，以及一些特殊寄存器用于流控制，后面我们会讲到这些内容。</p><p>常量就是整数值或浮点值：<code>42</code>、<code>0x2a</code>、<code>3.14</code>、<code>6.02e23</code>。它们通常被称为立即值（immediate value），因为它们可以直接嵌入到机器代码中。因为它可能会大大增加指令编码的复杂性，所以有些指令不支持立即值，或者只允许使用它们的固定子集。在某些情况下，您必须将常数值加载到寄存器中，然后使用寄存器而不是立即数。</p><p>除了数值，还有一些字符串常量，如<code>hello</code>或<code>world\n</code>，它们有自己的一小部分操作，但这是汇编语言中一个有点偏僻的角落，我们不打算在这里探讨。</p><h2 id="移动数据">移动数据</h2><p>一些指令可能具有相同的助记符，但具有不同的操作数类型，在这种情况下，它们被视为不同的指令，因为它们可能执行不太相同的操作，执行时间也不同。<code>mov</code>指令就是一个生动的例子，它有大约20种不同的形式，都与移动数据有关：要么在内存和寄存器之间，要么只在两个寄存器之间。尽管名字是“移动”，但它不会将值<strong>移动</strong>到寄存器中，而是<strong>复制</strong>它，保留原始值。</p><p>当用于在两个寄存器之间复制数据时，<code>mov</code>指令会在内部执行寄存器重命名（register renaming），通知CPU寄存器X引用的值实际上存储在寄存器Y中，而不会造成任何额外的延迟，除了指令读取和指令译码本身。出于同样的原因，交换两个寄存器的<code>xchg</code>指令也不需要任何代价。</p><p>正如我们在上面使用融合<code>add</code>指令所看到的那样，不必对每个内存操作都使用mov：一些算术指令方便地支持将内存地址作为操作数。</p><h2 id="寻址方式">寻址方式</h2><p>内存寻址是通过<code>[]</code>运算符完成的，但它可以做的不仅仅是将存储在寄存器中的值重新解释为内存地址。地址操作数在语法上最多可以用4个显式参数来表示：</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SIZE PTR [base + index * scale + displacement]</span><br></pre></td></tr></table></figure><p>其中<code>displacement</code>是一个整数常数，<code>scale</code>可以是2、4或8。它所做的是计算指针<code>base + index * scale + displacement</code>，并对它解引用。</p><p>使用复杂寻址最多比直接解引用指针<a href="https://en.algorithmica.org/hpc/cpu-cache/pointers/">慢一个周期</a>，并且当您有一个结构体数组并希望加载其第i个元素的特定字段时，复杂寻址可能会很有用。</p><p>寻址运算符需要以大小说明符为前缀，以表示需要多少数据位：</p><ul><li><code>BYTE</code>表示8位</li><li><code>WORD</code>表示16位</li><li><code>DWORD</code>表示32位</li><li><code>QWORD</code>表示64位</li></ul><p>还有一种更罕见的<code>TBYTE</code>用于80位，<code>XMMWORD</code>、<code>YMMWORD</code>和<code>ZMMORD</code>分别用于<a href="https://en.algorithmica.org/hpc/simd/">128、256和512位</a>。所有这些类型都不必一定用大写字母书写，但这是大多数编译器的默认形式。</p><p>地址计算本身通常很有用：<code>lea</code>（load effective address）指令在一个时钟周期内计算操作数的内存地址并将其存储在寄存器中，而无需进行任何实际的内存操作。虽然它的预期用途是实际内存地址的计算，但它也经常被用作算术技巧，否则相同的算数运算会涉及到1次乘法运算，2次加法运算——例如，你可以用它乘以3、5和9。</p><p>它也经常作为<code>add</code>的替代，它可以将结果移动到其他地方而不需要单独的mov指令：<code>add</code>只在两个寄存器<code>a+=b</code>模式下工作，而<code>lea</code>允许你执行<code>a=b+c</code>（如果其中一个是常数，甚至可以执行<code>a=b+c+d</code>）。</p><h2 id="替代语法">替代语法</h2><p>实际上，有多个汇编器（assemblers，将汇编代码转换为机器代码的程序）使用不同的汇编语言，但现在只有两种x86语法被广泛使用。它们以使用它们并在那个时代对编程产生主导影响的两家公司的名字命名：</p><ul><li>AT&amp;T语法，默认情况下被所有Linux工具使用。</li><li>Intel语法，默认情况下，当然，被英特尔使用。</li></ul><p>这些语法有时也被分别称为<strong>GAS</strong>和<strong>NASM</strong>，由使用它们的两个主要汇编器（<em>GNU Assembler</em> 和 <em>Netwide Assembler</em>）的名称命名。</p><p>我们在本章中使用了Intel语法，并将在本书的其余部分继续使用它。为了进行比较，以下是AT&amp;T语法中相同的<code>*c=*a+*b</code>示例的样子：</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">movl (%rsi), %eax</span><br><span class="line">addl (%rdi), %eax</span><br><span class="line">movl %eax, (%rdx)</span><br></pre></td></tr></table></figure><p>主要差异可总结如下：</p><ul><li><p>最后一个操作数时目标操作数；</p></li><li><p>寄存器和常量需要分别以<code>%</code>和<code>$</code>作为前缀（例如，<code>addl $1, %rdx</code>递增<code>rdx</code>）；</p></li><li><p>内存寻址看起来是这样的：<code>displacement(%base, %index, scale)</code>；</p></li><li><p><code>;</code>和<code>#</code>都可以用于行注释，<code>/* */</code>也可以用于块注释。</p></li></ul><p>而且，最重要的是，在AT&amp;T语法中，指令名称需要<strong>加后缀</strong>（<code>addq</code>、<code>movl</code>、<code>cmpq</code>等），以指定要操作的操作数尺寸：</p><ul><li><code>b</code> = byte (8 bit)</li><li><code>w</code> = word (16 bit)</li><li><code>l</code> = long (32 bit 整数 或 64-bit 浮点数)</li><li><code>q</code> = quad (64 bit)</li><li><code>s</code> = single (32-bit 浮点数)</li><li><code>t</code> = ten bytes (80-bit 浮点数)</li></ul><p>在Intel语法中，此信息是从操作数推断出来的（这就是为什么你还是要指定指针的大小）。</p><p>大多数生成或使用x86汇编的工具都可以同时使用这两种语法，所以您可以选择更喜欢的一种，不必过于担心。</p><h2 id="注释">注释</h2><p>[1] 在Linux上，要反汇编已编译的程序，可以调用<code>objdump -d &#123;path to binary&#125;</code>。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 高性能计算 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> HPC </tag>
+            
+            <tag> AMH </tag>
+            
+            <tag> 汇编 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>现代硬件算法[2.1]: 指令集体系结构</title>
+      <link href="/2023/05/12/HPC-2-1-AMH-InstructionSetArch/"/>
+      <url>/2023/05/12/HPC-2-1-AMH-InstructionSetArch/</url>
+      
+        <content type="html"><![CDATA[<h1>指令集架构</h1><p>作为软件工程师，我们绝对喜欢构造和使用抽象。</p><p>想象一下当你加载一个URL时会发生多少事情。你在键盘上打字；按键动作被操作系统以某种方式检测到并发送到浏览器；浏览器解析URL并要求操作系统进行网络请求；然后是DNS、路由、TCP、HTTP和所有其他OSI层；浏览器解析HTML；JavaScript发挥其魔力；页面的一些表示被发送到GPU以进行渲染；图像帧被发送到监视器……这每一个步骤中可能还会涉及到做几十件更具体的事情。</p><p>抽象有助于我们将所有这些复杂性降低到一个单一接口，该接口描述了某个模块可以做什么事情，而不需要关心具体实现。这提供了双重好处：</p><ul><li><p>从事顶层模块开发的工程师只需要知道接口。</p></li><li><p>只要接口固定，从事模块本身开发的工程师就可以自由地优化和重构其实现。</p></li></ul><p>硬件工程师也喜欢抽象。CPU的抽象被称为<strong>指令集架构</strong>（instruction set architecture，ISA），它从程序员的角度定义了计算机应该如何工作。与软件接口类似，它让计算机工程师有能力改进现有的CPU设计，同时也让用户——我们程序员——相信以前行之有效的东西不会在新的芯片上不适用。</p><p>ISA本质上定义了硬件应该如何解释机器语言。除了指令及其二进制编码外，ISA还定义了寄存器的数量、长度和用途，内存模型和输入/输出模型。与软件接口类似，ISAs也可以扩展：事实上，它们经常更新，主要是以向后兼容的方式更新，以添加新的、更专用的指令，从而提高性能。</p><h2 id="RISC与CISC">RISC与CISC</h2><p>从历史上看，有许多相互竞争的ISAs在使用。但与<a href="https://xkcd.com/927/">字符编码和即时消息协议</a>不同，开发和维护一个完全独立的ISA成本高昂，因此主流CPU设计最终收敛到两个系列：</p><ul><li><p><strong>Arm</strong>芯片，几乎用于所有移动设备，以及其他类计算机的设备，如电视、智能冰箱、微波炉、汽车自动驾驶仪等。它们由一家同名的英国公司（IP授权）以及包括苹果和三星在内的多家电子制造商设计。</p></li><li><p><strong>x86</strong>芯片，几乎用于所有的服务器和台式机，只有几个显著的例外，如苹果的M1 MacBook、AWS的Graviton处理器和当前世界上<a href="https://zh.wikipedia.org/wiki/%E5%AF%8C%E5%B2%B3_(%E8%B6%85%E7%BA%A7%E8%AE%A1%E7%AE%97%E6%9C%BA)">速度最快的超级计算机</a>，所有这些都使用基于Arm的CPU。它们是由形成双头垄断的英特尔和AMD公司设计的。</p></li></ul><p>它们之间的主要区别在于架构的复杂性，这更多的是一种设计哲学，而不是一些严格定义的属性：</p><ul><li>Arm CPUs是<strong>精简指令集计算机</strong>（ <em>reduced</em> instruction set computers，RISC）。它们通过保持指令集的小型化和高度优化来提高性能，但是一些不太常见的操作必须用涉及多条指令的子程序来实现。</li><li>x86 CPUs是<strong>复杂指令集计算机</strong>（<em>complex</em> instruction set computers，CISC）。它们通过添加许多专用的指令来提高性能，但其中一些指令可能很少在实际程序中使用。</li></ul><p>RISC设计的主要优点是，它们可以产生更简单、更小的芯片，从而降低制造成本和功耗。所以毫不奇怪，市场自然地划分成：Arm主载了的以电池供电的通用设备，并将计算神经网络和伽罗瓦域的复杂任务留给了服务器级的高度专业化的x86。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 高性能计算 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> HPC </tag>
+            
+            <tag> AMH </tag>
+            
+            <tag> 指令集 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>现代C++ [7]: 自定义分配器</title>
       <link href="/2023/03/17/cpp-modern-7-CustomAllocator/"/>
       <url>/2023/03/17/cpp-modern-7-CustomAllocator/</url>
@@ -52,6 +139,33 @@
             <tag> C++ </tag>
             
             <tag> 内存顺序 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>现代硬件算法[2]: 计算机体系结构</title>
+      <link href="/2023/03/03/HPC-2-AMH-ComputerArchitecture/"/>
+      <url>/2023/03/03/HPC-2-AMH-ComputerArchitecture/</url>
+      
+        <content type="html"><![CDATA[<h1>计算机体系结构</h1><p>在我刚开始学习如何自己优化程序时，犯了一个很大的错误就是主要依赖经验主义方法。由于不了解计算机真正的工作原理，我会半随机地使用交换循环嵌套方式、重新排列算术、组合分支条件、显示使用内联函数等操作，或者遵循我从别人那里道听途说的各种其他性能优化技巧，盲目地希望性能有所提升。</p><p>不幸的是，大多数程序员都是这样做性能优化的。大多数关于性能的文本并不教你如何定性地思考软件性能。相反，它们会给你一些关于特定实现方法的一般性建议，而一般性的性能直觉显然是不够的。</p><p>如果我在学习算法编程之前学习了计算机体系结构，那么可能会为我节省数十甚至数百个小时。因此，即使大多数人对此不感兴趣，我们也将花费前几章学习CPU的工作原理，并开始学习汇编语言。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 高性能计算 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> HPC </tag>
+            
+            <tag> AMH </tag>
             
         </tags>
       
@@ -483,11 +597,11 @@
       
         <tags>
             
+            <tag> 指令集 </tag>
+            
             <tag> SIMD </tag>
             
             <tag> NEON </tag>
-            
-            <tag> 指令集 </tag>
             
             <tag> Assembly </tag>
             
@@ -514,11 +628,11 @@
       
         <tags>
             
+            <tag> 指令集 </tag>
+            
             <tag> SIMD </tag>
             
             <tag> NEON </tag>
-            
-            <tag> 指令集 </tag>
             
             <tag> Intrinsics </tag>
             
@@ -545,11 +659,11 @@
       
         <tags>
             
+            <tag> 指令集 </tag>
+            
             <tag> SIMD </tag>
             
             <tag> NEON </tag>
-            
-            <tag> 指令集 </tag>
             
         </tags>
       
