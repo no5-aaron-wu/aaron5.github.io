@@ -4,6 +4,62 @@
   
     
     <entry>
+      <title>现代硬件算法[3.5]: 吞吐量计算</title>
+      <link href="/2023/06/21/HPC-3-5-AMH-ThroughputComputing/"/>
+      <url>/2023/06/21/HPC-3-5-AMH-ThroughputComputing/</url>
+      
+        <content type="html"><![CDATA[<h1>吞吐量计算</h1><p>针对延迟的优化通常与针对吞吐量的优化大不相同：</p><ul><li>当优化数据结构查询算法、小型一次性算法或分支算法时，你需要<a href="https://en.algorithmica.org/hpc/pipelining/tables/">查询</a>所用指令的<strong>延迟</strong>，在脑海中构建计算的执行图，然后尝试重新组织它，使<strong>关键路径</strong>更短。</li><li>在优化<strong>热循环</strong>（hot loops）和大型数据集算法时，你需要查询所用指令的<strong>吞吐量</strong>，计算每次迭代每个指令的使用次数，确定其中哪一个是瓶颈，然后尝试重组循环，以减少其使用频率。</li></ul><p>最后一条建议仅适用于<strong>数据并行</strong>(data-parallel)循环，其中每次迭代都完全独立于前一次迭代。当连续迭代之间存在某种相互依赖性时，由于下一次迭代正在等待上一次迭代完成，因此可能存在由<a href="https://en.algorithmica.org/hpc/pipelining/hazards">数据冒险</a>导致的流水线停滞。</p><h2 id="例子">例子</h2><p>作为一个简单的例子，考虑对数组求和：</p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> s = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    s += a[i];</span><br></pre></td></tr></table></figure><p>让我们暂时假设编译器不会对这个循环进行<a href="https://en.algorithmica.org/hpc/simd">矢量化</a>，不存在<a href="https://en.algorithmica.org/hpc/cpu-cache/bandwidth">内存带宽</a>问题，并且循环是<a href="https://en.algorithmica.org/hpc/architecture/loops">展开</a>的，这样我们就不会因需要维护循环变量而支付任何额外的成本。在这种情况下，计算变得非常简单：</p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> s = <span class="number">0</span>;</span><br><span class="line">s += a[<span class="number">0</span>];</span><br><span class="line">s += a[<span class="number">1</span>];</span><br><span class="line">s += a[<span class="number">2</span>];</span><br><span class="line">s += a[<span class="number">3</span>];</span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure><p>我们能以多快的速度计算呢？每个元素正好需要一个周期，因为我们每次迭代都需要一个周期来<code>add</code>一个值到<code>s</code>。内存读取的延迟并不关键，因为CPU可以预取内存。</p><p>但速度可以比这更快。在我的CPU（ZEN 2）上，<code>add</code>的吞吐量为2<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow></mrow><mrow><mo stretchy="false">[</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></msup></mrow><annotation encoding="application/x-tex">^{[1]}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.888em;"></span><span class="mord"><span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.888em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">[</span><span class="mord mtight">1</span><span class="mclose mtight">]</span></span></span></span></span></span></span></span></span></span></span></span>，这意味着我们可以在每个时钟周期中执行两条<code>add</code>指令。但是上述代码做不到：当<code>s</code>被用来累加第<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span>个元素时，至少一个周期内它不能用于累加第<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">i+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7429em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>个元素。</p><p>解决方案是使用两个累加器，将奇数和偶数元素分别相加：</p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> s0 = <span class="number">0</span>, s1 = <span class="number">0</span>;</span><br><span class="line">s0 += a[<span class="number">0</span>];</span><br><span class="line">s1 += a[<span class="number">1</span>];</span><br><span class="line">s0 += a[<span class="number">2</span>];</span><br><span class="line">s1 += a[<span class="number">3</span>];</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="keyword">int</span> s = s0 + s1;</span><br></pre></td></tr></table></figure><p>现在，我们的超标量CPU可以同时执行这两个“线程”，我们的计算不再有任何限制吞吐量的关键路径。</p><h2 id="一般情况">一般情况</h2><p>如果一条指令的延迟为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span>，吞吐量为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi></mrow><annotation encoding="application/x-tex">y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span>，那么您将需要使用<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>⋅</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">x\cdot y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4445em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span>个累加器来使计算饱和。这也意味着您需要<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>⋅</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">x\cdot y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4445em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span>个逻辑寄存器来保持其值，这是CPU设计的重要考虑因素，即限制高延迟指令的最大可用执行单元数量。</p><p>此技术主要用于<a href="https://en.algorithmica.org/hpc/simd">SIMD</a>，而不用于标量代码。您可以<a href="https://en.algorithmica.org/hpc/simd/reduction/">归纳</a>上面的代码，来获得并比编译器更快地求和运算或其他reduction运算。</p><p>一般来说，在优化循环时，通常只有一个或几个<strong>执行端口</strong>（execution ports）要充分利用，然后围绕它们设计其余的循环。由于不同的指令可能使用不同的端口集，因此并不总是能搞清楚哪一个会被过度使用。在这种情况下，<a href="https://en.algorithmica.org/hpc/profiling/mca/">机器代码分析器</a>非常有助于发现小型汇编循环的瓶颈。</p><h2 id="备注">备注</h2><p>[1] 寄存器-寄存器<code>add</code>指令的吞吐量是4，但由于我们是从内存中读取其第二个操作数，因此它受到访存指令<code>mov</code>吞吐量的限制，<code>mov</code>的吞吐量在Zen 2上为2。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 高性能计算 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> HPC </tag>
+            
+            <tag> AMH </tag>
+            
+            <tag> Throughput </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>现代硬件算法[3.4]: 指令表</title>
+      <link href="/2023/06/21/HPC-3-4-AMH-InstructionTables/"/>
+      <url>/2023/06/21/HPC-3-4-AMH-InstructionTables/</url>
+      
+        <content type="html"><![CDATA[<h1>指令表</h1><p>执行阶段交错是数字电子学中的一个通用概念，它不仅应用于主CPU流水线，还应用于独立的指令和<a href="https://en.algorithmica.org/hpc/cpu-cache/mlp/">内存</a>级别。大多数执行单元都有自己的小流水线，可以在前一个指令后的一到两个周期接收另一条指令。</p><p>在这种情况下，需要使用两种不同的“代价”来评估指令：</p><ul><li><strong>延迟</strong>（latency）：需要多少个周期来获取指令的结果。</li><li><strong>吞吐量</strong>（Throughput）：平均每个周期可以执行多少指令</li></ul><p>你可以从称为<a href="https://www.agner.org/optimize/instruction_tables.pdf">指令表</a>的特殊文档中获得特定架构下指令的延迟和吞吐量。以下是我的Zen 2的一些示例值（对应32位操作数，可能存在差异）：</p><table><thead><tr><th style="text-align:center">Instruction</th><th style="text-align:center">Latency</th><th style="text-align:center">R-Throughput</th></tr></thead><tbody><tr><td style="text-align:center"><code>jmp</code></td><td style="text-align:center">-</td><td style="text-align:center">2</td></tr><tr><td style="text-align:center"><code>mov r, r</code></td><td style="text-align:center">-</td><td style="text-align:center">1/4</td></tr><tr><td style="text-align:center"><code>mov r, m</code></td><td style="text-align:center">4</td><td style="text-align:center">1/2</td></tr><tr><td style="text-align:center"><code>mov m, r</code></td><td style="text-align:center">3</td><td style="text-align:center">1</td></tr><tr><td style="text-align:center"><code>add</code></td><td style="text-align:center">1</td><td style="text-align:center">1/3</td></tr><tr><td style="text-align:center"><code>cmp</code></td><td style="text-align:center">1</td><td style="text-align:center">1/4</td></tr><tr><td style="text-align:center"><code>popcnt</code></td><td style="text-align:center">1</td><td style="text-align:center">1/4</td></tr><tr><td style="text-align:center"><code>mul</code></td><td style="text-align:center">3</td><td style="text-align:center">1</td></tr><tr><td style="text-align:center"><code>div</code></td><td style="text-align:center">13-28</td><td style="text-align:center">13-28</td></tr></tbody></table><p>一些注释：</p><ul><li>因为我们的已经习惯了“更多”意味着“更糟”的代价模型，所以人们大多使用吞吐量的<strong>倒数</strong>（reciprocals），而不是吞吐量。</li><li>如果某条指令执行地很频繁，则可以复制其执行单元以增加其吞吐量——甚至可以增加不止一个，但不高于<a href="https://en.algorithmica.org/hpc/architecture/layout/">解码宽度</a>。</li><li>某些指令的延迟为0。意味着这些指令用于控制调度程序，而不会到达执行阶段。它们仍然具有非零的吞吐量倒数值，因为<a href="https://en.algorithmica.org/hpc/architecture/layout/">CPU前端</a>仍然需要处理它们。</li><li>大多数指令都是流水线化的，如果它们的吞吐量倒数值为n，这通常意味着他们的执行单元可以在n个周期后接收一条新的指令（如果n小于1，则意味着有多个执行单元，所有执行单元都可以在下一个周期执行另一条指令）。<a href="https://en.algorithmica.org/hpc/arithmetic/division/">整数除法</a>是一个值得注意的例外：它要么是流水线化的很差，要么根本没有没有流水线化。</li><li>有些指令具有可变的延迟，这不仅取决于操作数的位宽，还取决于其值。对于涉及内存的操作（包括像<code>add</code>这样的融合操作），延迟通常指的是最佳情况（命中一级缓存）下的值。</li></ul><p>这其中还有许多重要的小细节，但目前介绍到这里就足够了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 高性能计算 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> HPC </tag>
+            
+            <tag> AMH </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>现代硬件算法[3.3]: 无分支程序设计</title>
       <link href="/2023/06/19/HPC-3-3-AMH-BranchlessProgramming/"/>
       <url>/2023/06/19/HPC-3-3-AMH-BranchlessProgramming/</url>
