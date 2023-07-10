@@ -4,6 +4,93 @@
   
     
     <entry>
+      <title>现代硬件算法[4.2]: 编译标志与编译目标</title>
+      <link href="/2023/07/07/HPC-4-2-AMH-FlagsAndTargets/"/>
+      <url>/2023/07/07/HPC-4-2-AMH-FlagsAndTargets/</url>
+      
+        <content type="html"><![CDATA[<h1>编译标志与编译目标</h1><p>从编译器获得高性能的第一步是要求它这么做，这是通过一百多个不同的编译器选项、属性和杂注来完成的。</p><h2 id="优化等级">优化等级</h2><p>GCC中的速度优化主要有四个半级别：</p><ul><li><code>-O0</code>是默认选项，不进行优化（尽管从某种意义上说，它确实在编译时间上做了优化）。</li><li><code>-O1</code>（别名为<code>-O</code>）做了一些“唾手可得”的优化，且几乎不影响编译时间。</li><li><code>-O2</code>使能所有已知几乎没有负面副作用并且编译时间时间相对合理的优化（这是大多数项目用于生产构建的选项）。</li><li><code>-O3</code>会做非常激进的优化，几乎使能所有GCC中实现的<strong>正确的</strong>优化。</li><li><code>-Ofast</code>在<code>-O3</code>优化的基础上，再加上一些优化标志，这些标志可能会破坏严格的标准规定，但对大多数应用程序并不至关重要（例如，浮点运算可能会被重新排列，从而使结果在尾数中偏离几位）。</li></ul><p>还有许多优化标志甚至没有包含在<code>-Ofast</code>中，因为它们只针对具体场景，默认情况下启用它们更有可能损害性能，而不是提高性能，我们将在下一节中讨论其中的一部分。</p><h2 id="指定目标平台">指定目标平台</h2><p>下一件你可能想做的事是告诉编译器更多关于这个代码应该在哪些计算机平台上运行的信息：平台集范围越小，优化效果越好。默认情况下，编译器将生成可以在任何相对较新（ &gt; 2000）的x86 CPU上运行的二进制文件。缩小范围的最简单方法是传递<code>-march</code>标志来指定确切的<strong>微体系结构</strong>（microarchitecture）：例如<code>-march=haswell</code>。如果你在执行二进制文件的同一台计算机上进行编译，则可以使用<code>-march=native</code>进行自动检测。</p><p>指令集通常是向后兼容的，因此通常指定需要支持的最老的微体系结构的名称就足够了。一种更稳健的方法是列出CPU保证具有的特定特性：如<code>-mavx2</code>，<code>-mpopcnt</code>。当您只想为特定机器调整程序，而不使用任何可能使其在不兼容的CPU上崩溃的指令时，可以使用<code>-mtune</code>标志（默认情况下，<code>-march=x</code>也意味着<code>-mtune=x</code>）。</p><p>也可以用pragmas代替编译标志，为编译单元指定编译选项：</p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> GCC optimize(<span class="meta-string">&quot;O3&quot;</span>)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> GCC target(<span class="meta-string">&quot;avx2&quot;</span>)</span></span><br></pre></td></tr></table></figure><p>当你想要在不增加整个项目的构建时间，只优化单个高性能过程时，这非常有用。</p><h2 id="多版本函数">多版本函数</h2><p>有时，您可能还想在单个库中提供几个特定架构的实现。您可以使用基于属性的语法在编译时自动在多版本函数之间进行选择：</p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">__attribute__(( <span class="built_in">target</span>(<span class="string">&quot;default&quot;</span>) )) <span class="comment">// fallback implementation</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcnt</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> s = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">32</span>; i++)</span><br><span class="line">        s += (x&gt;&gt;i&amp;<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">__attribute__(( <span class="built_in">target</span>(<span class="string">&quot;popcnt&quot;</span>) )) <span class="comment">// used if popcnt flag is enabled</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcnt</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> __builtin_popcount(x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>在Clang中，不能在源代码中使用pragmas设置目标和优化标志，但能以与GCC中相同的方式使用属性。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 高性能计算 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> HPC </tag>
+            
+            <tag> AMH </tag>
+            
+            <tag> 编译 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>现代硬件算法[4.1]: 编译阶段</title>
+      <link href="/2023/06/25/HPC-4-1-AMH-StageOfCompilation/"/>
+      <url>/2023/06/25/HPC-4-1-AMH-StageOfCompilation/</url>
+      
+        <content type="html"><![CDATA[<h1>编译阶段</h1><p>在直接跳到编译器优化（这是本章的大部分内容）之前，让我们先简要回顾一下“大局”。跳过无聊的部分，将C程序转化为可执行程序有4个阶段：</p><ul><li><strong>预处理</strong>（preprocessing）：宏展开，从头文件中提取包含的源代码，并从源代码中删除注释：<code>gcc-E Source.c</code>（将预处理的源代码输出到<code>stdout</code>）</li><li><strong>编译</strong>（compiling）：解析源代码，检查语法错误，将其转换为<strong>中间表示形式</strong>（intermediate representation，IR），执行优化，最后将其翻译为汇编语言：<code>gcc -S file.c</code>（生成<code>.S</code>文件）</li><li><strong>汇编</strong>（assembly）：将汇编语言转换为机器代码，除了像<code>printf</code>这样的外部函数调用外都被占位符取代：<code>gcc -c file.c</code>（生成一个<code>.o</code>文件，称为<strong>对象文件</strong>（object file））</li><li><strong>链接</strong>（linking）：最后通过插入函数调用的实际地址来解决函数调用问题，并生成一个可执行的二进制文件：<code>gcc -o binary file.c</code></li></ul><p>在这些阶段中的每一个阶段都有提高程序性能的可能性。</p><h2 id="程序间优化">程序间优化</h2><p>程序是逐个文件编译的，然后再将这些文件链接在一起。这样更容易也更快，因为你可以并行地完成这项工作，还可以缓存中间结果。</p><p>它还提供了将代码作为<strong>库</strong>（libraries）分发的能力，这些库可以是<strong>静态的</strong>（static），也可以是<strong>共享的</strong>（shared）：</p><ul><li>静态库只是预编译的对象文件的集合，编译器将这些文件与其他库合并以生成单个可执行文件，就像通常编译一样。</li><li>动态库或共享库是预编译的可执行文件，它们包含有关其可调用文件所在位置的附加元信息，运行时会解析这些信息。顾名思义，共享库允许在多个程序之间<strong>共享</strong>这些编译后的二进制文件。</li></ul><p>使用静态库的主要优点是，您可以执行各种<strong>过程间优化</strong>（interprocedural optimizations），这些优化需要比库函数签名更多的上下文，例如<a href="https://en.algorithmica.org/hpc/architecture/functions/">函数内联</a>或无用代码消除。要强制链接器查找并仅接受静态库，可以使用<code>-static</code>选项。</p><p>这个过程被称为<strong>链接时优化</strong>（link-time optimization，LTO），这是可能的，因为现代编译器还在对象文件中存储某种形式的<strong>中间表示</strong>（intermediate representation），这使得编译器能够对程序整体执行某些轻量级优化。这也允许在同一程序中使用不同的编译语言，如果编译器使用相同的中间表示，甚至可以跨语言进行优化。</p><p>LTO是一个相对较新的功能（它大约在2014年才出现在GCC中），且还远远不够完美。在C和C++中，确保不因单独编译而损失性能的方法是创建一个仅含头文件的库（例如Eigen）。顾名思义，它们只有头文件，包含所有函数的完整定义，因此通过简单地包含它们，编译器可以执行所有可能的优化。尽管每次都必须从头开始重新编译库代码，但这种方法保留了完全的控制权，并确保不会损失任何性能。</p><h2 id="检查输出">检查输出</h2><p>检查每个阶段的输出可以对程序中发生的事情产生有用的见解。</p><p>可以通过将<code>-S</code>标志传递给编译器来将源代码编译为汇编代码，编译器将生成一个可读的<code>*.S</code>文件。如果设置了<code>-fverbose-asm</code>标志，该文件还将包含关于源代码行号和正在使用的变量信息的编译器注释。如果只是一小段代码，而你又懒得编译它，你可以使用<a href="https://godbolt.org/">Compiler Explorer</a>，这是一个非常方便的在线工具，可以将源代码转换为汇编代码，按颜色突出显示汇编代码块，它包括一个小的x86指令集，还可以选择大量其他编译器、目标和语言。</p><p>除了汇编之外，另一个最有用的抽象级别是编译器执行优化的中间表示。IR定义了计算本身的流程，且对架构特性，如寄存器数量或特定指令集等的依赖性要小得多。检查这些内容通常很有用，可以深入了解编译器如何看待你的程序，但这有点超出了本书的范围。</p><p>在本章中我们主要使用<a href="https://gcc.gnu.org/">GCC</a>，但也会在必要时尝试附上<a href="https://clang.llvm.org/">Clang</a>的示例。这两个编译器在很大程度上相互兼容，在大多数情况下只是在一些优化标志和次要的语法细节上有所不同。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 高性能计算 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> HPC </tag>
+            
+            <tag> AMH </tag>
+            
+            <tag> 编译 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>现代硬件算法[4]: 编译</title>
+      <link href="/2023/06/25/HPC-4-AMH-Compilation/"/>
+      <url>/2023/06/25/HPC-4-AMH-Compilation/</url>
+      
+        <content type="html"><![CDATA[<h1>编译</h1><p><a href="https://en.algorithmica.org/hpc/architecture/assembly">学习汇编语言</a>的主要好处不是能够用汇编语言编写程序，而是了解编译代码过程中发生的事情及其对性能的影响。</p><p>在极少数情况下，我们确实需要切换到手写汇编以获得最大性能，但大多数情况下，编译器能够自己生成接近最佳的代码。当编译器没有这样做时，通常是因为程序员对问题的认知比能从源代码中推断出的要多，且未能将这些额外信息传达给编译器。</p><p>在本章中，我们将讨论让编译器完全按照我们的要求进行编译的复杂性，以及收集可以指导进一步优化的有用信息的复杂性。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 高性能计算 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> HPC </tag>
+            
+            <tag> AMH </tag>
+            
+            <tag> 编译 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>现代硬件算法[3.5]: 吞吐量计算</title>
       <link href="/2023/06/21/HPC-3-5-AMH-ThroughputComputing/"/>
       <url>/2023/06/21/HPC-3-5-AMH-ThroughputComputing/</url>
