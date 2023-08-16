@@ -1,0 +1,346 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>现代硬件算法[6.2]: IEEE-754 浮点数 | 旭穹の陋室</title><meta name="keywords" content="HPC,AMH,arithmetic,float,IEEE 754"><meta name="author" content="旭穹"><meta name="copyright" content="旭穹"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="IEEE-754 浮点数 当我们设计自定义的浮点类型时，省略了很多重要的小细节：  在整个数据中我们应该分配多少比特用于表示尾数部分和指数部分？ 符号位为0表示的是正数还是负数？ 这些比特是如何在内存中存储的？ 我们怎么表示0？ 舍入操作是怎么进行的？ 如果我们试图除以0会发生什么？ 如果我们试图对一个负数进行开方会发生什么？ 如果对最大可表示的数继续增大会发生什么？ 我们可以检测到上述行为的发生">
+<meta property="og:type" content="article">
+<meta property="og:title" content="现代硬件算法[6.2]: IEEE-754 浮点数">
+<meta property="og:url" content="https://no5-aaron-wu.github.io/2023/08/03/HPC-6-2-AMH-IEEE754Floats/index.html">
+<meta property="og:site_name" content="旭穹の陋室">
+<meta property="og:description" content="IEEE-754 浮点数 当我们设计自定义的浮点类型时，省略了很多重要的小细节：  在整个数据中我们应该分配多少比特用于表示尾数部分和指数部分？ 符号位为0表示的是正数还是负数？ 这些比特是如何在内存中存储的？ 我们怎么表示0？ 舍入操作是怎么进行的？ 如果我们试图除以0会发生什么？ 如果我们试图对一个负数进行开方会发生什么？ 如果对最大可表示的数继续增大会发生什么？ 我们可以检测到上述行为的发生">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://no5-aaron-wu.github.io/images/ba_08.webp">
+<meta property="article:published_time" content="2023-08-03T09:40:09.000Z">
+<meta property="article:modified_time" content="2023-08-16T06:35:45.898Z">
+<meta property="article:author" content="旭穹">
+<meta property="article:tag" content="HPC">
+<meta property="article:tag" content="AMH">
+<meta property="article:tag" content="arithmetic">
+<meta property="article:tag" content="float">
+<meta property="article:tag" content="IEEE 754">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://no5-aaron-wu.github.io/images/ba_08.webp"><link rel="shortcut icon" href="/images/ania_128x128.ico"><link rel="canonical" href="https://no5-aaron-wu.github.io/2023/08/03/HPC-6-2-AMH-IEEE754Floats/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="zlQaq8XLp3Oj3DgDnpkA0mCzGbGvflp_U-vZVql_E-E"/><meta name="msvalidate.01" content="EAE2F4C7507064F526B5924DA5DCD005"/><meta name="baidu-site-verification" content="code-XsSJQ4q5sT"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-6DDC82R7DV"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-6DDC82R7DV');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#009f6a","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '现代硬件算法[6.2]: IEEE-754 浮点数',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2023-08-16 06:35:45'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mouse.css"><style>#article-container.post-content h1:before, h2:before, h3:before, h4:before, h5:before, h6:before { -webkit-animation: avatar_turn_around 1s linear infinite; -moz-animation: avatar_turn_around 1s linear infinite; -o-animation: avatar_turn_around 1s linear infinite; -ms-animation: avatar_turn_around 1s linear infinite; animation: avatar_turn_around 1s linear infinite; }</style><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,300&display=swap" rel="stylesheet"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="wizard-scene"><div class="wizard-objects"><div class="wizard-square"></div><div class="wizard-circle"></div><div class="wizard-triangle"></div></div><div class="wizard"><div class="wizard-body"></div><div class="wizard-right-arm"><div class="wizard-right-hand"></div></div><div class="wizard-left-arm"><div class="wizard-left-hand"></div></div><div class="wizard-head"><div class="wizard-beard"></div><div class="wizard-face"><div class="wizard-adds"></div></div><div class="wizard-hat"><div class="wizard-hat-of-the-hat"></div><div class="wizard-four-point-star --first"></div><div class="wizard-four-point-star --second"></div><div class="wizard-four-point-star --third"></div></div></div></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">99</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">85</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/ba_08.webp')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">旭穹の陋室</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">现代硬件算法[6.2]: IEEE-754 浮点数</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-03T09:40:09.000Z" title="发表于 2023-08-03 09:40:09">2023-08-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-08-16T06:35:45.898Z" title="更新于 2023-08-16 06:35:45">2023-08-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97/">高性能计算</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="现代硬件算法[6.2]: IEEE-754 浮点数"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="IEEE-754-浮点数">IEEE-754 浮点数</h2>
+<p>当我们设计<a target="_blank" rel="noopener" href="https://en.algorithmica.org/hpc/arithmetic/float">自定义的浮点类型</a>时，省略了很多重要的小细节：</p>
+<ul>
+<li>在整个数据中我们应该分配多少比特用于表示尾数部分和指数部分？</li>
+<li>符号位为0表示的是正数还是负数？</li>
+<li>这些比特是如何在内存中存储的？</li>
+<li>我们怎么表示0？</li>
+<li>舍入操作是怎么进行的？</li>
+<li>如果我们试图除以0会发生什么？</li>
+<li>如果我们试图对一个负数进行开方会发生什么？</li>
+<li>如果对最大可表示的数继续增大会发生什么？</li>
+<li>我们可以检测到上述行为的发生吗？</li>
+</ul>
+<p>早期的计算机并不支持浮点运算，当供应商开始添加浮点协处理器时，它们对这些问题应该如何解答有些不同的看法。由于实现方式多样，使得浮点运算难以可靠和便携地使用，尤其对于那些开发编译器的人来说。</p>
+<p>1985年，电气和电子工程师协会（IEEE）发布了一项名为IEEE 754的标准，这项标准为浮点数应该如何工作提供了正式的规范，这一规范很快就被供应商接受并在几乎所有的通用计算机中使用。</p>
+<h2 id="浮点格式">浮点格式</h2>
+<p>与我们自己实现的浮点类型类似，硬件浮点类型也使用一个位来表示符号（sign），同时使用可变数量的位来表示指数（exponent）和尾数（mantissa）部分。例如，在标准的32位浮点数编码中，它使用第一个（最高）位来表示符号，然后使用接下来的8位来表示指数，最后使用剩下的23位来表示尾数。</p>
+<p><img src="/2023/08/03/HPC-6-2-AMH-IEEE754Floats/float.svg" alt></p>
+<p>浮点数采用这样的固定存储顺序的原因是，有助于比较和排序，你可以使用类似于<a target="_blank" rel="noopener" href="https://en.algorithmica.org/hpc/arithmetic/integer">无符号整数</a>的比较器电路来进行操作，除了在其中一个数是负数时可能需要反转一些位。</p>
+<p>出于同样的原因，指数是有偏置的（biased）：&quot;biased&quot;在这里的意思是指数部分实际的值等于存储的值减去一个固定的偏移值，这个偏移值在32位浮点数中为127。这样做的目的是使得具有负指数部分的浮点数也可以使用无符号整数进行存储。以上面图片中的例子为例：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo stretchy="false">(</mo><mo>−</mo><mn>1</mn><msup><mo stretchy="false">)</mo><mn>0</mn></msup><mo>×</mo><msup><mn>2</mn><mrow><mn>0111110</mn><msub><mn>0</mn><mn>2</mn></msub><mo>−</mo><mn>127</mn></mrow></msup><mo>×</mo><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><msup><mn>2</mn><mrow><mo>−</mo><mn>2</mn></mrow></msup><mo stretchy="false">)</mo><mo>=</mo><msup><mn>2</mn><mrow><mn>124</mn><mo>−</mo><mn>127</mn></mrow></msup><mo>×</mo><mn>1.25</mn><mo>=</mo><mfrac><mn>1.25</mn><mn>8</mn></mfrac><mo>=</mo><mn>0.15625</mn></mrow><annotation encoding="application/x-tex">(-1)^0 × 2^{01111100_2-127} × (1 + 2^{-2}) = 2^{124-127} × 1.25 = \frac{1.25}{8} = 0.15625
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1141em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">−</span><span class="mord">1</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.9474em;vertical-align:-0.0833em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0111110</span><span class="mord mtight"><span class="mord mtight">0</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3173em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mbin mtight">−</span><span class="mord mtight">127</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1141em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">2</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.9474em;vertical-align:-0.0833em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">124</span><span class="mbin mtight">−</span><span class="mord mtight">127</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.25</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0074em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1.25</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.15625</span></span></span></span></span></p>
+<p>IEEE 754 及随后的一些标准定义了不止一种尺寸的浮点表示，最常用的如下：</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Sign</th>
+<th>Exponent</th>
+<th>Mantissa</th>
+<th>Total bits</th>
+<th>Approx. decimal digits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>single</td>
+<td>1</td>
+<td>8</td>
+<td>23</td>
+<td>32</td>
+<td>~7.2</td>
+</tr>
+<tr>
+<td>double</td>
+<td>1</td>
+<td>11</td>
+<td>52</td>
+<td>64</td>
+<td>~15.9</td>
+</tr>
+<tr>
+<td>half</td>
+<td>1</td>
+<td>5</td>
+<td>10</td>
+<td>16</td>
+<td>~3.3</td>
+</tr>
+<tr>
+<td>extended</td>
+<td>1</td>
+<td>15</td>
+<td>64</td>
+<td>80</td>
+<td>~19.2</td>
+</tr>
+<tr>
+<td>quadruple</td>
+<td>1</td>
+<td>15</td>
+<td>112</td>
+<td>128</td>
+<td>~34.0</td>
+</tr>
+<tr>
+<td>bfloat16</td>
+<td>1</td>
+<td>8</td>
+<td>7</td>
+<td>16</td>
+<td>~2.3</td>
+</tr>
+</tbody>
+</table>
+<p>IEEE 754标准中定义的不同精度的浮点数在实际硬件中的支持情况不同：</p>
+<ul>
+<li>大部分的中央处理器（CPU）都支持单精度和双精度浮点数计算，这也是C语言中的<code>float</code>和<code>double</code>类型所对应的精度。</li>
+<li>扩展格式（Extended format）主要在x86架构中使用，并在C语言中以<code>long double</code>类型存在。然而，在Arm架构的CPU中，<code>long double</code> 类型会退化成双精度。64位的尾数（mantissa）的选择是为了确保每个<code>long long</code>整数可以被精确表示。此外，还有一种分配了32位尾数的40位格式。</li>
+<li>四倍精度（Quadruple）和256位的“八倍”（octuple）精度格式主要用于特定的科学计算，普通的硬件并不支持。</li>
+<li>半精度（Half-precision）只支持一小部分的操作，主要应用在诸如机器学习、特别是神经网络的领域，因为这些应用需要执行大量的计算，但并不需要高精度。</li>
+<li>半精度正在逐渐被bfloat16类型所取代，它牺牲了3位尾数位，但数值范围与单精度（single）相同，这使得它可以与单精度互操作。它主要被一些专用硬件所采用，如张量处理单元（TPU）、现场可编程门阵列（FPGA）和图形处理器（GPU）。&quot;bfloat&quot;这个名字来源于“<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Google_Brain">Brain</a> float”。</li>
+</ul>
+<p>低精度类型需要的内存带宽较小，操作执行周期也通常较少（例如，相同的除法指令可能因数据类型不同需要x，y，或z个周期），因此在允许一定误差的情况下，使用它们更为合适。</p>
+<p>近年来，深度学习已经发展成为一个非常受欢迎且计算密集的领域，它对低精度矩阵乘法的需求巨大。这导致了制造商开发专门的硬件，或者至少添加支持这类计算的专门指令。最明显的例子就是Google开发了一个名为TPU（tensor processing unit，张量处理单元）的定制芯片，专门用于进行128x128的bfloat矩阵乘法运算，而NVIDIA在其新的GPU中添加了“张量核心”，能一次性完成4x4的矩阵乘法运算。</p>
+<p>除了尺寸大小不同，所有的浮点类型的行为基本相同。</p>
+<h2 id="处理Corner-Cases">处理Corner Cases</h2>
+<p>整数算术面对如除以零这样的corner cases的默认处理方式是崩溃，即程序会停止运行并报错。</p>
+<p>有时候，软件崩溃会反过来导致真正的物理崩溃。1996年<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Ariane_5">Ariane 5</a>火箭（欧洲宇航局用来运送物资到近地轨道的太空运载火箭）首次飞行以<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=gp_D8r-2hwk">爆炸</a>告终，原因是由于浮点数向整数转换溢出这个corner case的处理原则（停止计算并报错）导致了火箭的导航系统误以为自己偏离了航道，进行了大幅修正，最后导致价值200百万美元的火箭解体。</p>
+<p>有一种方法可以更优雅地处理这些corner cases，即通过硬件中断。这是一种硬件和操作系统级别的解决方案。当发生异常（如除以零或溢出）时，以下是会发生的事情：</p>
+<ul>
+<li>中央处理器(CPU)中断当前程序的执行；</li>
+<li>CPU将所有相关信息打包到一个名为“中断向量”的数据结构中；</li>
+<li>CPU将这个中断向量传递给操作系统，操作系统会根据情况处理：
+<ul>
+<li>如果存在处理代码（如“try-except”块），操作系统就会调用这些代码。</li>
+<li>如果不存在处理代码，操作系统就会结束程序的运行。</li>
+</ul>
+</li>
+</ul>
+<p>这是一种复杂的机制，值得专门写一篇文章来详细介绍。但是，因为这是一本关于性能的书，你只需要知道，这种机制相当慢，在实时系统（如导航火箭）中并不理想。因为在这种情况下，程序的运行速度和反应时间是至关重要的，如果花费太多时间处理异常，可能会有严重的后果。</p>
+<h2 id="NaN值，零值和无穷大">NaN值，零值和无穷大</h2>
+<p>浮点数算术通常要处理噪声较大的实际数据。在这种情况下，出现异常要比在整数算术中更常见。因此，处理这些异常的默认行为是不同的。与其让程序崩溃，不如在不中断程序执行的情况下用一个特殊值替换产生异常的结果（除非程序员明确要求中断程序）。</p>
+<p>这种特殊值的第一种类型是两个无穷大值：一个是正无穷大，另一个是负无穷大。如果一个操作的结果无法在可表示的范围内容纳，就会生成这两个无穷大值。在算术运算中，对无穷大值的处理如下：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo>−</mo><mi mathvariant="normal">∞</mi><mo>&lt;</mo><mi>x</mi><mo>&lt;</mo><mi mathvariant="normal">∞</mi><mspace linebreak="newline"></mspace><mi mathvariant="normal">∞</mi><mo>+</mo><mi>x</mi><mo>=</mo><mi mathvariant="normal">∞</mi><mspace linebreak="newline"></mspace><mi>x</mi><mo>÷</mo><mi mathvariant="normal">∞</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">-∞ &lt; x &lt; ∞ \\
+∞ + x = ∞ \\
+x ÷ ∞ = 0
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">∞</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord">∞</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord">∞</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord">∞</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">÷</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord">∞</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span></span></p>
+<p>当我们试图将一个值除以零时将会发生什么情况。因为我们有正无穷大和负无穷大，那么结果应该是正无穷大还是负无穷大呢？ 这个问题其实不存在歧义，因为有两个零：正零和负零（这在直觉上可能不易理解）。所以当我们将一个值除以零时，结果将取决于是正零还是负零。例如，一个正数除以正零的结果是正无穷大，而一个正数除以负零的结果是负无穷大。这是按照浮点数运算的标准来处理的。</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mfrac><mn>1</mn><mrow><mo>+</mo><mn>0</mn></mrow></mfrac><mo>=</mo><mo>+</mo><mi mathvariant="normal">∞</mi><mspace width="1em"><mfrac><mn>1</mn><mrow><mo>−</mo><mn>0</mn></mrow></mfrac><mo>=</mo><mo>−</mo><mi mathvariant="normal">∞</mi></mspace></mrow><annotation encoding="application/x-tex">\frac{1}{+0} = +∞ \quad \frac{1}{-0} = -∞
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.0908em;vertical-align:-0.7693em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">+</span><span class="mord">0</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0908em;vertical-align:-0.7693em;"></span><span class="mord">+</span><span class="mord">∞</span><span class="mspace" style="margin-right:1em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">0</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord">−</span><span class="mord">∞</span></span></span></span></span></p>
+<p>一些趣事：<code>x + 0.0</code> 不能被化简为<code>x</code>，但<code>x + (-0.0)</code>可以，所以在使用零作为初始值时，负零比正零更好，这样编译器更容易进行优化。至于原因，根据IEEE浮点数算术规定，<code>+0.0 + -0.0 == +0.0</code>，所以对于<code>x + 0.0</code>来说，如果<code>x = -0.0</code>，结果就会错误（两个零的存在经常令人头痛）。如果有需要，可以通过给编译器添加<code>-fno-signed-zeros</code>参数来禁用这种行为。</p>
+<p>零是通过将所有位都设为零来编码的（负零的符号位除外）。无穷是通过将所有的指数位设为1，所有的尾数位设为0来编码的，符号位用来区别正无穷和负无穷。</p>
+<p>还有一种特殊的值，即“非数字”（not-a-number，NaN）。这种值是由数学运算错误产生的结果，如：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>l</mi><mi>o</mi><mi>g</mi><mo stretchy="false">(</mo><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo separator="true">,</mo><mtext> </mtext><mi>a</mi><mi>r</mi><mi>c</mi><mi>c</mi><mi>o</mi><mi>s</mi><mo stretchy="false">(</mo><mn>1.01</mn><mo stretchy="false">)</mo><mo separator="true">,</mo><mtext> </mtext><mi mathvariant="normal">∞</mi><mo>−</mo><mi mathvariant="normal">∞</mi><mo separator="true">,</mo><mtext> </mtext><mo>−</mo><mi mathvariant="normal">∞</mi><mo>+</mo><mi mathvariant="normal">∞</mi><mo separator="true">,</mo><mtext> </mtext><mn>0</mn><mo>×</mo><mi mathvariant="normal">∞</mi><mo separator="true">,</mo><mtext> </mtext><mn>0</mn><mo>÷</mo><mn>0</mn><mo separator="true">,</mo><mtext> </mtext><mi mathvariant="normal">∞</mi><mo>÷</mo><mi mathvariant="normal">∞</mi></mrow><annotation encoding="application/x-tex">log(-1),\space arccos(1.01),\space ∞-∞, \space -∞+∞, \space 0 × ∞, \space 0 ÷ 0, \space ∞ ÷ ∞
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mopen">(</span><span class="mord">−</span><span class="mord">1</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">a</span><span class="mord mathnormal">rccos</span><span class="mopen">(</span><span class="mord">1.01</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">∞</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7778em;vertical-align:-0.1944em;"></span><span class="mord">∞</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">−</span><span class="mord">∞</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">∞</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">∞</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">÷</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">∞</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">÷</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord">∞</span></span></span></span></span></p>
+<p>NaN有两种类型：信号NaN（Signaling NaN）和静默NaN（Quiet NaN）。 信号NaN在产生后会（或不会，具体取决于FPU配置）触发一个异常，引发一个中断，程序就可以对这个异常进行处理。 静默NaN在算术运算中会静默的传播，即在其他数与NaN进行运算的结果仍然是NaN。</p>
+<p>在二进制中， 无论是信号NaN还是静默NaN，其阶码部分都全为1，但尾数部分并非全0（全0时，表示正负无穷），这样就可以将它们与无穷区分开来。所以表示NaN的编码有非常多（其中信号NaN的尾数最后一位为0，静默NaN的尾数最后一位为1）。</p>
+<h2 id="拓展阅读">拓展阅读</h2>
+<p>如果你有兴趣，你可以阅读经典的《<a target="_blank" rel="noopener" href="https://www.itu.dk/~sestoft/bachelor/IEEE754_article.pdf">What Every Computer Scientist Should Know About Floating-Point Arithmetic</a>》（1991）和<a target="_blank" rel="noopener" href="https://www.cs.tufts.edu/~nr/cs257/archive/florian-loitsch/printf.pdf">介绍Grisu3的论文</a>，Grisu3是目前最先进的浮点数打印技术。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">旭穹</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://no5-aaron-wu.github.io/2023/08/03/HPC-6-2-AMH-IEEE754Floats/">https://no5-aaron-wu.github.io/2023/08/03/HPC-6-2-AMH-IEEE754Floats/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://no5-aaron-wu.github.io" target="_blank">旭穹の陋室</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/HPC/">HPC</a><a class="post-meta__tags" href="/tags/AMH/">AMH</a><a class="post-meta__tags" href="/tags/arithmetic/">arithmetic</a><a class="post-meta__tags" href="/tags/float/">float</a><a class="post-meta__tags" href="/tags/IEEE-754/">IEEE 754</a></div><div class="post_share"><div class="social-share" data-image="/images/ba_08.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/images/wechatpay.png" target="_blank"><img class="post-qr-code-img" src="/images/wechatpay.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/images/alipay.png" target="_blank"><img class="post-qr-code-img" src="/images/alipay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/08/03/HPC-6-3-AMH-RoundingErrors/"><img class="prev-cover" src="/images/ba_09.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">现代硬件算法[6.3]: 舍入误差</div></div></a></div><div class="next-post pull-right"><a href="/2023/08/02/HPC-6-1-AMH-FloatingPointNumbers/"><img class="next-cover" src="/images/ba_07.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">现代硬件算法[6.1]: 浮点数</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/08/03/HPC-6-3-AMH-RoundingErrors/" title="现代硬件算法[6.3]: 舍入误差"><img class="cover" src="/images/ba_09.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-03</div><div class="title">现代硬件算法[6.3]: 舍入误差</div></div></a></div><div><a href="/2023/08/02/HPC-6-1-AMH-FloatingPointNumbers/" title="现代硬件算法[6.1]: 浮点数"><img class="cover" src="/images/ba_07.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-02</div><div class="title">现代硬件算法[6.1]: 浮点数</div></div></a></div><div><a href="/2023/08/11/HPC-6-7-AMH-IntegerDivision/" title="现代硬件算法[6.7]: 整数除法"><img class="cover" src="/images/ba_13.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-11</div><div class="title">现代硬件算法[6.7]: 整数除法</div></div></a></div><div><a href="/2023/08/09/HPC-6-6-AMH-IntegerNumbers/" title="现代硬件算法[6.6]: 整数"><img class="cover" src="/images/ba_12.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-09</div><div class="title">现代硬件算法[6.6]: 整数</div></div></a></div><div><a href="/2023/08/08/HPC-6-5-AMH-FastInverseSquareRoot/" title="现代硬件算法[6.5]: 快速平方根倒数"><img class="cover" src="/images/ba_11.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-08</div><div class="title">现代硬件算法[6.5]: 快速平方根倒数</div></div></a></div><div><a href="/2023/08/08/HPC-6-4-AMH-NewtonsMethod/" title="现代硬件算法[6.4]: 牛顿法"><img class="cover" src="/images/ba_10.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-08</div><div class="title">现代硬件算法[6.4]: 牛顿法</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">旭穹</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">99</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">85</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/no5-aaron-wu"><i class="fab fa-github"></i><span>我的github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:no5aaron@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#IEEE-754-%E6%B5%AE%E7%82%B9%E6%95%B0"><span class="toc-number">1.</span> <span class="toc-text">IEEE-754 浮点数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%AE%E7%82%B9%E6%A0%BC%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">浮点格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%84%E7%90%86Corner-Cases"><span class="toc-number">3.</span> <span class="toc-text">处理Corner Cases</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NaN%E5%80%BC%EF%BC%8C%E9%9B%B6%E5%80%BC%E5%92%8C%E6%97%A0%E7%A9%B7%E5%A4%A7"><span class="toc-number">4.</span> <span class="toc-text">NaN值，零值和无穷大</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%93%E5%B1%95%E9%98%85%E8%AF%BB"><span class="toc-number">5.</span> <span class="toc-text">拓展阅读</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/08/11/HPC-6-7-AMH-IntegerDivision/" title="现代硬件算法[6.7]: 整数除法"><img src="/images/ba_13.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[6.7]: 整数除法"/></a><div class="content"><a class="title" href="/2023/08/11/HPC-6-7-AMH-IntegerDivision/" title="现代硬件算法[6.7]: 整数除法">现代硬件算法[6.7]: 整数除法</a><time datetime="2023-08-11T09:43:26.000Z" title="发表于 2023-08-11 09:43:26">2023-08-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/09/HPC-6-6-AMH-IntegerNumbers/" title="现代硬件算法[6.6]: 整数"><img src="/images/ba_12.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[6.6]: 整数"/></a><div class="content"><a class="title" href="/2023/08/09/HPC-6-6-AMH-IntegerNumbers/" title="现代硬件算法[6.6]: 整数">现代硬件算法[6.6]: 整数</a><time datetime="2023-08-09T17:53:14.000Z" title="发表于 2023-08-09 17:53:14">2023-08-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/08/HPC-6-5-AMH-FastInverseSquareRoot/" title="现代硬件算法[6.5]: 快速平方根倒数"><img src="/images/ba_11.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[6.5]: 快速平方根倒数"/></a><div class="content"><a class="title" href="/2023/08/08/HPC-6-5-AMH-FastInverseSquareRoot/" title="现代硬件算法[6.5]: 快速平方根倒数">现代硬件算法[6.5]: 快速平方根倒数</a><time datetime="2023-08-08T19:59:29.000Z" title="发表于 2023-08-08 19:59:29">2023-08-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/08/HPC-6-4-AMH-NewtonsMethod/" title="现代硬件算法[6.4]: 牛顿法"><img src="/images/ba_10.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[6.4]: 牛顿法"/></a><div class="content"><a class="title" href="/2023/08/08/HPC-6-4-AMH-NewtonsMethod/" title="现代硬件算法[6.4]: 牛顿法">现代硬件算法[6.4]: 牛顿法</a><time datetime="2023-08-08T10:34:57.000Z" title="发表于 2023-08-08 10:34:57">2023-08-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/03/HPC-6-3-AMH-RoundingErrors/" title="现代硬件算法[6.3]: 舍入误差"><img src="/images/ba_09.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[6.3]: 舍入误差"/></a><div class="content"><a class="title" href="/2023/08/03/HPC-6-3-AMH-RoundingErrors/" title="现代硬件算法[6.3]: 舍入误差">现代硬件算法[6.3]: 舍入误差</a><time datetime="2023-08-03T17:34:33.000Z" title="发表于 2023-08-03 17:34:33">2023-08-03</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/images/ba_08.webp')"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2023 By 旭穹</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">谢临<a href="https://no5-aaron-wu.github.io/">陋室</a>, 欢迎留言！</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})
+setTimeout(function(){preloader.endLoading();}, 3000);</script></div><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '8238e4a92ed02fb5dcb8',
+      clientSecret: '9c0dfb8fd7077aa7549fbda345a3b0c2cb781947',
+      repo: 'no5-aaron-wu.github.io',
+      owner: 'no5-aaron-wu',
+      admin: ['no5-aaron-wu'],
+      id: '96cb0e7025237105b33c0f2505040a30',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script><script src="/js/footer.js"></script><script src="/js/fishes.js"></script><script src="/live2d-widget/autoload.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
