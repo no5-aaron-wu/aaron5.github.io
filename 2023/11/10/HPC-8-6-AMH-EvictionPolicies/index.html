@@ -1,0 +1,246 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>现代硬件算法[8.6]: 淘汰策略 | 旭穹の陋室</title><meta name="keywords" content="HPC,AMH,external memory,cache"><meta name="author" content="旭穹"><meta name="copyright" content="旭穹"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="淘汰策略 你可以手动控制程序的I&#x2F;O操作，但大多数情况下都只是依赖自动的缓冲（bufferization）和缓存（caching），要么是因为懒惰，要么是因为计算环境的限制。 然而，自动缓存也有自己的挑战。当一个程序用完其用于存储中间数据的工作内存时，如果要为新数据创建空间，就需要去除一个现存的数据块。在冲突情况下决定在缓存中保留哪些数据的具体规则被称为淘汰策略（eviction policy）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="现代硬件算法[8.6]: 淘汰策略">
+<meta property="og:url" content="https://no5-aaron-wu.github.io/2023/11/10/HPC-8-6-AMH-EvictionPolicies/index.html">
+<meta property="og:site_name" content="旭穹の陋室">
+<meta property="og:description" content="淘汰策略 你可以手动控制程序的I&#x2F;O操作，但大多数情况下都只是依赖自动的缓冲（bufferization）和缓存（caching），要么是因为懒惰，要么是因为计算环境的限制。 然而，自动缓存也有自己的挑战。当一个程序用完其用于存储中间数据的工作内存时，如果要为新数据创建空间，就需要去除一个现存的数据块。在冲突情况下决定在缓存中保留哪些数据的具体规则被称为淘汰策略（eviction policy）。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://no5-aaron-wu.github.io/images/pd_07.webp">
+<meta property="article:published_time" content="2023-11-10T15:45:02.000Z">
+<meta property="article:modified_time" content="2023-11-22T02:46:50.876Z">
+<meta property="article:author" content="旭穹">
+<meta property="article:tag" content="HPC">
+<meta property="article:tag" content="AMH">
+<meta property="article:tag" content="external memory">
+<meta property="article:tag" content="cache">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://no5-aaron-wu.github.io/images/pd_07.webp"><link rel="shortcut icon" href="/images/ania_128x128.ico"><link rel="canonical" href="https://no5-aaron-wu.github.io/2023/11/10/HPC-8-6-AMH-EvictionPolicies/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="zlQaq8XLp3Oj3DgDnpkA0mCzGbGvflp_U-vZVql_E-E"/><meta name="msvalidate.01" content="EAE2F4C7507064F526B5924DA5DCD005"/><meta name="baidu-site-verification" content="code-XsSJQ4q5sT"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-6DDC82R7DV"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-6DDC82R7DV');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#009f6a","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '现代硬件算法[8.6]: 淘汰策略',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2023-11-22 02:46:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mouse.css"><style>#article-container.post-content h1:before, h2:before, h3:before, h4:before, h5:before, h6:before { -webkit-animation: avatar_turn_around 1s linear infinite; -moz-animation: avatar_turn_around 1s linear infinite; -o-animation: avatar_turn_around 1s linear infinite; -ms-animation: avatar_turn_around 1s linear infinite; animation: avatar_turn_around 1s linear infinite; }</style><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,300&display=swap" rel="stylesheet"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="wizard-scene"><div class="wizard-objects"><div class="wizard-square"></div><div class="wizard-circle"></div><div class="wizard-triangle"></div></div><div class="wizard"><div class="wizard-body"></div><div class="wizard-right-arm"><div class="wizard-right-hand"></div></div><div class="wizard-left-arm"><div class="wizard-left-hand"></div></div><div class="wizard-head"><div class="wizard-beard"></div><div class="wizard-face"><div class="wizard-adds"></div></div><div class="wizard-hat"><div class="wizard-hat-of-the-hat"></div><div class="wizard-four-point-star --first"></div><div class="wizard-four-point-star --second"></div><div class="wizard-four-point-star --third"></div></div></div></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">113</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">89</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/pd_07.webp')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">旭穹の陋室</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">现代硬件算法[8.6]: 淘汰策略</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-10T15:45:02.000Z" title="发表于 2023-11-10 15:45:02">2023-11-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-22T02:46:50.876Z" title="更新于 2023-11-22 02:46:50">2023-11-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/memory/">memory</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="现代硬件算法[8.6]: 淘汰策略"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>淘汰策略</h1>
+<p>你可以手动控制程序的I/O操作，但大多数情况下都只是依赖自动的缓冲（bufferization）和缓存（caching），要么是因为懒惰，要么是因为计算环境的限制。</p>
+<p>然而，自动缓存也有自己的挑战。当一个程序用完其用于存储中间数据的工作内存时，如果要为新数据创建空间，就需要去除一个现存的数据块。在冲突情况下决定在缓存中保留哪些数据的具体规则被称为<strong>淘汰策略</strong>（eviction policy）。</p>
+<p>这个规则可以是任意的，但有几个流行的选择：</p>
+<ul>
+<li>先入先出（first in first out，FIFO）：简单地淘汰最早添加的块，而不考虑之前访问的频率（与FIFO队列的方式相同）。</li>
+<li>最近最少使用（least recently used，LRU）：淘汰最长时间未访问的块。</li>
+<li>后入先出（last in first out，LIFO）和最近最常使用（most recently used，MRU）：与前两者相反。删除最热的块似乎有害，但是在某些情况下，这些策略是最优的，例如需要在有限的周期内循环遍历同一个文件（优先移除最新缓存的，这样等再次循环到文件开头时，内容还在缓存中）。</li>
+<li>最少频率使用（least-frequently used，LFU）：记录每个块被请求的频次并丢弃最少使用的块。一些变种还会考虑随时间变化的访问模式，例如使用时间窗口只考虑最近<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>次访问，或使用指数平均以给予最近访问更多权重。</li>
+<li>随机替换（random replacement，RR）：随机丢弃一个块。优点是不需要维护任何包含块信息的数据结构。</li>
+</ul>
+<p>驱逐策略的准确性与其实施复杂度带来的额外开销之间存在着自然的权衡（trade-off）关系。对于CPU缓存，你需要一个可以轻易地在硬件中实现并且几乎没有延迟的简单策略。而对于可以允许一定延迟，并且有计划性的情况，例如Netflix决定在哪个数据中心存储他们的电影，或者Google Drive优化存储用户数据的位置，使用更复杂的策略是有意义的，比如可能涉及到用机器学习来预测数据下一次被访问的时间。</p>
+<h2 id="最佳缓存">最佳缓存</h2>
+<p>除了上述策略外，还有理论上的最优策略，被标记为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mi>P</mi><mi>T</mi></mrow><annotation encoding="application/x-tex">OPT</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">OPT</span></span></span></span>或<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mi>I</mi><mi>N</mi></mrow><annotation encoding="application/x-tex">MIN</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span>，它确定对于给定的查询序列，应保留哪些块以最小化缓存未命中的总数。根据给定的查询序列，选择保留哪些块可以使得缓存未命中的次数最少（然而，在实际运用中，由于无法预知未来的所有查询序列，因此这种策略并不常用）。</p>
+<p>可以使用一种名为Bélády算法的简单贪婪方法来进行这些决策：我们只需保留在未来最晚会被使用（latest-to-be-used）的块，通过反证法可以证明这样做总能得到最优解。这种方法的缺点是你必须提前得知所有的查询请求，或者可以预测未来的访问需求。</p>
+<p>好消息是，从渐进复杂性的角度来看，使用哪种特定方法并不真正重要。<a target="_blank" rel="noopener" href="https://www.cs.cmu.edu/~sleator/papers/amortized-efficiency.pdf">Sleator和Tarjan在他们的研究中展示</a>，在大多数情况下，流行的策略如<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mi>R</mi><mi>U</mi></mrow><annotation encoding="application/x-tex">LRU</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span></span></span></span>（最近最少使用）与<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mi>P</mi><mi>T</mi></mrow><annotation encoding="application/x-tex">OPT</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">OPT</span></span></span></span>（理论上最优的缓存算法，一般被用作其他缓存算法的性能对照基线）的性能只是相差一个常数因子（但这并不意味着在具体的系统设计中，这些策略的表现会完全一样，因为它们依然会受到具体问题规模、数据特性等因素的影响）。</p>
+<p><strong>定理</strong>：设<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mi>R</mi><msub><mi>U</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">LRU_M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>和<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mi>P</mi><msub><mi>T</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">OPT_M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">OP</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>分别表示，在相同的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi></mrow><annotation encoding="application/x-tex">M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span></span></span></span>内存大小条件下，遵循不同缓存替换策略（LRU和OPT）的计算机在执行相同算法时需要访问的“块”数。那么：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>L</mi><mi>R</mi><msub><mi>U</mi><mi>M</mi></msub><mo>≤</mo><mn>2</mn><mo>⋅</mo><mi>O</mi><mi>P</mi><msub><mi>T</mi><mrow><mi>M</mi><mi mathvariant="normal">/</mi><mn>2</mn></mrow></msub></mrow><annotation encoding="application/x-tex">LRU_M≤2\cdot OPT_{M/2}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0385em;vertical-align:-0.3552em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">OP</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.5198em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span><span class="mord mtight">/2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3552em;"><span></span></span></span></span></span></span></span></span></span></span></p>
+<p>证明的主要思路是考虑最差的情况。对于LRU策略，最差的情况是循环出现<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mi>M</mi><mi>B</mi></mfrac></mrow><annotation encoding="application/x-tex">\frac{M}{B}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2173em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8723em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05017em;">B</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>个不同的块：每一个块都是新的，因此LRU的缓存未命中率为100%。同时，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mi>P</mi><msub><mi>T</mi><mrow><mi>M</mi><mi mathvariant="normal">/</mi><mn>2</mn></mrow></msub></mrow><annotation encoding="application/x-tex">OPT_{M/2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0385em;vertical-align:-0.3552em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">OP</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.5198em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span><span class="mord mtight">/2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3552em;"><span></span></span></span></span></span></span></span></span></span>（M/2表示内存大小为原来一半）将能够缓存其中一半的块（但不会更多，因为它只有一半的内存）。因此，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mi>R</mi><msub><mi>U</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">LRU_M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>需要获取的块的数量是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mi>P</mi><msub><mi>T</mi><mrow><mi>M</mi><mi mathvariant="normal">/</mi><mn>2</mn></mrow></msub></mrow><annotation encoding="application/x-tex">OPT_{M/2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0385em;vertical-align:-0.3552em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">OP</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.5198em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span><span class="mord mtight">/2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3552em;"><span></span></span></span></span></span></span></span></span></span>所需获取的块的数量的两倍，这基本上就是这个不等式所表达的，对于<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mi>R</mi><mi>U</mi></mrow><annotation encoding="application/x-tex">LRU</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span></span></span></span>来说，任何更好的结果只会弱化这个不等式。如下图所示，其中灰色块是被<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mi>P</mi><mi>T</mi></mrow><annotation encoding="application/x-tex">OPT</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">OPT</span></span></span></span>缓存，但<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mi>R</mi><mi>U</mi></mrow><annotation encoding="application/x-tex">LRU</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span></span></span></span>未缓存的：</p>
+<p><img src="/2023/11/10/HPC-8-6-AMH-EvictionPolicies/opt.png" alt></p>
+<p>这是一个非常令人宽慰的结果。尽管在特定情境下，不同的缓存替换策略（如<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mi>R</mi><mi>U</mi></mrow><annotation encoding="application/x-tex">LRU</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span></span></span></span>和<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mi>P</mi><mi>T</mi></mrow><annotation encoding="application/x-tex">OPT</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">OPT</span></span></span></span>）在性能上有所差别，但在渐进I/O复杂度（衡量随着输入数据规模增大，算法的I/O操作次数如何增长）这个层面上，这些策略的差异可以被忽略。这就意味着，当你在进行算法复杂度分析时，你可以选择使用<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mi>R</mi><mi>U</mi></mrow><annotation encoding="application/x-tex">LRU</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span></span></span></span>或者<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mi>P</mi><mi>T</mi></mrow><annotation encoding="application/x-tex">OPT</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">OPT</span></span></span></span>这样的策略（取决于那个对你来说更容易实现），分析的结果可以推广应用到其他任何合理的缓存替换策略。这大大简化了算法复杂度的分析过程，并且有助于设计更高效的系统。</p>
+<h2 id="缓存实现">缓存实现</h2>
+<p>在合理的时间内找到正确的块以进行淘汰并不总是一件简单的任务。尽管CPU缓存是在硬件级别实现（通常实现为LRU的一些变体），但更高层次的淘汰策略必须依赖软件来存储块的某些统计信息，并在其上维护数据结构以加快找到要被淘汰数据块的速度。</p>
+<p>让我们思考一下实现一个LRU缓存所需要考虑的因素。假设我们正在存储一些中等大小的对象，例如我们要为一个数据库开发缓存，这里的查询命令和查询结果都是某种SQL语言的中等大小的字符串，因此我们结构的开销虽然小，但不能忽视。</p>
+<p>首先，我们需要一个哈希表来查找数据本身。由于我们处理的是较大的可变长度字符串，因此可以使用查询命令的哈希作为key，使用堆上分配内存的字符串的指针作为值。</p>
+<p>要实现LRU逻辑，最简单的方式是创建一个队列，当我们访问对象时，将当前时间和对象的ID/key推入队列，并存储上次访问每个对象的时间（不一定是时间戳，任何递增的计数器都可以）。</p>
+<p>现在，当我们需要释放空间时，我们可以通过从队列的前面弹出元素来找到最近使用最少的对象。我们不能直接删除它们，因为它们被添加到队列后，可能会再次被访问。因此，我们需要检查将它们放入队列的时间是否与上次访问它们的时间相匹配，然后才能释放内存。</p>
+<p>但这里还有一个问题，每次访问块时，我们都会向队列中添加一个条目，只有在缓存未命中时才会开始从前面弹出它们，直到成功释放内存，将新的块加到缓存中。这可能会导致队列溢出，为了缓解这种情况，我们可以在缓存命中时立即将其移动到队列的末尾，而不是无脑地添加条目。</p>
+<p>为了实现这一点，我们需要利用双链表实现队列，并将指向队列中节点的指针存储在哈希表中。然后，当我们有缓存命中时，我们通过指针，可以在恒定时间内从链表中删除节点，并在队列的末尾添加一个新节点。这样，在任何时间点，队列中的节点数量都将与对象数量一样多，并且每个缓存项的内存开销将保证恒定。</p>
+<p>作为练习，试着思考如何实现其他缓存策略。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">旭穹</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://no5-aaron-wu.github.io/2023/11/10/HPC-8-6-AMH-EvictionPolicies/">https://no5-aaron-wu.github.io/2023/11/10/HPC-8-6-AMH-EvictionPolicies/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://no5-aaron-wu.github.io" target="_blank">旭穹の陋室</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/HPC/">HPC</a><a class="post-meta__tags" href="/tags/AMH/">AMH</a><a class="post-meta__tags" href="/tags/external-memory/">external memory</a><a class="post-meta__tags" href="/tags/cache/">cache</a></div><div class="post_share"><div class="social-share" data-image="/images/pd_07.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/images/wechatpay.png" target="_blank"><img class="post-qr-code-img" src="/images/wechatpay.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/images/alipay.png" target="_blank"><img class="post-qr-code-img" src="/images/alipay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/11/20/HPC-8-7-AMH-CacheObliviousAlgorithms/"><img class="prev-cover" src="/images/pd_08.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">现代硬件算法[8.7]: 缓存遗忘算法</div></div></a></div><div class="next-post pull-right"><a href="/2023/11/06/HPC-8-5-AMH-ListRanking/"><img class="next-cover" src="/images/pd_06.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">现代硬件算法[8.5]: 列表排名</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/11/21/HPC-8-8-AMH-SpatialAndTemporalLocality/" title="现代硬件算法[8.8]: 时空局部性"><img class="cover" src="/images/pd_09.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-21</div><div class="title">现代硬件算法[8.8]: 时空局部性</div></div></a></div><div><a href="/2023/11/20/HPC-8-7-AMH-CacheObliviousAlgorithms/" title="现代硬件算法[8.7]: 缓存遗忘算法"><img class="cover" src="/images/pd_08.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-20</div><div class="title">现代硬件算法[8.7]: 缓存遗忘算法</div></div></a></div><div><a href="/2023/11/06/HPC-8-5-AMH-ListRanking/" title="现代硬件算法[8.5]: 列表排名"><img class="cover" src="/images/pd_06.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-06</div><div class="title">现代硬件算法[8.5]: 列表排名</div></div></a></div><div><a href="/2023/11/02/HPC-8-4-AMH-ExternalSorting/" title="现代硬件算法[8.4]: 外部排序"><img class="cover" src="/images/pd_05.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-02</div><div class="title">现代硬件算法[8.4]: 外部排序</div></div></a></div><div><a href="/2023/11/01/HPC-8-3-AMH-ExternalMemoryModel/" title="现代硬件算法[8.3]: 外部存储模型"><img class="cover" src="/images/pd_04.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-01</div><div class="title">现代硬件算法[8.3]: 外部存储模型</div></div></a></div><div><a href="/2023/10/10/HPC-8-1-AMH-MemoryHierarchy/" title="现代硬件算法[8.1]: 存储层次结构"><img class="cover" src="/images/pd_02.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-10</div><div class="title">现代硬件算法[8.1]: 存储层次结构</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">旭穹</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">113</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">89</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/no5-aaron-wu"><i class="fab fa-github"></i><span>我的github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:no5aaron@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">淘汰策略</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E4%BD%B3%E7%BC%93%E5%AD%98"><span class="toc-number">1.1.</span> <span class="toc-text">最佳缓存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.2.</span> <span class="toc-text">缓存实现</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/11/21/HPC-8-8-AMH-SpatialAndTemporalLocality/" title="现代硬件算法[8.8]: 时空局部性"><img src="/images/pd_09.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[8.8]: 时空局部性"/></a><div class="content"><a class="title" href="/2023/11/21/HPC-8-8-AMH-SpatialAndTemporalLocality/" title="现代硬件算法[8.8]: 时空局部性">现代硬件算法[8.8]: 时空局部性</a><time datetime="2023-11-21T11:29:06.000Z" title="发表于 2023-11-21 11:29:06">2023-11-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/20/HPC-8-7-AMH-CacheObliviousAlgorithms/" title="现代硬件算法[8.7]: 缓存遗忘算法"><img src="/images/pd_08.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[8.7]: 缓存遗忘算法"/></a><div class="content"><a class="title" href="/2023/11/20/HPC-8-7-AMH-CacheObliviousAlgorithms/" title="现代硬件算法[8.7]: 缓存遗忘算法">现代硬件算法[8.7]: 缓存遗忘算法</a><time datetime="2023-11-20T14:17:13.000Z" title="发表于 2023-11-20 14:17:13">2023-11-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/10/HPC-8-6-AMH-EvictionPolicies/" title="现代硬件算法[8.6]: 淘汰策略"><img src="/images/pd_07.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[8.6]: 淘汰策略"/></a><div class="content"><a class="title" href="/2023/11/10/HPC-8-6-AMH-EvictionPolicies/" title="现代硬件算法[8.6]: 淘汰策略">现代硬件算法[8.6]: 淘汰策略</a><time datetime="2023-11-10T15:45:02.000Z" title="发表于 2023-11-10 15:45:02">2023-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/06/HPC-8-5-AMH-ListRanking/" title="现代硬件算法[8.5]: 列表排名"><img src="/images/pd_06.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[8.5]: 列表排名"/></a><div class="content"><a class="title" href="/2023/11/06/HPC-8-5-AMH-ListRanking/" title="现代硬件算法[8.5]: 列表排名">现代硬件算法[8.5]: 列表排名</a><time datetime="2023-11-06T16:09:14.000Z" title="发表于 2023-11-06 16:09:14">2023-11-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/02/HPC-8-4-AMH-ExternalSorting/" title="现代硬件算法[8.4]: 外部排序"><img src="/images/pd_05.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="现代硬件算法[8.4]: 外部排序"/></a><div class="content"><a class="title" href="/2023/11/02/HPC-8-4-AMH-ExternalSorting/" title="现代硬件算法[8.4]: 外部排序">现代硬件算法[8.4]: 外部排序</a><time datetime="2023-11-02T15:54:06.000Z" title="发表于 2023-11-02 15:54:06">2023-11-02</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/images/pd_07.webp')"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2023 By 旭穹</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">谢临<a href="https://no5-aaron-wu.github.io/">陋室</a>, 欢迎留言！</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})
+setTimeout(function(){preloader.endLoading();}, 3000);</script></div><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '8238e4a92ed02fb5dcb8',
+      clientSecret: '9c0dfb8fd7077aa7549fbda345a3b0c2cb781947',
+      repo: 'no5-aaron-wu.github.io',
+      owner: 'no5-aaron-wu',
+      admin: ['no5-aaron-wu'],
+      id: '07b775f3ae737fc1a65e32571123fe29',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script><script src="/js/footer.js"></script><script src="/js/fishes.js"></script><script src="/live2d-widget/autoload.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
